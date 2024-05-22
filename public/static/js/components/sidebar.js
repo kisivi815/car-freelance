@@ -46,7 +46,7 @@ class Sidebar {
   init() {
     // add event listener to sidebar
     document
-      .querySelectorAll(".burger-btn")
+      .querySelectorAll(".burger-btn > i")
       .forEach((el) => el.addEventListener("click", this.toggle.bind(this)))
     document
       .querySelectorAll(".sidebar-hide")

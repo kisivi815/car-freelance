@@ -16,11 +16,7 @@ class RedirectIfAuthenticated
      */
     public function handle($request, Closure $next)
     {
-        if (Auth::check()) {
-            if ($request->path() !== 'dashboard') {
-                return redirect()->intended('dashboard');
-            }
-        } else {
+        if (!Auth::check()) {
             return redirect('/login');
         }
 

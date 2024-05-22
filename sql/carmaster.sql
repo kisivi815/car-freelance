@@ -3,7 +3,6 @@ CREATE TABLE car (
     ChassisNo VARCHAR(50) UNIQUE,
     Model VARCHAR(50),
     ProductLine VARCHAR(50),
-    ProductLineId INT,
     Colour VARCHAR(50),
     PhysicalStatus VARCHAR(50),
     EngineNo VARCHAR(50),
