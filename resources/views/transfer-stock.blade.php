@@ -67,8 +67,8 @@
                                                     </div>
                                                     <div class="col-md-8 form-group">
                                                     <select class="form-select">
-                                                            @foreach ($data as $d)
-                                                            <option value="{{$d->ChassisNo}}">{{$d->ChassisNo}}</option>
+                                                    @foreach ($data['car'] as $c)
+                                                            <option value="{{$c->ChassisNo}}">{{$c->ChassisNo}}</option>
                                                             @endforeach
                                                         </select>
                                                     </div>
@@ -76,13 +76,21 @@
                                                         <label for="email-horizontal">Source Branch</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
-                                                        <input type="text" id="first-name-horizontal" class="form-control" name="fname" placeholder="Source Branch">
+                                                    <select class="form-select">
+                                                    @foreach ($data['branch'] as $b)
+                                                            <option value="{{$b->name}}">{{$b->name}}</option>
+                                                            @endforeach
+                                                        </select>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <label for="contact-info-horizontal">Destination Branch</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
-                                                        <input type="text" id="first-name-horizontal" class="form-control" name="fname" placeholder="Destination Branch">
+                                                    <select class="form-select">
+                                                    @foreach ($data['branch'] as $b)
+                                                            <option value="{{$b->name}}">{{$b->name}}</option>
+                                                            @endforeach
+                                                        </select>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <label for="horizontal">Driver Name</label>

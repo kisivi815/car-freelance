@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Car;
+use App\Models\Branch;
 
 class StockController extends Controller
 {
@@ -12,7 +13,10 @@ class StockController extends Controller
      */
     public function index()
     {
-        return view('transfer-stock')->with(['title' => 'Transfer Stock','data'=>Car::all()]);
+        $car = Car::all();
+        $branch = Branch::all();
+        $data = ['car'=>$car,'branch'=>$branch];
+        return view('transfer-stock')->with(['title' => 'Transfer Stock','data'=>$data]);
     }
 
     /**
