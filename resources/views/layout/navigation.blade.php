@@ -2,9 +2,9 @@
 <div id="sidebar">
     <div class="sidebar-wrapper active">
         <div class="sidebar-header position-relative">
-            <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex justify-content-center align-items-center">
                 <div class="logo">
-
+                    <img src="{{ asset('image/logo.jpeg') }}" alt="logo" style="width:100%;height:100%;">
                 </div>
                 <div class="theme-toggle d-flex gap-2  align-items-center mt-2">
                 </div>

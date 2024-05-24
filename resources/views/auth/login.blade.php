@@ -57,12 +57,22 @@
         .invalid-feedback{
             color: red;
         }
+        .logo-image-container{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .logo-image-container > img{
+            width: 60%;
+        }
     </style>
 </head>
 <body>
 <div class="container">
     <div class="login-container">
-        <h2>LOGIN PAGE</h2>
+        <div class="logo-image-container">
+        <img src="{{ asset('image/login-logo.jpeg') }}" alt="logo">
+        </div>
         <form method="POST" action="{{ route('login') }}">
         @csrf
             <label for="email">EMAIL</label>
