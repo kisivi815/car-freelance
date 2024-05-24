@@ -1,5 +1,5 @@
 CREATE TABLE carmaster (
-    ChassisNo VARCHAR(50) UNIQUE,
+    ChasisNo VARCHAR(50) UNIQUE,
     Model VARCHAR(50),
     ProductLine VARCHAR(50),
     Colour VARCHAR(50),
@@ -25,11 +25,11 @@ CREATE TABLE carmaster (
     HorsePower DECIMAL(5,2),
     Rate DECIMAL(10,2),
     TaxableValue DECIMAL(10,2),
-    Amount INT
+    Amount DECIMAL(10,2)
     
 );
 
-INSERT INTO carmaster (ChassisNo, Model, ProductLine, Colour, PhysicalStatus, EngineNo, EmissionNorm, ManufacturingDate, TMInvoiceDate, CommercialInvoiceNo, HSNCode, TypeOfFuel, MakersName, NoOfCylinders, SeatingCapacity, CatalyticConverter, UnladenWeight, FrontAxle, RearAxle, AnyOtherAxle, TandemAxle, GrossWeight, TypeOfBody,Amount,HorsePower,Rate,TaxableValue) VALUES
+INSERT INTO carmaster (ChasisNo, Model, ProductLine, Colour, PhysicalStatus, EngineNo, EmissionNorm, ManufacturingDate, TMInvoiceDate, CommercialInvoiceNo, HSNCode, TypeOfFuel, MakersName, NoOfCylinders, SeatingCapacity, CatalyticConverter, UnladenWeight, FrontAxle, RearAxle, AnyOtherAxle, TandemAxle, GrossWeight, TypeOfBody,Amount,HorsePower,Rate,TaxableValue) VALUES
 ('MAT6274672LB00000', 'Altroz', 'Altroz XM+ 1.5 D', 'Color', 'In Trasit', 'EN000000', 'BSVI', '2024-01-15', '2024-02-20', 
 'INV000000', '8703.31.99', 'Diesel', 'TATA MOTORS PASSENGER VEHICLES LTD', 4, 5, 
 1497.0, 1140.0, NULL, NULL, NULL, NULL, 1565.0, '5-DOOR STEEL SHELL', NULL, NULL, NULL, NULL),
