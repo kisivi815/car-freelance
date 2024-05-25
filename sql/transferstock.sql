@@ -5,7 +5,7 @@ CREATE TABLE transferstock (
     DestinationBranch VARCHAR(100),
     DriverName VARCHAR(100),
     Note VARCHAR(1000),
-    SendBy VARCHAR(1000),
+    SendBy VARCHAR(100),
     GatePassId VARCHAR(50),
     DateOfTransfer DATE
 );
