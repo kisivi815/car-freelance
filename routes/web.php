@@ -41,5 +41,7 @@ Route::middleware(RedirectIfAuthenticated::class)->group(function () {
     })->name('view-stock');
 
     Route::get('/transfer-stock', [StockController::class, 'index'])->name('transfer-stock');
+    Route::post('/submit-transfer-stock', [StockController::class, 'store'])->name('submit-transfer-stock');
+    
 
 });

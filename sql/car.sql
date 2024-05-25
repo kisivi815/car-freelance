@@ -1,6 +1,6 @@
 CREATE TABLE car (
     ID INT PRIMARY KEY AUTO_INCREMENT,
-    ChassisNo VARCHAR(50) UNIQUE,
+    ChasisNo VARCHAR(50) UNIQUE,
     Model VARCHAR(50),
     ProductLine VARCHAR(50),
     Colour VARCHAR(50),
@@ -13,7 +13,7 @@ CREATE TABLE car (
     HSNCode VARCHAR(20)
 );
 
-INSERT INTO car (ChassisNo, Model, ProductLine, Colour, PhysicalStatus, EngineNo, EmissionNorm, ManufacturingDate, TMInvoiceDate, CommercialInvoiceNo, HSNCode)
+INSERT INTO car (ChasisNo, Model, ProductLine, Colour, PhysicalStatus, EngineNo, EmissionNorm, ManufacturingDate, TMInvoiceDate, CommercialInvoiceNo, HSNCode)
 VALUES
 ('MAT6274672LB18081', 'NEXON', 'Nexon Pure 5.1.2', 'CALGARY_WHITE', 'In Transit', 'REVTRN21AVX90085', 'BS VI', '2024-01-02', '2024-02-15', '756688659', '8703.22.99'),
 ('MAT6274672LB16584', 'NEXON', 'Nexon Pure 5.1.2', 'DAYTONA_GREY', 'In Transit', 'REVTRN21PWXG2219', 'BS VI', '2024-01-02', '2024-02-15', '756688570', '8703.22.99'),
