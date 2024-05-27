@@ -19,7 +19,7 @@ function setTheme(theme, persist = false) {
   document.documentElement.setAttribute('data-bs-theme', theme)
   
   if (persist) {
-    localStorage.setItem(THEME_KEY, theme)
+    localStorage.setItem(THEME_KEY, 'light')
   }
 }
 
@@ -28,7 +28,7 @@ function setTheme(theme, persist = false) {
  */
 function initTheme() {
   //If the user manually set a theme, we'll load that
-  const storedTheme = localStorage.getItem(THEME_KEY)
+  const storedTheme = 'light';
   if (storedTheme) {
     return setTheme(storedTheme)
   }

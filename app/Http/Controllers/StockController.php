@@ -2,8 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use App\Http\Requests\TransferStockRequest;
 use App\Models\Car;
+use App\Models\Branch;
+use App\Models\TransferStock;
+use Carbon\Carbon;
 
 class StockController extends Controller
 {
@@ -12,15 +17,32 @@ class StockController extends Controller
      */
     public function index()
     {
-        return view('transfer-stock')->with(['title' => 'Transfer Stock','data'=>Car::all()]);
+        $car = Car::all();
+        $branch = Branch::all();
+        $data = ['car'=>$car,'branch'=>$branch];
+        return view('transfer-stock')->with(['title' => 'Transfer Stock','data'=>$data]);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(TransferStockRequest $request)
     {
-        //
+        $userName = Auth::user()->name;
+        $validatedData = $request->validated();
+        $validatedData['DateOfTransfer']= Carbon::today();
+        $validatedData['SendBy']= $userName;
+        $newRecord = TransferStock::create($validatedData);
+        $newRecordId = $newRecord->id;
+        $data['GatePassId'] = 'TF'.$newRecordId;
+        $TransferStock = TransferStock::with('Car')->find($newRecordId); 
+        $TransferStock->GatePassId = 'TF'.$newRecordId;  
+        $TransferStock->save();
+
+        $return = ['message'=> 'Form submitted successfully!','gate'=>$TransferStock];
+
+        return redirect()->back()->with($return);
+
     }
 
     /**

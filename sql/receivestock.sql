@@ -1,0 +1,11 @@
+CREATE TABLE receivestock (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    ChassisNo VARCHAR(50) NOT NULL,
+    GatePassId VARCHAR(50) NOT NULL,
+    SourceBranch VARCHAR(100) NOT NULL,
+    DestinationBranch VARCHAR(100) NOT NULL,
+    SendBy VARCHAR(100) NOT NULL,
+    ReceivedBy VARCHAR(100) NOT NULL,
+    Notes TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
