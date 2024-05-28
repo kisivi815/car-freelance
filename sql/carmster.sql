@@ -25,7 +25,7 @@ CREATE TABLE carmaster (
     HorsePower DECIMAL(5,2),
     Rate DECIMAL(10,2),
     TaxableValue DECIMAL(10,2),
-    Amount INT
+    Amount DECIMAL(10,2)
     
 );
 
