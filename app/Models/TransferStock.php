@@ -23,6 +23,9 @@ class TransferStock extends Model
         'GatePassId', 
         'DateOfTransfer',
         'SendBy',
+        'ReceivedBy',
+        'DateOfReceive',
+        'ReceiveNote'
     ];
 
     public function Car()

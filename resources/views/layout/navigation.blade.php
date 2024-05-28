@@ -32,7 +32,7 @@
                         <span>View Sale</span>
                     </a>
                 </li>
-                <li class="sidebar-item {{ Request::routeIs('view-stock') ? 'active' : '' }}">
+                <li class="sidebar-item {{ (Request::routeIs('view-stock') || Request::routeIs('view-stock-default')) ? 'active' : '' }}">
                     <a href="{{ route('view-stock') }}" class='sidebar-link'>
                         <i class=""></i>
                         <span>View Stock</span>

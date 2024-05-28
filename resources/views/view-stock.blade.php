@@ -33,6 +33,7 @@
                                                         <th>View Note</th>
                                                         <th>Approve</th>
                                                         <th>Reject</th>
+                                                        <th>Receive Stock</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -43,11 +44,12 @@
                                                         <td>Branch Name</td>
                                                         <td>Altroz</td>
                                                         <td>LXI</td>
-                                                        <td>12121221</td>
+                                                        <td>MAT6274672LB18081</td>
                                                         <td><a href="#">View Pics</a></td>
                                                         <td><a href="#">View Note</a></td>
                                                         <td><a href="#" data-bs-toggle="modal" data-bs-target="#inlineForm">Approve with note</a></td>
                                                         <td><a href="#">Reject with note</a></td>
+                                                        <td><a href="receive-stock/1">Receive Stock</a></td>
                                                     </tr>
                                                 </tbody>
                                             </table>

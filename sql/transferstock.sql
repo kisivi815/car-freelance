@@ -7,5 +7,8 @@ CREATE TABLE transferstock (
     Note VARCHAR(1000),
     SendBy VARCHAR(100),
     GatePassId VARCHAR(50),
-    DateOfTransfer DATE
+    DateOfTransfer DATE,
+    ReceivedBy VARCHAR(100),
+    DateOfReceive DATE,
+    ReceiveNote VARCHAR(1000)
 );

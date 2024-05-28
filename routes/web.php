@@ -40,7 +40,13 @@ Route::middleware(RedirectIfAuthenticated::class)->group(function () {
         return view('view-stock')->with(['title' => 'View Stock']);
     })->name('view-stock');
 
+    Route::get('/receive-stock', function () {
+        return view('view-stock')->with(['title' => 'View Stock']);
+    })->name('view-stock-default');
+
     Route::get('/transfer-stock', [StockController::class, 'index'])->name('transfer-stock');
+    Route::get('/receive-stock/{id}', [StockController::class, 'getReceiveStock'])->name('receive-stock');
+    Route::post('/submit-receive-stock/{id}', [StockController::class, 'submitReceiveStock'])->name('submit-receive-stock');
     Route::post('/submit-transfer-stock', [StockController::class, 'store'])->name('submit-transfer-stock');
     
 
