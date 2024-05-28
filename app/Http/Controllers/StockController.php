@@ -62,6 +62,13 @@ class StockController extends Controller
             $TransferStock->ReceivedBy = $request->ReceivedBy;
             $TransferStock->DateOfReceive = Carbon::today();
             $TransferStock->ReceiveNote = $request->Note;
+
+            if($request->status == 'approve'){
+                $TransferStock->status = '1';
+            }else{
+                $TransferStock->status = '0';
+            }
+
             $TransferStock->save();
             return redirect()->route('view-stock')->with(['title' => 'View Stock']);
         } catch (ModelNotFoundException $e) {
@@ -72,9 +79,14 @@ class StockController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function getStockDetails(Request $request)
     {
-        //
+        try {
+            $result = TransferStock::with('Car')->findOrFail($request->id);
+            return view('stock-details')->with(['title' => 'Stock Details', 'data' => $result]);
+        } catch (ModelNotFoundException $e) {
+            return redirect()->route('stock-details')->with('error', 'Record not found.');
+        }
     }
 
     /**

@@ -24,33 +24,52 @@
                                                     <tr>
                                                         <th>ID</th>
                                                         <th>Date of Transfer</th>
-                                                        <th>T/F To</th>
                                                         <th>T/F From</th>
+                                                        <th>Sender Name</th>
+                                                        <th>Sender Details</th>
+                                                        <th>T/F To</th>
+                                                        <th>Receiver Name</th>
+                                                        <th>Receiver Detail</th>
                                                         <th>Car Name</th>
                                                         <th>Model</th>
                                                         <th>Chasis No</th>
-                                                        <th>Pics</th>
-                                                        <th>View Note</th>
                                                         <th>Approve</th>
                                                         <th>Reject</th>
-                                                        <th>Receive Stock</th>
+                                                        <th>Delete</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
+                                                    @foreach ($data as $d)
                                                     <tr>
-                                                        <td>1</td>
-                                                        <td>DD-MM-YYYY</td>
-                                                        <td>Branch Name</td>
-                                                        <td>Branch Name</td>
-                                                        <td>Altroz</td>
-                                                        <td>LXI</td>
-                                                        <td>MAT6274672LB18081</td>
-                                                        <td><a href="#">View Pics</a></td>
-                                                        <td><a href="#">View Note</a></td>
-                                                        <td><a href="#" data-bs-toggle="modal" data-bs-target="#inlineForm">Approve with note</a></td>
-                                                        <td><a href="#">Reject with note</a></td>
-                                                        <td><a href="receive-stock/1">Receive Stock</a></td>
+                                                        <td>{{$d->id}}</td>
+                                                        <td>{{$d->DateOfTransfer}}</td>
+                                                        <td>{{$d->SourceBranch}}</td>
+                                                        <td>{{$d->SendBy}}</td>
+                                                        <td><a href="stock-details/{{$d->id}}">Details</td>
+                                                        <td>{{$d->DestinationBranch}}</td>
+                                                        <td>{{ $d->ReceivedBy ? $d->ReceivedBy : '-' }}</td>
+                                                        <td><a href="stock-details/{{$d->id}}">{{ $d->ReceivedBy ? 'Details' : '-' }}</td>
+                                                        <td>{{$d->Car->Model}}</td>
+                                                        <td>{{$d->Car->ProductLine}}</td>
+                                                        <td>{{$d->ChasisNo}}</td>
+                                                        <!-- <td><a href="#" data-bs-toggle="modal" data-bs-target="#inlineForm">Approve with note</a></td> -->
+                                                        <td>
+                                                            @if (!$d->ReceivedBy)
+                                                            <a href="receive-stock/{{$d->id}}?status=approve">Approve with note</a>
+                                                            @else
+                                                            -
+                                                            @endif
+                                                        </td>
+                                                        <td>
+                                                            @if (!$d->ReceivedBy)
+                                                            <a href="receive-stock/{{$d->id}}?status=reject">Reject with note</a>
+                                                            @else
+                                                            -
+                                                            @endif
+                                                        </td>
+                                                        <td><a href="#">Delete</a></td>
                                                     </tr>
+                                                    @endforeach
                                                 </tbody>
                                             </table>
                                         </div>

@@ -36,9 +36,7 @@ Route::middleware(RedirectIfAuthenticated::class)->group(function () {
         return view('view-sale')->with(['title' => 'View Sale']);
     })->name('view-sale');
     
-    Route::get('/view-stock', function () {
-        return view('view-stock')->with(['title' => 'View Stock']);
-    })->name('view-stock');
+    Route::get('/view-stock', [StockController::class, 'show'])->name('view-stock');
 
     Route::get('/receive-stock', function () {
         return view('view-stock')->with(['title' => 'View Stock']);
@@ -46,6 +44,7 @@ Route::middleware(RedirectIfAuthenticated::class)->group(function () {
 
     Route::get('/transfer-stock', [StockController::class, 'index'])->name('transfer-stock');
     Route::get('/receive-stock/{id}', [StockController::class, 'getReceiveStock'])->name('receive-stock');
+    Route::get('/stock-details/{id}', [StockController::class, 'getStockDetails'])->name('stock-details');
     Route::post('/submit-receive-stock/{id}', [StockController::class, 'submitReceiveStock'])->name('submit-receive-stock');
     Route::post('/submit-transfer-stock', [StockController::class, 'store'])->name('submit-transfer-stock');
     

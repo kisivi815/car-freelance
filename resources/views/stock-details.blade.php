@@ -65,7 +65,7 @@
                         <div class="col-12">
                             <div class="card">
                                 <div class="card-header">
-                                    <h4 class="card-title">Receive Stock</h4>
+                                    <h4 class="card-title">Stock Details</h4>
                                 </div>
                                 <div class="card-content">
                                     <div class="card-body">
@@ -107,27 +107,35 @@
                                                         <input type="text" id="first-name-horizontal" class="form-control" value="{{$data->SendBy}}" disabled>
                                                     </div>
                                                     <div class="col-md-4">
+                                                        <label for="horizontal">Sender Note</label>
+                                                    </div>
+                                                    <div class="col-md-8 form-group">
+                                                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="Note"  disabled>{{$data->Note}}</textarea>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label for="horizontal">Sender Pics</label>
+                                                    </div>
+                                                    <div class="col-md-8 form-group">
+                                                        <input type="text" id="first-name-horizontal" class="form-control" placeholder="Upload Pics" disabled>
+                                                    </div>
+                                                    <div class="col-md-4">
                                                         <label for="horizontal">Received By</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
-                                                        <input type="text" id="first-name-horizontal" class="form-control" placeholder="Received By" name="ReceivedBy" value="">
+                                                        <input type="text" id="first-name-horizontal" class="form-control" placeholder="Received By" name="ReceivedBy" value="{{$data->ReceivedBy}}" disabled>
                                                     </div>
                                                     <div class="col-md-4">
-                                                        <label for="horizontal">Add Note</label>
+                                                        <label for="horizontal">Received Note</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
-                                                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="Note"></textarea>
+                                                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="Note" value="{{$data->SendBy}}" disabled>{{$data->ReceiveNote}}</textarea>
                                                     </div>
                                                     <div class="col-md-4">
-                                                        <label for="horizontal">Upload Pics</label>
+                                                        <label for="horizontal">Receiver Pics</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
-                                                        <input type="text" id="first-name-horizontal" class="form-control" placeholder="Upload Pics">
+                                                        <input type="text" id="first-name-horizontal" class="form-control" placeholder="Upload Pics" disabled>
                                                     </div>
-                                                    <div class="col-sm-12 d-flex justify-content-center">
-                                                        <button type="submit" class="btn btn-primary me-1 mb-1" style="width:200px">Submit</button>
-                                                    </div>
-                                                    <input type="hidden" name="status" value="{{request()->query('status')}}">
                                                 </div>
                                             </div>
                                         </form>
