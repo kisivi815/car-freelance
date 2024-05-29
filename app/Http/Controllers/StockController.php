@@ -18,10 +18,12 @@ class StockController extends Controller
      */
     public function index()
     {
-        $car = Car::all();
-        $branch = Branch::all();
-        $data = ['car' => $car, 'branch' => $branch];
-        return view('transfer-stock')->with(['title' => 'Transfer Stock', 'data' => $data]);
+        try {
+            $result = TransferStock::with('Car')->get();
+            return view('view-stock')->with(['title' => 'View Stock', 'data' => $result]);
+        } catch (ModelNotFoundException $e) {
+            return redirect()->route('view-stock')->with('error', 'Record not found.');
+        }
     }
 
     /**
@@ -29,20 +31,25 @@ class StockController extends Controller
      */
     public function store(TransferStockRequest $request)
     {
-        $userName = Auth::user()->name;
-        $validatedData = $request->validated();
-        $validatedData['DateOfTransfer'] = Carbon::today();
-        $validatedData['SendBy'] = $userName;
-        $newRecord = TransferStock::create($validatedData);
-        $newRecordId = $newRecord->id;
-        $data['GatePassId'] = 'TF' . $newRecordId;
-        $TransferStock = TransferStock::with('Car')->find($newRecordId);
-        $TransferStock->GatePassId = 'TF' . $newRecordId;
-        $TransferStock->save();
-
-        $return = ['message' => 'Form submitted successfully!', 'gate' => $TransferStock];
-
-        return redirect()->back()->with($return);
+        try {
+            $userName = Auth::user()->name;
+            $validatedData = $request->validated();
+            $validatedData['DateOfTransfer'] = Carbon::today();
+            $validatedData['SendBy'] = $userName;
+            $newRecord = TransferStock::create($validatedData);
+            $newRecordId = $newRecord->id;
+            $data['GatePassId'] = 'TF' . $newRecordId;
+            $TransferStock = TransferStock::with('Car')->find($newRecordId);
+            $TransferStock->GatePassId = 'TF' . $newRecordId;
+            $TransferStock->save();
+    
+            $return = ['message' => 'Form submitted successfully!', 'gate' => $TransferStock];
+    
+            return redirect()->back()->with($return);
+        } catch (ModelNotFoundException $e) {
+            return redirect()->back()->with('error', 'Submit error');
+        }
+        
     }
 
     public function getReceiveStock(Request $request)
@@ -85,8 +92,15 @@ class StockController extends Controller
             $result = TransferStock::with('Car')->findOrFail($request->id);
             return view('stock-details')->with(['title' => 'Stock Details', 'data' => $result]);
         } catch (ModelNotFoundException $e) {
-            return redirect()->route('stock-details')->with('error', 'Record not found.');
+            return redirect()->route('view-stock')->with('error', 'Record not found.');
         }
+    }
+
+    public function show(Request $request){
+        $car = Car::all();
+        $branch = Branch::all();
+        $data = ['car' => $car, 'branch' => $branch];
+        return view('transfer-stock')->with(['title' => 'Transfer Stock', 'data' => $data]);
     }
 
     /**

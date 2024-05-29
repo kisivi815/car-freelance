@@ -80,7 +80,7 @@
                                                     <div class="col-md-8 form-group">
                                                         <select class="form-select" name="ChasisNo" required>
                                                             @foreach ($data['car'] as $c)
-                                                            <option value="{{$c->ChassisNo}}">{{$c->ChassisNo}}</option>
+                                                            <option value="{{$c->ChasisNo}}">{{$c->ChasisNo}}</option>
                                                             @endforeach
                                                         </select>
                                                     </div>
@@ -152,43 +152,43 @@
                                                         <label for="first-name-horizontal">Stock T/F ID</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
-                                                        <input type="text" id="first-name-horizontal" class="form-control" name="fname" value="{{session('gate')->GatePassId}}" placeholder="Stock T/F ID">
+                                                        <input type="text" id="first-name-horizontal" class="form-control" name="fname" value="{{session('gate')->GatePassId}}" placeholder="Stock T/F ID" disabled>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <label for="email-horizontal">Chasis No</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
-                                                        <input type="text" id="first-name-horizontal" class="form-control" name="fname" value="{{session('gate')->ChasisNo}}" placeholder="Chasis No">
+                                                        <input type="text" id="first-name-horizontal" class="form-control" name="fname" value="{{session('gate')->ChasisNo}}" placeholder="Chasis No" disabled>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <label for="contact-info-horizontal">Car Name & Model</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
-                                                        <input type="text" id="first-name-horizontal" class="form-control" name="fname" value="{{session('gate')->Car->Model.' '.session('gate')->Car->ProductLine}}" placeholder="Car Name & Model">
+                                                        <input type="text" id="first-name-horizontal" class="form-control" name="fname" value="{{session('gate')->Car->Model.' '.session('gate')->Car->ProductLine}}" placeholder="Car Name & Model" disabled>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <label for="horizontal">Date of Transfer</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
-                                                        <input type="text" id="first-name-horizontal" class="form-control" name="fname" value="{{session('gate')->DateOfTransfer}}" placeholder="Date of Transfer">
+                                                        <input type="text" id="first-name-horizontal" class="form-control" name="fname" value="{{session('gate')->DateOfTransfer}}" placeholder="Date of Transfer" disabled>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <label for="horizontal">Source Branch</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
-                                                        <input type="text" id="first-name-horizontal" class="form-control" name="fname" value="{{session('gate')->SourceBranch}}" placeholder="Source Branch">
+                                                        <input type="text" id="first-name-horizontal" class="form-control" name="fname" value="{{session('gate')->SourceBranch}}" placeholder="Source Branch" disabled>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <label for="horizontal">Destination Branch</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
-                                                        <input type="text" id="first-name-horizontal" class="form-control" name="fname" value="{{session('gate')->DestinationBranch}}" placeholder="Destination Branch">
+                                                        <input type="text" id="first-name-horizontal" class="form-control" name="fname" value="{{session('gate')->DestinationBranch}}" placeholder="Destination Branch" disabled>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <label for="horizontal">Driver Name</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
-                                                        <input type="text" id="first-name-horizontal" class="form-control" name="fname" value="{{session('gate')->DriverName}}" placeholder="Driver Name">
+                                                        <input type="text" id="first-name-horizontal" class="form-control" name="fname" value="{{session('gate')->DriverName}}" placeholder="Driver Name" disabled>
                                                     </div>
                                                 </div>
                                             </div>
