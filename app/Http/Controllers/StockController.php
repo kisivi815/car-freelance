@@ -9,7 +9,10 @@ use App\Models\Car;
 use App\Models\Branch;
 use App\Models\TransferStock;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class StockController extends Controller
 {
@@ -42,6 +45,19 @@ class StockController extends Controller
             $TransferStock = TransferStock::with('Car')->find($newRecordId);
             $TransferStock->GatePassId = 'TF' . $newRecordId;
             $TransferStock->save();
+
+            if($request->hasfile('photo')) {
+                foreach($request->file('photo') as $file) {
+                    try {
+
+                        $result = Storage::disk('s3')->put('filename.jpg', file_get_contents($file));
+                        //$result = $file->storeAs('public/stock_images', $file->getClientOriginalName(),'s3');
+                        Log::info('Upload successful: ', ['result' => $result]);
+                    } catch (Exception $e) {
+                        Log::error('Upload error: ' . $e->getMessage());
+                    }
+                }
+            }
     
             $return = ['message' => 'Form submitted successfully!', 'gate' => $TransferStock];
     

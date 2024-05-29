@@ -70,7 +70,7 @@
                                 </div>
                                 <div class="card-content">
                                     <div class="card-body">
-                                        <form class="form form-horizontal" action="{{route('submit-transfer-stock')}}" method="POST">
+                                        <form class="form form-horizontal" action="{{route('submit-transfer-stock')}}" method="POST" enctype="multipart/form-data">
                                             @csrf
                                             <div class="form-body">
                                                 <div class="row">
@@ -114,7 +114,7 @@
                                                         <label for="horizontal">Upload Pics</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
-                                                        <input type="text" id="first-name-horizontal" class="form-control" placeholder="Upload Pics">
+                                                        <input type="file" class="image-preview-filepond" name="photo[]"  multiple>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <label for="horizontal">Add Note</label>
@@ -204,8 +204,20 @@
         </div>
     </div>
 
-
-
+    <link rel="stylesheet" href="{{asset('extensions/filepond/filepond.css')}}">
+    <link rel="stylesheet" href="{{asset('extensions/filepond-plugin-image-preview/filepond-plugin-image-preview.css')}}">
+    <link rel="stylesheet" href="{{asset('extensions/toastify-js/src/toastify.css')}}">
+    
+<script src="{{asset('extensions/filepond-plugin-file-validate-size/filepond-plugin-file-validate-size.min.js')}}"></script>
+<script src="{{asset('extensions/filepond-plugin-file-validate-type/filepond-plugin-file-validate-type.min.js')}}"></script>
+<script src="{{asset('extensions/filepond-plugin-image-crop/filepond-plugin-image-crop.min.js')}}"></script>
+<script src="{{asset('extensions/filepond-plugin-image-exif-orientation/filepond-plugin-image-exif-orientation.min.js')}}"></script>
+<script src="{{asset('extensions/filepond-plugin-image-filter/filepond-plugin-image-filter.min.js')}}"></script>
+<script src="{{asset('extensions/filepond-plugin-image-preview/filepond-plugin-image-preview.min.js')}}"></script>
+<script src="{{asset('extensions/filepond-plugin-image-resize/filepond-plugin-image-resize.min.js')}}"></script>
+    <script src="{{asset('extensions/filepond/filepond.js')}}"></script>
+    <script src="{{asset('extensions/toastify-js/src/toastify.js')}}"></script>
+    <script src="{{asset('static/js/pages/filepond.js')}}"></script>
     @include('layout.script')
     <script>
         $(document).ready(function() {
