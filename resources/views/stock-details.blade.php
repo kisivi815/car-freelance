@@ -92,13 +92,13 @@
                                                         <label for="email-horizontal">Source Branch</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
-                                                        <input type="text" id="first-name-horizontal" class="form-control" value="{{$data->SourceBranch}}" disabled>
+                                                        <input type="text" id="first-name-horizontal" class="form-control" value="{{$data->Source->name}}" disabled>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <label for="contact-info-horizontal">Destination Branch</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
-                                                        <input type="text" id="first-name-horizontal" class="form-control" value="{{$data->DestinationBranch}}" disabled>
+                                                        <input type="text" id="first-name-horizontal" class="form-control" value="{{$data->Destination->name}}" disabled>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <label for="first-name-horizontal">Sent By</label>
@@ -110,14 +110,29 @@
                                                         <label for="horizontal">Sender Note</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
-                                                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="Note"  disabled>{{$data->Note}}</textarea>
+                                                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="Note" disabled>{{$data->Note}}</textarea>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <label for="horizontal">Sender Pics</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
-                                                        <input type="text" id="first-name-horizontal" class="form-control" placeholder="Upload Pics" disabled>
+                                                        <div class="image-container">
+                                                        @php
+                                                            $receiverCount = $data->Image->where('type', 'sender')->count();
+                                                            @endphp
+                                                            @if($receiverCount > 0)
+                                                            @foreach ($data->Image as $image)
+                                                            @if($image->type=='sender')
+                                                            <img src=" {{$image->imageurl}}" alt="image" width="200" height="200">
+
+                                                            @endif
+                                                            @endforeach
+                                                            @else
+                                                            NO RECIEVER PICS
+                                                            @endif
+                                                        </div>
                                                     </div>
+                                                    @if(in_array($data->Status, ['1','0']))
                                                     <div class="col-md-4">
                                                         <label for="horizontal">Received By</label>
                                                     </div>
@@ -134,8 +149,22 @@
                                                         <label for="horizontal">Receiver Pics</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
-                                                        <input type="text" id="first-name-horizontal" class="form-control" placeholder="Upload Pics" disabled>
+                                                        <div class="image-container">
+                                                            @php
+                                                            $receiverCount = $data->Image->where('type', 'receiver')->count();
+                                                            @endphp
+                                                            @if($receiverCount > 0)
+                                                            @foreach ($data->Image as $image)
+                                                            @if($image->type=='receiver')
+                                                            <img src=" {{$image->imageurl}}" alt="image" width="200" height="200">
+                                                            @endif
+                                                            @endforeach
+                                                            @else
+                                                            NO RECIEVER PICS
+                                                            @endif
+                                                        </div>
                                                     </div>
+                                                    @endif
                                                 </div>
                                             </div>
                                         </form>

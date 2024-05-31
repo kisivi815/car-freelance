@@ -8,6 +8,7 @@ use App\Http\Requests\TransferStockRequest;
 use App\Models\Car;
 use App\Models\Branch;
 use App\Models\TransferStock;
+use App\Models\Image;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -19,11 +20,44 @@ class StockController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
-            $result = TransferStock::with('Car')->get();
-            return view('view-stock')->with(['title' => 'View Stock', 'data' => $result]);
+            $branch = Branch::all();
+            $status = [
+                ['text'=>'All' , 'value'=>''],
+                ['text'=>'Approved' , 'value'=>'1'],
+                ['text'=>'Rejected' , 'value'=>'2'],
+                ['text'=>'No Status' , 'value'=>'3'],
+            ];
+            $query = TransferStock::with(['Car'  ,'Source', 'Destination' ]);
+            
+            if($request->car){
+                $query->whereHas('Car', function ($subQuery) use ($request){
+                    $subQuery->where('Model','like','%'.$request->car.'%');   
+                });
+            }
+            
+            if($request->source){
+                $query->orWhere('SourceBranch',$request->source);
+            }
+
+            if($request->destination){
+                $query->orWhere('DestinationBranch',$request->destination);
+            }
+
+            if($request->status){
+                if(in_array($request->status,['1','2'])){
+                    $query->orWhere('Status',$request->status);
+                }else{
+                    $query->orWhere('Status',null);
+                }
+            }
+            
+            $result = $query->paginate(10);
+
+            $data = ['status' => $status, 'branch' => $branch ,'result' => $result];
+            return view('view-stock')->with(['title' => 'View Stock', 'data' => $data]);
         } catch (ModelNotFoundException $e) {
             return redirect()->route('view-stock')->with('error', 'Record not found.');
         }
@@ -46,32 +80,30 @@ class StockController extends Controller
             $TransferStock->GatePassId = 'TF' . $newRecordId;
             $TransferStock->save();
 
-            if($request->hasfile('photo')) {
-                foreach($request->file('photo') as $file) {
-                    try {
-
-                        $result = Storage::disk('s3')->put('filename.jpg', file_get_contents($file));
-                        //$result = $file->storeAs('public/stock_images', $file->getClientOriginalName(),'s3');
-                        Log::info('Upload successful: ', ['result' => $result]);
-                    } catch (Exception $e) {
-                        Log::error('Upload error: ' . $e->getMessage());
+            if ($request->hasfile('photo')) {
+                foreach ($request->file('photo') as $index => $file) {
+                    $result = Storage::disk('s3')->put("car-images/" . $newRecordId . "_" . $index . ".jpg", file_get_contents($file));
+                    if ($result) {
+                        $image['imageurl'] = config('constants.image_url')."/car-images/" . $newRecordId . "_" . $index . ".jpg";
+                        $image['transferstockid'] =  $newRecordId;
+                        $image['type'] = 'sender';
+                        Image::create($image);
                     }
                 }
             }
-    
+
             $return = ['message' => 'Form submitted successfully!', 'gate' => $TransferStock];
-    
+
             return redirect()->back()->with($return);
         } catch (ModelNotFoundException $e) {
             return redirect()->back()->with('error', 'Submit error');
         }
-        
     }
 
     public function getReceiveStock(Request $request)
     {
         try {
-            $result = TransferStock::with('Car')->findOrFail($request->id);
+            $result = TransferStock::with('Car','Source','Destination')->findOrFail($request->id);
             return view('receive-stock')->with(['title' => 'Receive Stock', 'data' => $result]);
         } catch (ModelNotFoundException $e) {
             return redirect()->route('view-stock')->with('error', 'Record not found.');
@@ -86,10 +118,22 @@ class StockController extends Controller
             $TransferStock->DateOfReceive = Carbon::today();
             $TransferStock->ReceiveNote = $request->Note;
 
-            if($request->status == 'approve'){
+            if ($request->status == 'approve') {
                 $TransferStock->status = '1';
-            }else{
+            } else {
                 $TransferStock->status = '0';
+            }
+
+            if ($request->hasfile('photo')) {
+                foreach ($request->file('photo') as $index => $file) {
+                    $result = Storage::disk('s3')->put("receive-car-images/" . $request->id . "_" . $index . ".jpg", file_get_contents($file));
+                    if ($result) {
+                        $image['imageurl'] = config('constants.image_url')."/receive-car-images/" . $request->id . "_" . $index . ".jpg";
+                        $image['transferstockid'] =  $request->id;
+                        $image['type'] = 'receiver';
+                        Image::create($image);
+                    }
+                }
             }
 
             $TransferStock->save();
@@ -105,14 +149,15 @@ class StockController extends Controller
     public function getStockDetails(Request $request)
     {
         try {
-            $result = TransferStock::with('Car')->findOrFail($request->id);
+            $result = TransferStock::with(['Car','Source','Destination','Image'])->findOrFail($request->id);
             return view('stock-details')->with(['title' => 'Stock Details', 'data' => $result]);
         } catch (ModelNotFoundException $e) {
             return redirect()->route('view-stock')->with('error', 'Record not found.');
         }
     }
 
-    public function show(Request $request){
+    public function show(Request $request)
+    {
         $car = Car::all();
         $branch = Branch::all();
         $data = ['car' => $car, 'branch' => $branch];

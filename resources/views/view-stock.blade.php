@@ -11,6 +11,77 @@
         <div id="main">
             @include('layout.title')
             <div class="page-content">
+                <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                    Filter
+                </button>
+                </p>
+                <div class="collapse show" id="collapseExample">
+                    <section>
+                        <div class="row match-height">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-content">
+                                        <div class="card-body">
+                                            <form class="form form-horizontal" id="stock-filter" method="GET" action="{{route('view-stock')}}">
+                                                <div class="form-body">
+                                                    <div class="row">
+                                                        <div class="col-md-2">
+                                                            <label for="">Source</label>
+                                                        </div>
+                                                        <div class="col-md-4 form-group">
+                                                            <select class="form-select" name="source">
+                                                                <option value="">All</option>
+                                                                @foreach ($data['branch'] as $b)
+                                                                <option value="{{$b->id}}" {{ $b->id == request('source') ? 'selected' : '' }}>{{$b->name}}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <label for="">Destination</label>
+                                                        </div>
+                                                        <div class="col-md-4 form-group">
+                                                            <select class="form-select" name="destination">
+                                                                <option value="">All</option>
+                                                                <@foreach ($data['branch'] as $b) <option value="{{$b->id}}" {{ $b->id == request('destination') ? 'selected' : '' }}> {{$b->name}}</option>
+                                                                    @endforeach
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <label for="contact-info-horizontal">Name</label>
+                                                        </div>
+                                                        <div class="col-md-4 form-group">
+                                                            <input type="text" class="form-control" name="name" value="{{ old('name',request('name')) }}" placeholder="Name">
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <label for="horizontal">Status</label>
+                                                        </div>
+                                                        <div class="col-md-4 form-group">
+                                                            <select class="form-select" name="status">
+                                                                @foreach ($data['status'] as $s)
+                                                                <option value="{{$s['value']}}" {{ $s['value'] == request('status') ? 'selected' : '' }}>{{$s['text']}}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <label>Car</label>
+                                                        </div>
+                                                        <div class="col-md-4 form-group">
+                                                            <input type="text" class="form-control" name="car" placeholder="Car" value="{{ old('car',request('car')) }}">
+                                                        </div>
+                                                        <div class="col-sm-12 d-flex justify-content-end">
+                                                            <button type="submit" class="btn btn-primary me-1 mb-1">Search</button>
+                                                            <button type="reset" class="btn btn-light-secondary me-1 mb-1" id="reset">Reset</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
                 <section class="section">
                     <div class="row" id="table-bordered">
                         <div class="col-12">
@@ -39,14 +110,14 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    @foreach ($data as $d)
+                                                    @foreach ($data['result'] as $d)
                                                     <tr>
                                                         <td>{{$d->id}}</td>
                                                         <td>{{$d->DateOfTransfer}}</td>
-                                                        <td>{{$d->SourceBranch}}</td>
+                                                        <td>{{$d->Source->name}}</td>
                                                         <td>{{$d->SendBy}}</td>
                                                         <td><a href="stock-details/{{$d->id}}">Details</td>
-                                                        <td>{{$d->DestinationBranch}}</td>
+                                                        <td>{{$d->Destination->name}}</td>
                                                         <td>{{ $d->ReceivedBy ? $d->ReceivedBy : '-' }}</td>
                                                         <td><a href="stock-details/{{$d->id}}">{{ $d->ReceivedBy ? 'Details' : '-' }}</td>
                                                         <td>{{$d->Car->Model}}</td>
@@ -72,6 +143,9 @@
                                                     @endforeach
                                                 </tbody>
                                             </table>
+                                        </div>
+                                        <div class="pagination-div">
+                                            {{$data['result']->links('vendor.pagination.bootstrap-4')}}
                                         </div>
                                     </div>
                                 </div>
@@ -118,6 +192,14 @@
     </div>
 
     @include('layout.script')
+    <script>
+        $(document).ready(function() {
+            $('#reset').on('click', function() {
+                $('#stock-filter input').removeAttr('value');
+                $('#stock-filter select option:selected').removeAttr('selected');
+            });
+        });
+    </script>
 </body>
 
 </html>

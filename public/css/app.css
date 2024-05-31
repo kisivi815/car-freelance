@@ -24234,3 +24234,25 @@ a {
 .z-1 {
     z-index: 1
 }
+
+.image-container {
+    width: 100%;  /* Adjust the width as needed */
+    overflow-x: auto;  /* Enables horizontal scrolling */
+    white-space: nowrap;  /* Keeps the images in a single line */
+    display: flex;
+    align-items: center;  /* Centers images vertically */
+    column-gap: 10px;
+}
+
+.image-container img {
+    max-width: 100%;
+    height: auto;
+    display: inline-block;
+    column-gap: 10px;
+}
+
+.pagination-div{
+    margin-top: 20px;
+    display: flex;
+    justify-content: flex-end;
+}

@@ -14,10 +14,10 @@
             <ul class="menu">
                 <li class="sidebar-title">Menu</li>
 
-                <li class="sidebar-item {{ Request::routeIs('dashboard') ? 'active' : '' }} ">
-                    <a href="{{route('dashboard')}}" class='sidebar-link'>
-                        <i class="bi bi-grid-fill"></i>
-                        <span>Dashboard</span>
+                <li class="sidebar-item {{ (Request::routeIs('view-stock') || Request::routeIs('view-stock-default')) ? 'active' : '' }}">
+                    <a href="{{ route('view-stock') }}" class='sidebar-link'>
+                        <i class=""></i>
+                        <span>View Stock</span>
                     </a>
                 </li>
                 <li class="sidebar-item {{ Request::routeIs('quick-sale') ? 'active' : '' }}">
@@ -32,12 +32,7 @@
                         <span>View Sale</span>
                     </a>
                 </li>
-                <li class="sidebar-item {{ (Request::routeIs('view-stock') || Request::routeIs('view-stock-default')) ? 'active' : '' }}">
-                    <a href="{{ route('view-stock') }}" class='sidebar-link'>
-                        <i class=""></i>
-                        <span>View Stock</span>
-                    </a>
-                </li>
+                
                 <li class="sidebar-item {{ Request::routeIs('transfer-stock') ? 'active' : '' }}">
                     <a href="{{ route('transfer-stock') }}" class='sidebar-link'>
                         <i class=""></i>

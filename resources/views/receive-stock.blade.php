@@ -72,7 +72,7 @@
                                         @php
                                         $currentId = request()->route('id');
                                         @endphp
-                                        <form class="form form-horizontal" action="{{route('submit-receive-stock', ['id' => $currentId])}}" method="POST">
+                                        <form class="form form-horizontal" action="{{route('submit-receive-stock', ['id' => $currentId])}}" method="POST" enctype="multipart/form-data">
                                             @csrf
                                             <div class="form-body">
                                                 <div class="row">
@@ -92,13 +92,13 @@
                                                         <label for="email-horizontal">Source Branch</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
-                                                        <input type="text" id="first-name-horizontal" class="form-control" value="{{$data->SourceBranch}}" disabled>
+                                                        <input type="text" id="first-name-horizontal" class="form-control" value="{{$data->Source->name}}" disabled>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <label for="contact-info-horizontal">Destination Branch</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
-                                                        <input type="text" id="first-name-horizontal" class="form-control" value="{{$data->DestinationBranch}}" disabled>
+                                                        <input type="text" id="first-name-horizontal" class="form-control" value="{{$data->Destination->name}}" disabled>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <label for="first-name-horizontal">Sent By</label>
@@ -122,7 +122,7 @@
                                                         <label for="horizontal">Upload Pics</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
-                                                        <input type="text" id="first-name-horizontal" class="form-control" placeholder="Upload Pics">
+                                                        <input type="file" class="image-preview-filepond" name="photo[]"  multiple>
                                                     </div>
                                                     <div class="col-sm-12 d-flex justify-content-center">
                                                         <button type="submit" class="btn btn-primary me-1 mb-1" style="width:200px">Submit</button>
@@ -142,7 +142,7 @@
     </div>
 
 
-
+    @include('layout.uploadimage-script')
     @include('layout.script')
     <script>
         $(document).ready(function() {

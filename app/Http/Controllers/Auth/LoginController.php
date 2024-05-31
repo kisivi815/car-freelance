@@ -12,7 +12,7 @@ class LoginController extends Controller
     public function showLoginForm()
     {
         if (Auth::check()) {
-            return redirect()->intended('dashboard');
+            return redirect()->intended('view-stock');
         }else{
             return view('auth.login');
         }
@@ -31,7 +31,7 @@ class LoginController extends Controller
     
         if ($user && $user->password === $credentials['password']) {
             Auth::login($user);
-            return redirect()->intended('dashboard');
+            return redirect()->intended('view-stock');
         } else {
             return redirect()->back()->withErrors(['email' => 'Invalid credentials']);
         }

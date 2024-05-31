@@ -24,9 +24,9 @@ Route::get('/logout', function () {
 
 
 Route::middleware(RedirectIfAuthenticated::class)->group(function () {
-    Route::get('/dashboard', function () {
+    /* Route::get('/dashboard', function () {
         return view('dashboard')->with(['title' => 'Dashboard']);;
-    })->name('dashboard');
+    })->name('dashboard'); */
 
     Route::get('/quick-sale', function () {
         return view('quick-sale')->with(['title' => 'Quick Sale']);
