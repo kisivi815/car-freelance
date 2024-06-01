@@ -176,13 +176,13 @@
                                                         <label for="horizontal">Source Branch</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
-                                                        <input type="text" id="first-name-horizontal" class="form-control" name="fname" value="{{session('gate')->SourceBranch}}" placeholder="Source Branch" disabled>
+                                                        <input type="text" id="first-name-horizontal" class="form-control" name="fname" value="{{session('gate')->Source->name}}" placeholder="Source Branch" disabled>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <label for="horizontal">Destination Branch</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
-                                                        <input type="text" id="first-name-horizontal" class="form-control" name="fname" value="{{session('gate')->DestinationBranch}}" placeholder="Destination Branch" disabled>
+                                                        <input type="text" id="first-name-horizontal" class="form-control" name="fname" value="{{session('gate')->Destination->name}}" placeholder="Destination Branch" disabled>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <label for="horizontal">Driver Name</label>

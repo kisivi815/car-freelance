@@ -24256,3 +24256,15 @@ a {
     display: flex;
     justify-content: flex-end;
 }
+
+.modal-button-div{
+    display: flex;
+    justify-content: center;
+    column-gap: 10px;
+    margin: 10px 0px;
+}
+
+.modal-text{
+    text-align: center;
+    margin:0 !important;
+}

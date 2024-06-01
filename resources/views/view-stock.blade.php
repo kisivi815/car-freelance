@@ -123,7 +123,7 @@
                                                         <td>{{$d->Car->Model}}</td>
                                                         <td>{{$d->Car->ProductLine}}</td>
                                                         <td>{{$d->ChasisNo}}</td>
-                                                        <!-- <td><a href="#" data-bs-toggle="modal" data-bs-target="#inlineForm">Approve with note</a></td> -->
+
                                                         <td>
                                                             @if (!$d->ReceivedBy)
                                                             <a href="receive-stock/{{$d->id}}?status=approve">Approve with note</a>
@@ -138,7 +138,7 @@
                                                             -
                                                             @endif
                                                         </td>
-                                                        <td><a href="#">Delete</a></td>
+                                                        <td><a href="#" class="delete-stock" data-id="{{ $d->id }}" data-bs-toggle="modal" data-bs-target="#inlineForm">Delete</a></td>
                                                     </tr>
                                                     @endforeach
                                                 </tbody>
@@ -160,30 +160,25 @@
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title" id="myModalLabel33">Login Form </h4>
+
                     <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                         <i data-feather="x"></i>
                     </button>
                 </div>
                 <form action="#">
                     <div class="modal-body">
-                        <label for="email">Email: </label>
-                        <div class="form-group">
-                            <input id="email" type="text" placeholder="Email Address" class="form-control">
-                        </div>
-                        <label for="password">Password: </label>
-                        <div class="form-group">
-                            <input id="password" type="password" placeholder="Password" class="form-control">
-                        </div>
+                        <p class="modal-text">
+                            Are you sure you want to delete this stock?
+                        </p>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
-                            <i class="bx bx-x d-block d-sm-none"></i>
-                            <span class="d-none d-sm-block">Close</span>
-                        </button>
-                        <button type="button" class="btn btn-primary ms-1" data-bs-dismiss="modal">
+                    <div class="modal-button-div">
+                        <button type="button" id="delete-stock-confirm" class="btn btn-primary ms-1">
                             <i class="bx bx-check d-block d-sm-none"></i>
-                            <span class="d-none d-sm-block">login</span>
+                            <span class="d-none d-sm-block">Yes</span>
+                        </button>
+                        <button type="button" id="delete-stock-cancel" class="btn btn-light-secondary" data-bs-dismiss="modal">
+                            <i class="bx bx-x d-block d-sm-none"></i>
+                            <span class="d-none d-sm-block">No</span>
                         </button>
                     </div>
                 </form>
@@ -197,6 +192,43 @@
             $('#reset').on('click', function() {
                 $('#stock-filter input').removeAttr('value');
                 $('#stock-filter select option:selected').removeAttr('selected');
+            });
+
+
+            $('.delete-stock').click(function() {
+                var id = $(this).data('id');
+                
+                console.log(id);
+                $('#delete-stock-confirm').data('id', id);
+            });
+
+            $('#delete-stock-cancel').click(function() {
+                $('#delete-stock-confirm').data('id', '');
+            });
+
+            $('#delete-stock-confirm').click(function() {
+                var id = $(this).data('id');
+                if (id) {
+                    $.ajaxSetup({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        }
+                    });
+                    $.ajax({
+                        url: "/delete-transfer-stock/" + id, // Change to your server URL
+                        type: 'DELETE',
+                        success: function(response) {
+                            if(response=='success'){
+                                window.location.href = '/view-stock';
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Error occurred:', error);
+                            window.location.href = '/view-stock';
+                        }
+                    });
+
+                }
             });
         });
     </script>

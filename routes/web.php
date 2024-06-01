@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\StockController;
 use App\Http\Middleware\RedirectIfAuthenticated;
+use App\Http\Middleware\CheckRole;
 use Illuminate\Support\Facades\Auth;
 
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -24,18 +25,14 @@ Route::get('/logout', function () {
 
 
 Route::middleware(RedirectIfAuthenticated::class)->group(function () {
-    /* Route::get('/dashboard', function () {
-        return view('dashboard')->with(['title' => 'Dashboard']);;
-    })->name('dashboard'); */
-
     Route::get('/quick-sale', function () {
         return view('quick-sale')->with(['title' => 'Quick Sale']);
     })->name('quick-sale');
-    
+
     Route::get('/view-sale', function () {
         return view('view-sale')->with(['title' => 'View Sale']);
     })->name('view-sale');
-    
+
     Route::get('/view-stock', [StockController::class, 'index'])->name('view-stock');
 
     Route::get('/stock-details', function () {
@@ -43,10 +40,15 @@ Route::middleware(RedirectIfAuthenticated::class)->group(function () {
     })->name('view-stock-default');
 
     Route::get('/transfer-stock', [StockController::class, 'show'])->name('transfer-stock');
-    Route::get('/receive-stock/{id}', [StockController::class, 'getReceiveStock'])->name('receive-stock');
-    Route::get('/stock-details/{id}', [StockController::class, 'getStockDetails'])->name('stock-details');
-    Route::post('/submit-receive-stock/{id}', [StockController::class, 'submitReceiveStock'])->name('submit-receive-stock');
-    Route::post('/submit-transfer-stock', [StockController::class, 'store'])->name('submit-transfer-stock');
-    
 
+    Route::middleware('roles:1,6')->group(function () {
+        Route::get('/receive-stock/{id}', [StockController::class, 'getReceiveStock'])->name('receive-stock');
+        Route::post('/submit-receive-stock/{id}', [StockController::class, 'submitReceiveStock'])->name('submit-receive-stock');
+    });
+    Route::middleware('roles:1')->group(function () {
+        Route::delete('/delete-transfer-stock/{id}', [StockController::class, 'destroy'])->name('delete-transfer-stock');
+    });
+
+    Route::get('/stock-details/{id}', [StockController::class, 'getStockDetails'])->name('stock-details');
+    Route::post('/submit-transfer-stock', [StockController::class, 'store'])->name('submit-transfer-stock');
 });
