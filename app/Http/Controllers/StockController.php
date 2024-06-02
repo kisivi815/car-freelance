@@ -39,18 +39,18 @@ class StockController extends Controller
             }
 
             if ($request->source) {
-                $query->orWhere('SourceBranch', $request->source);
+                $query->Where('SourceBranch', $request->source);
             }
 
             if ($request->destination) {
-                $query->orWhere('DestinationBranch', $request->destination);
+                $query->Where('DestinationBranch', $request->destination);
             }
 
             if ($request->status) {
                 if (in_array($request->status, ['1', '2'])) {
-                    $query->orWhere('Status', $request->status);
+                    $query->Where('Status', $request->status);
                 } else {
-                    $query->orWhere('Status', null);
+                    $query->Where('Status', null);
                 }
             }
 
