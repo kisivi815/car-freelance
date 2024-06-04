@@ -1,7 +1,12 @@
 <header class="mb-3">
-    <a href="#" class="burger-btn d-block">
-        <i class="bi bi-justify fs-3"></i>
-    </a>
+    <div style="display: flex;justify-content: space-between;">
+        <a href="#" class="burger-btn d-block">
+            <i class="bi bi-justify fs-3"></i>
+        </a>
+        <div style="align-content: center;">
+           <span style="font-size: 1.5rem">Hi, {{Auth::user()->name}} </span>
+        </div>
+    </div>
 </header>
 <div class="page-heading">
     <h3>{{$title}}</h3>

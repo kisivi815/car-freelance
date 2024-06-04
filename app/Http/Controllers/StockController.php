@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Http\Requests\TransferStockRequest;
 use App\Models\Car;
+use App\Models\CarMaster;
 use App\Models\Branch;
 use App\Models\TransferStock;
 use App\Models\Image;
@@ -33,7 +34,7 @@ class StockController extends Controller
             $query = TransferStock::with(['Car', 'Source', 'Destination']);
 
             if ($request->car) {
-                $query->whereHas('Car', function ($subQuery) use ($request) {
+                $query->whereHas('CarMaster', function ($subQuery) use ($request) {
                     $subQuery->where('Model', 'like', '%' . $request->car . '%');
                 });
             }
@@ -76,7 +77,7 @@ class StockController extends Controller
             $newRecord = TransferStock::create($validatedData);
             $newRecordId = $newRecord->id;
             $data['GatePassId'] = 'TF' . $newRecordId;
-            $TransferStock = TransferStock::with('Car')->find($newRecordId);
+            $TransferStock = TransferStock::with('CarMaster','Destination')->find($newRecordId);
             $TransferStock->GatePassId = 'TF' . $newRecordId;
             $TransferStock->save();
 
@@ -91,8 +92,11 @@ class StockController extends Controller
                     }
                 }
             }
+            $car = CarMaster::where('ChasisNo',$validatedData['ChasisNo'])->update([
+                'PhysicalStatus' => 'STOCK T/F'
+            ]);
 
-            $return = ['message' => 'Form submitted successfully!', 'gate' => $TransferStock];
+            $return = ['message' => 'On '.Carbon::today()->format('d-m-Y').', '.$validatedData['ChasisNo'].' cars were transferred to '.$TransferStock->Destination->name.' Branch', 'gate' => $TransferStock];
 
             return redirect()->back()->with($return);
         } catch (ModelNotFoundException $e) {
@@ -103,7 +107,7 @@ class StockController extends Controller
     public function getReceiveStock(Request $request)
     {
         try {
-            $result = TransferStock::with('Car', 'Source', 'Destination')->findOrFail($request->id);
+            $result = TransferStock::with('CarMaster', 'Source', 'Destination')->findOrFail($request->id);
             return view('receive-stock')->with(['title' => 'Receive Stock', 'data' => $result]);
         } catch (ModelNotFoundException $e) {
             return redirect()->route('view-stock')->with('error', 'Record not found.');
@@ -113,7 +117,7 @@ class StockController extends Controller
     public function submitReceiveStock(Request $request)
     {
         try {
-            $TransferStock = TransferStock::with('Car')->findOrFail($request->id);
+            $TransferStock = TransferStock::with('CarMaster')->findOrFail($request->id);
             $TransferStock->ReceivedBy = $request->ReceivedBy;
             $TransferStock->DateOfReceive = Carbon::today();
             $TransferStock->ReceiveNote = $request->Note;
@@ -158,7 +162,7 @@ class StockController extends Controller
 
     public function show(Request $request)
     {
-        $car = Car::all();
+        $car = CarMaster::where('PhysicalStatus','In Transit')->get();
         $branch = Branch::all();
         $data = ['car' => $car, 'branch' => $branch];
         return view('transfer-stock')->with(['title' => 'Transfer Stock', 'data' => $data]);
@@ -188,5 +192,10 @@ class StockController extends Controller
         } catch (ModelNotFoundException $e) {
             return redirect()->route('view-stock')->with('error', 'Record not found.');
         }
+    }
+
+    public function getCarDetais(Request $request){
+        $car = CarMaster::where('ChasisNo',$request->ChasisNo)->first();
+        return $car;
     }
 }

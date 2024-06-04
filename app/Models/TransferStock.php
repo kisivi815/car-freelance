@@ -35,6 +35,11 @@ class TransferStock extends Model
         return $this->hasOne(Car::class,'ChasisNo','ChasisNo');
     }
 
+    public function CarMaster()
+    {
+        return $this->hasOne(CarMaster::class,'ChasisNo','ChasisNo');
+    }
+
     public function Image()
     {
         return $this->hasMany(Image::class,'transferstockid','id');

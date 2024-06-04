@@ -78,11 +78,20 @@
                                                         <label for="first-name-horizontal">Chasis No</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
-                                                        <select class="form-select" name="ChasisNo" required>
+                                                        <select class="form-select" name="ChasisNo" id="ChasisNo" required>
                                                             @foreach ($data['car'] as $c)
                                                             <option value="{{$c->ChasisNo}}">{{$c->ChasisNo}}</option>
                                                             @endforeach
                                                         </select>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label for="first-name-horizontal">Car Details</label>
+                                                    </div>
+                                                    <div class="col-md-8 form-group">
+                                                        <div>
+                                                            <label>Model :</label> <span id="Model">-</span><br>
+                                                            <label>Product Line :</label> <span id="ProductLine">-</span>
+                                                        </div>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <label for="email-horizontal">Source Branch</label>
@@ -108,13 +117,13 @@
                                                         <label for="horizontal">Driver Name</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
-                                                        <input type="text" id="first-name-horizontal" class="form-control" name="DriverName" placeholder="Driver Name" required>
+                                                        <input type="text" id="DriverName" class="form-control" name="DriverName"  placeholder="Driver Name" required>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <label for="horizontal">Upload Pics</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
-                                                        <input type="file" class="image-preview-filepond" name="photo[]"  multiple>
+                                                        <input type="file" class="image-preview-filepond" name="photo[]" multiple>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <label for="horizontal">Add Note</label>
@@ -209,6 +218,34 @@
     <script>
         $(document).ready(function() {
             $('.form-select').select2();
+
+
+
+            $('#DriverName').on('input', function() {
+                $(this).val($(this).val().toUpperCase());
+            });
+
+
+            $('#ChasisNo').on('change', function() {
+                $('#Model').text('-');
+                $('#ProductLine').text('-');
+                var selectedValue = $(this).val();
+                $.ajax({
+                    url: '/car-details',
+                    type: 'GET',
+                    data: {
+                        'ChasisNo': selectedValue
+                    },
+                    success: function(response) {
+                        $('#Model').text(response.Model);
+                        $('#ProductLine').text(response.ProductLine);
+
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("An error occurred: " + error);
+                    }
+                });
+            });
         });
     </script>
 </body>
