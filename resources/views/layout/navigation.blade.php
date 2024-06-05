@@ -32,13 +32,14 @@
                         <span>View Sale</span>
                     </a>
                 </li>
-                
+                @if (in_array(Auth::user()->role_id,['1']))
                 <li class="sidebar-item {{ Request::routeIs('transfer-stock') ? 'active' : '' }}">
                     <a href="{{ route('transfer-stock') }}" class='sidebar-link'>
                         <i class=""></i>
                         <span>Transfer Stock</span>
                     </a>
                 </li>
+                @endif
                 <li class="sidebar-item ">
                     <a href="{{ route('logout') }}" class='sidebar-link'>
                         <i class="bi bi-power"></i>

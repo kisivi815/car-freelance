@@ -123,22 +123,27 @@
                                                         <td>{{$d->CarMaster->Model}}</td>
                                                         <td>{{$d->CarMaster->ProductLine}}</td>
                                                         <td>{{$d->ChasisNo}}</td>
-
                                                         <td>
-                                                            @if (!$d->ReceivedBy)
+                                                            @if (!$d->ReceivedBy && in_array(Auth::user()->role_id,['1','6']))
                                                             <a href="receive-stock/{{$d->id}}?status=approve">Approve with note</a>
                                                             @else
                                                             -
                                                             @endif
                                                         </td>
                                                         <td>
-                                                            @if (!$d->ReceivedBy)
+                                                            @if (!$d->ReceivedBy && in_array(Auth::user()->role_id,['1','6']))
                                                             <a href="receive-stock/{{$d->id}}?status=reject">Reject with note</a>
                                                             @else
                                                             -
                                                             @endif
                                                         </td>
-                                                        <td><a href="#" class="delete-stock" data-id="{{ $d->id }}" data-bs-toggle="modal" data-bs-target="#inlineForm">Delete</a></td>
+                                                        <td>
+                                                            @if(in_array(Auth::user()->role_id,['1']))
+                                                            <a href="#" class="delete-stock" data-id="{{ $d->id }}" data-bs-toggle="modal" data-bs-target="#inlineForm">Delete</a>
+                                                            @else
+                                                            -
+                                                            @endif
+                                                        </td>
                                                     </tr>
                                                     @endforeach
                                                 </tbody>
