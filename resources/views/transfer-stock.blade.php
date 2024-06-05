@@ -85,7 +85,8 @@
                                                     <div class="col-md-8 form-group">
                                                         <div>
                                                             <label>Model :</label> <span id="Model">-</span><br>
-                                                            <label>Product Line :</label> <span id="ProductLine">-</span>
+                                                            <label>Product Line :</label> <span id="ProductLine">-</span><br>
+                                                            <label>Colour :</label> <span id="Colour">-</span>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-4">
@@ -219,7 +220,7 @@
             $('#DriverName').on('input', function() {
                 $(this).val($(this).val().toUpperCase());
             });
-            
+
             $('#ChasisNo').on('change', function() {
                 $('#Model').text('-');
                 $('#ProductLine').text('-');
@@ -233,6 +234,7 @@
                     success: function(response) {
                         $('#Model').text(response.Model);
                         $('#ProductLine').text(response.ProductLine);
+                        $('#Colour').text(response.Colour);
 
                     },
                     error: function(xhr, status, error) {
