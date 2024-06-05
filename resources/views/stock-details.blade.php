@@ -117,7 +117,7 @@
                                                     </div>
                                                     <div class="col-md-8 form-group">
                                                         <div class="image-container">
-                                                        @php
+                                                            @php
                                                             $receiverCount = $data->Image->where('type', 'sender')->count();
                                                             @endphp
                                                             @if($receiverCount > 0)
@@ -128,7 +128,7 @@
                                                             @endif
                                                             @endforeach
                                                             @else
-                                                            NO RECIEVER PICS
+                                                            NO SENDER PICS
                                                             @endif
                                                         </div>
                                                     </div>

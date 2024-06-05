@@ -54,12 +54,6 @@
         <div id="main">
             @include('layout.title')
             <div class="page-content">
-                @if(session('message'))
-                <div class="alert alert-success alert-dismissible show fade">
-                    {{ session('message') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-                @endif
                 @if(!session('gate'))
                 <section id="basic-horizontal-layouts">
                     <div class="row match-height">
@@ -79,6 +73,7 @@
                                                     </div>
                                                     <div class="col-md-8 form-group">
                                                         <select class="form-select" name="ChasisNo" id="ChasisNo" required>
+                                                            <option value="">Select Chasis No</option>
                                                             @foreach ($data['car'] as $c)
                                                             <option value="{{$c->ChasisNo}}">{{$c->ChasisNo}}</option>
                                                             @endforeach
@@ -98,6 +93,7 @@
                                                     </div>
                                                     <div class="col-md-8 form-group">
                                                         <select class="form-select" name="SourceBranch" required>
+                                                            <option value="">Select Source Branch</option>
                                                             @foreach ($data['branch'] as $b)
                                                             <option value="{{$b->id}}">{{$b->name}}</option>
                                                             @endforeach
@@ -108,6 +104,7 @@
                                                     </div>
                                                     <div class="col-md-8 form-group">
                                                         <select class="form-select" name="DestinationBranch" required>
+                                                            <option value="">Select Destination Branch</option>
                                                             @foreach ($data['branch'] as $b)
                                                             <option value="{{$b->id}}">{{$b->name}}</option>
                                                             @endforeach
@@ -117,7 +114,7 @@
                                                         <label for="horizontal">Driver Name</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
-                                                        <input type="text" id="DriverName" class="form-control" name="DriverName"  placeholder="Driver Name" required>
+                                                        <input type="text" id="DriverName" class="form-control" name="DriverName" placeholder="Driver Name" required>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <label for="horizontal">Upload Pics</label>
@@ -173,7 +170,7 @@
                                                         <label for="contact-info-horizontal">Car Name & Model</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
-                                                        <input type="text" id="first-name-horizontal" class="form-control" name="fname" value="{{session('gate')->Car->Model.' '.session('gate')->Car->ProductLine}}" placeholder="Car Name & Model" disabled>
+                                                        <input type="text" id="first-name-horizontal" class="form-control" name="fname" value="{{session('gate')->CarMaster->Model.' '.session('gate')->CarMaster->ProductLine}}" placeholder="Car Name & Model" disabled>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <label for="horizontal">Date of Transfer</label>
@@ -219,13 +216,10 @@
         $(document).ready(function() {
             $('.form-select').select2();
 
-
-
             $('#DriverName').on('input', function() {
                 $(this).val($(this).val().toUpperCase());
             });
-
-
+            
             $('#ChasisNo').on('change', function() {
                 $('#Model').text('-');
                 $('#ProductLine').text('-');

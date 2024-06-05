@@ -10,6 +10,5 @@ CREATE TABLE transferstock (
     DateOfTransfer DATE,
     ReceivedBy VARCHAR(100),
     DateOfReceive DATE,
-    ReceiveNote VARCHAR(1000),
-    Status tinyint(4)
+    ReceiveNote VARCHAR(1000)
 );

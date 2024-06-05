@@ -120,8 +120,8 @@
                                                         <td>{{$d->Destination->name}}</td>
                                                         <td>{{ $d->ReceivedBy ? $d->ReceivedBy : '-' }}</td>
                                                         <td><a href="stock-details/{{$d->id}}">{{ $d->ReceivedBy ? 'Details' : '-' }}</td>
-                                                        <td>{{$d->Car->Model}}</td>
-                                                        <td>{{$d->Car->ProductLine}}</td>
+                                                        <td>{{$d->CarMaster->Model}}</td>
+                                                        <td>{{$d->CarMaster->ProductLine}}</td>
                                                         <td>{{$d->ChasisNo}}</td>
 
                                                         <td>
