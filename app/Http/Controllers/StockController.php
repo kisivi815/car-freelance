@@ -27,8 +27,8 @@ class StockController extends Controller
             $branch = Branch::all();
             $status = [
                 ['text' => 'All', 'value' => ''],
-                ['text' => 'Approved', 'value' => 'RECEIVED'],
-                ['text' => 'Rejected', 'value' => 'REJECTED'],
+                ['text' => 'RECEIVED Approved', 'value' => 'APPROVED'],
+                ['text' => 'RECEIVED Rejected', 'value' => 'REJECTED'],
                 ['text' => 'Stock T/F', 'value' => 'STOCK TF']
             ];
             $query = TransferStock::with(['CarMaster', 'Source', 'Destination']);
@@ -73,7 +73,7 @@ class StockController extends Controller
 
             $car = CarMaster::where('ChasisNo',$validatedData['ChasisNo'])->first();
             $lastTransferStock = TransferStock::with('CarMaster','Destination')->where('ChasisNo',$validatedData['ChasisNo'])->orderBy('id','desc')->first();
-            if($car->PhysicalStatus == 'RECEIVED' && $lastTransferStock->DestinationBranch == $validatedData['DestinationBranch']){
+            if(in_array($car->PhysicalStatus,['APPROVED','REJECTED'])  && $lastTransferStock->DestinationBranch == $validatedData['DestinationBranch']){
                 return redirect()->back()->with(['error' => 'Chasis No '.$validatedData['ChasisNo']. 'is already at '.$lastTransferStock->Destination->name.' branch.']);
             }
 
@@ -149,17 +149,14 @@ class StockController extends Controller
 
             if ($request->status == 'approve') {
                 $car = CarMaster::where('ChasisNo',$TransferStock->ChasisNo)->update([
-                    'PhysicalStatus' => 'RECEIVED'
+                    'PhysicalStatus' => 'APPROVED'
                 ]);
-                $message = 'Stock received successfully';
             } else {
                 $car = CarMaster::where('ChasisNo',$TransferStock->ChasisNo)->update([
                     'PhysicalStatus' => 'REJECTED'
                 ]);
-                $message = 'Stock rejected successfully';
             }
-           
-
+            $message = 'Stock received successfully';
             return redirect()->route('view-stock')->with(['title' => 'View Stock','message'=> $message]);
         } catch (ModelNotFoundException $e) {
             return redirect()->route('view-stock')->with('error', 'Record not found.');
