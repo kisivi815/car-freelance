@@ -53,6 +53,13 @@ class StockController extends Controller
                 });
             }
 
+            if ($request->name) {
+                $query->where(function ($subQuery) use ($request){
+                    $subQuery->orWhere('SendBy', 'like', '%' . $request->name . '%');
+                    $subQuery->orWhere('ReceivedBy', 'like', '%' . $request->name . '%');
+                });
+            }
+
             $result = $query->paginate(10);
 
             $data = ['status' => $status, 'branch' => $branch, 'result' => $result];
