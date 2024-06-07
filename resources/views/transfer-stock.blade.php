@@ -198,12 +198,10 @@
 
                 $('#transfer-stock-form').find('input[required], select[required]').each(function() {
                     if ($(this).is(':checkbox')) {
-                        console.log(6);
                         if (!$(this).is(':checked')) {
                             valid = false;
                         }
                     } else if (!$(this).val()) {
-                        console.log(5);
                         if ($(this).is('select')) {
                             $(this).next().find('span > ').addClass("red-border");
                         } else {
@@ -215,12 +213,10 @@
                     }
 
                     message = 'Please fill in all required fields.'
-                    console.log(4);
                 });
 
 
                 if (destinationBranchValue == sourceBranchValue && (destinationBranchValue !== '' && sourceBranchValue !== '')) {
-                    console.log(3);
                     $('.alert-danger').show()
                     message = 'Source and Destination branches cannot be same';
                     $('select[name="DestinationBranch"]').next().find('span > ').addClass("red-border");
@@ -231,7 +227,6 @@
 
 
                 if (!valid) {
-                    console.log(2);
                     $('.alert-danger').show()
                     $('#error-text').text(message);
                 }else{
