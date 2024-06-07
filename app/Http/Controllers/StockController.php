@@ -54,7 +54,7 @@ class StockController extends Controller
             }
 
             if ($request->name) {
-                $query->where(function ($subQuery) use ($request){
+                $query->where(function ($subQuery) use ($request) {
                     $subQuery->orWhere('SendBy', 'like', '%' . $request->name . '%');
                     $subQuery->orWhere('ReceivedBy', 'like', '%' . $request->name . '%');
                 });
@@ -75,18 +75,13 @@ class StockController extends Controller
     public function store(TransferStockRequest $request)
     {
         try {
-            $userName = Auth::user()->name;
+            $userName = ucwords(strtolower(Auth::user()->name));
             $validatedData = $request->validated();
 
-            $car = CarMaster::where('ChasisNo',$validatedData['ChasisNo'])->first();
-            $lastTransferStock = TransferStock::with('CarMaster','Destination')->where('ChasisNo',$validatedData['ChasisNo'])->orderBy('id','desc')->first();
-            if(in_array($car->PhysicalStatus,['APPROVED','REJECTED'])  && $lastTransferStock->DestinationBranch == $validatedData['DestinationBranch']){
-                return redirect()->back()->with(['error' => 'Chasis No '.$validatedData['ChasisNo']. 'is already at '.$lastTransferStock->Destination->name.' branch.']);
-            }
-
-            if($validatedData['SourceBranch'] == $validatedData['DestinationBranch']){
-                $return = ['error' => 'Source and Destination branches cannot be same'];
-                return redirect()->back()->with($return);
+            $car = CarMaster::where('ChasisNo', $validatedData['ChasisNo'])->first();
+            $lastTransferStock = TransferStock::with('CarMaster', 'Destination')->where('ChasisNo', $validatedData['ChasisNo'])->orderBy('id', 'desc')->first();
+            if (in_array($car->PhysicalStatus, ['APPROVED', 'REJECTED'])  && $lastTransferStock->DestinationBranch == $validatedData['DestinationBranch']) {
+                return redirect()->back()->withInput()->with(['error' => 'Chasis No ' . $validatedData['ChasisNo'] . 'is already at ' . $lastTransferStock->Destination->name . ' branch.']);
             }
 
             $validatedData['DateOfTransfer'] = Carbon::today();
@@ -94,7 +89,7 @@ class StockController extends Controller
             $newRecord = TransferStock::create($validatedData);
             $newRecordId = $newRecord->id;
             $data['GatePassId'] = 'TF' . $newRecordId;
-            $TransferStock = TransferStock::with('CarMaster','Destination')->find($newRecordId);
+            $TransferStock = TransferStock::with('CarMaster', 'Source', 'Destination')->find($newRecordId);
             $TransferStock->GatePassId = 'TF' . $newRecordId;
             $TransferStock->save();
 
@@ -110,15 +105,19 @@ class StockController extends Controller
                 }
             }
 
-            CarMaster::where('ChasisNo',$validatedData['ChasisNo'])->update([
+            CarMaster::where('ChasisNo', $validatedData['ChasisNo'])->update([
                 'PhysicalStatus' => 'STOCK TF'
             ]);
 
-            $return = ['message' => 'On '.Carbon::today()->format('d-m-Y').', '.$validatedData['ChasisNo'].' cars were transferred to '.$TransferStock->Destination->name.' Branch', 'gate' => $TransferStock];
+            //route('gate-pass', ['id' => $newRecordId]);
 
-            return redirect()->back()->with($return);
+            return redirect()->route('gate-pass', ['id' => $newRecordId])->with([
+                'id' => $newRecordId,
+                'title' => 'Gate Pass',
+                'message' => 'On ' . Carbon::today()->format('d-m-Y') . ', ' . $validatedData['ChasisNo'] . ' cars were transferred from ' . $TransferStock->Source->name . ' Branch to ' . $TransferStock->Destination->name . ' Branch',
+            ]);
         } catch (ModelNotFoundException $e) {
-            return redirect()->back()->with('error', 'Submit error');
+            return response()->json(["error" => $e->getMessage(), '500']);
         }
     }
 
@@ -135,10 +134,17 @@ class StockController extends Controller
     public function submitReceiveStock(Request $request)
     {
         try {
+            $userName = ucwords(strtolower(Auth::user()->name));
             $TransferStock = TransferStock::with('CarMaster')->findOrFail($request->id);
             $TransferStock->ReceivedBy = $request->ReceivedBy;
             $TransferStock->DateOfReceive = Carbon::today();
             $TransferStock->ReceiveNote = $request->Note;
+
+            if ($request->status == 'approve') {
+                $TransferStock->ApprovedBy = $userName;
+            } else {
+                $TransferStock->RejectBy = $userName;
+            }
 
             if ($request->hasfile('photo')) {
                 foreach ($request->file('photo') as $index => $file) {
@@ -155,16 +161,16 @@ class StockController extends Controller
             $TransferStock->save();
 
             if ($request->status == 'approve') {
-                $car = CarMaster::where('ChasisNo',$TransferStock->ChasisNo)->update([
+                $car = CarMaster::where('ChasisNo', $TransferStock->ChasisNo)->update([
                     'PhysicalStatus' => 'APPROVED'
                 ]);
             } else {
-                $car = CarMaster::where('ChasisNo',$TransferStock->ChasisNo)->update([
+                $car = CarMaster::where('ChasisNo', $TransferStock->ChasisNo)->update([
                     'PhysicalStatus' => 'REJECTED'
                 ]);
             }
             $message = 'Stock received successfully';
-            return redirect()->route('view-stock')->with(['title' => 'View Stock','message'=> $message]);
+            return redirect()->route('view-stock')->with(['title' => 'View Stock', 'message' => $message]);
         } catch (ModelNotFoundException $e) {
             return redirect()->route('view-stock')->with('error', 'Record not found.');
         }
@@ -207,9 +213,9 @@ class StockController extends Controller
         try {
             $TransferStock = TransferStock::findOrFail($id);
             $delete = $TransferStock->delete();
-            if($delete){
+            if ($delete) {
                 return 'success';
-            }else{
+            } else {
                 return 'failed';
             }
         } catch (ModelNotFoundException $e) {
@@ -217,8 +223,19 @@ class StockController extends Controller
         }
     }
 
-    public function getCarDetais(Request $request){
-        $car = CarMaster::where('ChasisNo',$request->ChasisNo)->first();
+    public function getCarDetais(Request $request)
+    {
+        $car = CarMaster::where('ChasisNo', $request->ChasisNo)->first();
         return $car;
+    }
+
+    public function getGatePass(string $id)
+    {
+        try {
+            $TransferStock = TransferStock::with(['CarMaster'])->findOrFail($id);
+            return view('gate-pass')->with(['title' => 'Gate Pass', 'data' => $TransferStock]);
+        } catch (ModelNotFoundException $e) {
+            return redirect()->route('view-stock')->with('error', 'Record not found.');
+        }
     }
 }

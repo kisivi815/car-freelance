@@ -41,6 +41,7 @@ Route::middleware(RedirectIfAuthenticated::class)->group(function () {
 
     Route::middleware('roles:1,5')->group(function () {
         Route::get('/transfer-stock', [StockController::class, 'show'])->name('transfer-stock');
+        Route::get('/gate-pass/{id}', [StockController::class, 'getGatePass'])->name('gate-pass');
     });
     
     Route::middleware('roles:1,6')->group(function () {

@@ -26,7 +26,7 @@
             background-repeat: no-repeat;
             background-position: right .75rem center;
             background-size: 16px 12px;
-            border: 1px solid #dce7f1 !important;
+            border: 1px solid #dce7f1;
             border-radius: .25rem;
             transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out
         }
@@ -45,6 +45,10 @@
         .select2-dropdown.select2-dropdown--below {
             border: 1px solid #dce7f1 !important;
         }
+
+        .red-border {
+            border-color: red !important;
+        }
     </style>
 </head>
 
@@ -54,7 +58,6 @@
         <div id="main">
             @include('layout.title')
             <div class="page-content">
-                @if(!session('gate'))
                 <section id="basic-horizontal-layouts">
                     <div class="row match-height">
                         <div class="col-12">
@@ -64,23 +67,23 @@
                                 </div>
                                 <div class="card-content">
                                     <div class="card-body">
-                                        <form class="form form-horizontal" action="{{route('submit-transfer-stock')}}" method="POST" enctype="multipart/form-data">
+                                         <form class="form form-horizontal" id="transfer-stock-form" action="{{route('submit-transfer-stock')}}" name="transferstockform" method="POST" enctype="multipart/form-data" autocomplete="off">
                                             @csrf
                                             <div class="form-body">
                                                 <div class="row">
                                                     <div class="col-md-4">
-                                                        <label for="first-name-horizontal">Chasis No</label>
+                                                        <label>Chasis No</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
                                                         <select class="form-select" name="ChasisNo" id="ChasisNo" required>
                                                             <option value="">Select Chasis No</option>
                                                             @foreach ($data['car'] as $c)
-                                                            <option value="{{$c->ChasisNo}}">{{$c->ChasisNo}}</option>
+                                                            <option value="{{$c->ChasisNo}}" {{ old('ChasisNo') == $c->ChasisNo ? 'selected' : '' }}>{{$c->ChasisNo}}</option>
                                                             @endforeach
                                                         </select>
                                                     </div>
                                                     <div class="col-md-4">
-                                                        <label for="first-name-horizontal">Car Details</label>
+                                                        <label>Car Details</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
                                                         <div>
@@ -90,47 +93,47 @@
                                                         </div>
                                                     </div>
                                                     <div class="col-md-4">
-                                                        <label for="email-horizontal">Source Branch</label>
+                                                        <label>Source Branch</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
                                                         <select class="form-select" name="SourceBranch" required>
                                                             <option value="">Select Source Branch</option>
                                                             @foreach ($data['branch'] as $b)
-                                                            <option value="{{$b->id}}">{{$b->name}}</option>
+                                                            <option value="{{$b->id}}" {{ old('SourceBranch') == $b->id ? 'selected' : '' }}>{{$b->name}}</option>
                                                             @endforeach
                                                         </select>
                                                     </div>
                                                     <div class="col-md-4">
-                                                        <label for="contact-info-horizontal">Destination Branch</label>
+                                                        <label>Destination Branch</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
                                                         <select class="form-select" name="DestinationBranch" required>
                                                             <option value="">Select Destination Branch</option>
                                                             @foreach ($data['branch'] as $b)
-                                                            <option value="{{$b->id}}">{{$b->name}}</option>
+                                                            <option value="{{$b->id}}" {{ old('DestinationBranch') == $b->id ? 'selected' : '' }}>{{$b->name}}</option>
                                                             @endforeach
                                                         </select>
                                                     </div>
                                                     <div class="col-md-4">
-                                                        <label for="horizontal">Driver Name</label>
+                                                        <label>Driver Name</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
-                                                        <input type="text" id="DriverName" class="form-control" name="DriverName" placeholder="Driver Name" required>
+                                                        <input type="text" id="DriverName" class="form-control" name="DriverName" placeholder="Driver Name" value="{{ old('DriverName')}}" required>
                                                     </div>
                                                     <div class="col-md-4">
-                                                        <label for="horizontal">Upload Pics</label>
+                                                        <label>Upload Pics</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
                                                         <input type="file" class="image-preview-filepond" name="photo[]" multiple>
                                                     </div>
                                                     <div class="col-md-4">
-                                                        <label for="horizontal">Add Note</label>
+                                                        <label>Add Note</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
-                                                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="Note"></textarea>
+                                                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="Note">{{ old('Note') }}</textarea>
                                                     </div>
                                                     <div class="col-sm-12 d-flex justify-content-center">
-                                                        <button type="submit" class="btn btn-primary me-1 mb-1" style="width:200px">Submit</button>
+                                                        <button type="submit" class="btn btn-primary me-1 mb-1" id="submit-btn" style="width:200px" value="submit">Submit</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -141,72 +144,6 @@
                         </div>
                     </div>
                 </section>
-                @endif
-                @if(session('gate'))
-                <section id="basic-horizontal-layouts">
-                    <div class="row match-height">
-                        <div class="col-12">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h4 class="card-title">Gate Pass</h4>
-                                </div>
-                                <div class="card-content">
-                                    <div class="card-body">
-                                        <form class="form form-horizontal">
-                                            <div class="form-body">
-                                                <div class="row">
-                                                    <div class="col-md-4">
-                                                        <label for="first-name-horizontal">Stock T/F ID</label>
-                                                    </div>
-                                                    <div class="col-md-8 form-group">
-                                                        <input type="text" id="first-name-horizontal" class="form-control" name="fname" value="{{session('gate')->GatePassId}}" placeholder="Stock T/F ID" disabled>
-                                                    </div>
-                                                    <div class="col-md-4">
-                                                        <label for="email-horizontal">Chasis No</label>
-                                                    </div>
-                                                    <div class="col-md-8 form-group">
-                                                        <input type="text" id="first-name-horizontal" class="form-control" name="fname" value="{{session('gate')->ChasisNo}}" placeholder="Chasis No" disabled>
-                                                    </div>
-                                                    <div class="col-md-4">
-                                                        <label for="contact-info-horizontal">Car Name & Model</label>
-                                                    </div>
-                                                    <div class="col-md-8 form-group">
-                                                        <input type="text" id="first-name-horizontal" class="form-control" name="fname" value="{{session('gate')->CarMaster->Model.' '.session('gate')->CarMaster->ProductLine}}" placeholder="Car Name & Model" disabled>
-                                                    </div>
-                                                    <div class="col-md-4">
-                                                        <label for="horizontal">Date of Transfer</label>
-                                                    </div>
-                                                    <div class="col-md-8 form-group">
-                                                        <input type="text" id="first-name-horizontal" class="form-control" name="fname" value="{{session('gate')->DateOfTransfer}}" placeholder="Date of Transfer" disabled>
-                                                    </div>
-                                                    <div class="col-md-4">
-                                                        <label for="horizontal">Source Branch</label>
-                                                    </div>
-                                                    <div class="col-md-8 form-group">
-                                                        <input type="text" id="first-name-horizontal" class="form-control" name="fname" value="{{session('gate')->Source->name}}" placeholder="Source Branch" disabled>
-                                                    </div>
-                                                    <div class="col-md-4">
-                                                        <label for="horizontal">Destination Branch</label>
-                                                    </div>
-                                                    <div class="col-md-8 form-group">
-                                                        <input type="text" id="first-name-horizontal" class="form-control" name="fname" value="{{session('gate')->Destination->name}}" placeholder="Destination Branch" disabled>
-                                                    </div>
-                                                    <div class="col-md-4">
-                                                        <label for="horizontal">Driver Name</label>
-                                                    </div>
-                                                    <div class="col-md-8 form-group">
-                                                        <input type="text" id="first-name-horizontal" class="form-control" name="fname" value="{{session('gate')->DriverName}}" placeholder="Driver Name" disabled>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-                @endif
             </div>
         </div>
     </div>
@@ -218,8 +155,14 @@
             $('.form-select').select2();
 
             $('#DriverName').on('input', function() {
-                $(this).val($(this).val().toUpperCase());
+                $(this).val(ucwords($(this).val()));
             });
+
+            function ucwords(str) {
+                return str.toLowerCase().replace(/\b\w/g, function(letter) {
+                    return letter.toUpperCase();
+                });
+            }
 
             $('#ChasisNo').on('change', function() {
                 $('#Model').text('-');
@@ -242,7 +185,66 @@
                     }
                 });
             });
+
+        $('#submit-btn').on('click',function(e) {
+                e.preventDefault(); // Prevent the default form submission
+                var valid = true;
+                var message = '';
+                $('#transfer-stock-form').find('.red-border').removeClass("red-border");
+                $('.alert-danger').hide();
+                var destinationBranchValue = $('select[name="DestinationBranch"]').val();
+                var sourceBranchValue = $('select[name="SourceBranch"]').val();
+
+
+                $('#transfer-stock-form').find('input[required], select[required]').each(function() {
+                    if ($(this).is(':checkbox')) {
+                        console.log(6);
+                        if (!$(this).is(':checked')) {
+                            valid = false;
+                        }
+                    } else if (!$(this).val()) {
+                        console.log(5);
+                        if ($(this).is('select')) {
+                            $(this).next().find('span > ').addClass("red-border");
+                        } else {
+                            $(this).addClass("red-border"); // Add the red-border class
+                        }
+
+                        valid = false;
+
+                    }
+
+                    message = 'Please fill in all required fields.'
+                    console.log(4);
+                });
+
+
+                if (destinationBranchValue == sourceBranchValue && (destinationBranchValue !== '' && sourceBranchValue !== '')) {
+                    console.log(3);
+                    $('.alert-danger').show()
+                    message = 'Source and Destination branches cannot be same';
+                    $('select[name="DestinationBranch"]').next().find('span > ').addClass("red-border");
+                    $('select[name="SourceBranch"]').next().find('span > ').addClass("red-border");
+                    valid = false;
+                }
+
+
+
+                if (!valid) {
+                    console.log(2);
+                    $('.alert-danger').show()
+                    $('#error-text').text(message);
+                }else{
+                    document.transferstockform.submit();
+                }
+
+                
+                
+            });
+            
         });
+
+        
     </script>
 </body>
 
