@@ -32,6 +32,7 @@ class StockController extends Controller
                 ['text' => 'Received Rejected', 'value' => 'RECEIVED REJECTED'],
                 ['text' => 'Stock T/F', 'value' => 'STOCK TF']
             ];
+
             $query = TransferStock::with(['CarMaster', 'Source', 'Destination']);
 
             if ($request->car) {
@@ -49,9 +50,17 @@ class StockController extends Controller
             }
 
             if ($request->status) {
-                $query->whereHas('CarMaster', function ($subQuery) use ($request) {
-                    $subQuery->where('PhysicalStatus', $request->status);
-                });
+                if($request->status=='RECEIVED APPROVED'){
+                    $query->WhereNotNull('ApprovedBy');
+                }
+
+                if($request->status=='RECEIVED REJECTED'){
+                    $query->WhereNotNull('RejectedBy');
+                }
+
+                if($request->status=='STOCK TF'){
+                    $query->where('ApprovedBy',null)->where('RejectedBy',null);
+                }
             }
 
             if ($request->name) {
@@ -60,6 +69,11 @@ class StockController extends Controller
                     $subQuery->orWhere('ReceivedBy', 'like', '%' . $request->name . '%');
                 });
             }
+
+            if($request->chasisNo){
+                $query->Where('ChasisNo','like', '%'.$request->chasisNo.'%');
+            }
+
             $query->orderBy('id', 'desc');
             $result = $query->paginate(10)->appends($request->all());
 

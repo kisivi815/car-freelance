@@ -68,6 +68,12 @@
                                                         <div class="col-md-4 form-group">
                                                             <input type="text" class="form-control" name="car" placeholder="Car" value="{{ old('car',request('car')) }}">
                                                         </div>
+                                                        <div class="col-md-2">
+                                                            <label>Chasis No</label>
+                                                        </div>
+                                                        <div class="col-md-4 form-group">
+                                                            <input type="text" class="form-control" name="chasisNo" placeholder="Chasis No" value="{{ old('car',request('chasisNo')) }}">
+                                                        </div>
                                                         <div class="col-sm-12 d-flex justify-content-end">
                                                             <button type="submit" class="btn btn-primary me-1 mb-1">Search</button>
                                                             <button type="reset" class="btn btn-light-secondary me-1 mb-1" id="reset">Reset</button>
