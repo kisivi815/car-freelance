@@ -60,8 +60,8 @@ class StockController extends Controller
                     $subQuery->orWhere('ReceivedBy', 'like', '%' . $request->name . '%');
                 });
             }
-
-            $result = $query->paginate(10);
+            $query->orderBy('id', 'desc');
+            $result = $query->paginate(10)->appends($request->all());
 
             $data = ['status' => $status, 'branch' => $branch, 'result' => $result];
             return view('view-stock')->with(['title' => 'View Stock', 'data' => $data]);
@@ -83,7 +83,7 @@ class StockController extends Controller
             $lastTransferStock = TransferStock::with('CarMaster', 'Destination')->where('ChasisNo', $validatedData['ChasisNo'])->orderBy('id', 'desc')->first();
             if (in_array($car->PhysicalStatus, ['RECEIVED APPROVED', 'RECEIVED REJECTED'])  && $lastTransferStock->DestinationBranch == $validatedData['DestinationBranch']) {
                 $errorMessage = 'Chasis No ' . $validatedData['ChasisNo'] . 'is already at ' . $lastTransferStock->Destination->name . ' branch.';
-                return response()->json(["error" =>$errorMessage], '409');
+                return response()->json(["error" => $errorMessage], '409');
             }
 
             $validatedData['DateOfTransfer'] = Carbon::today();
@@ -123,7 +123,7 @@ class StockController extends Controller
     {
         try {
             $result = TransferStock::with('CarMaster', 'Source', 'Destination')->findOrFail($request->id);
-            if(Auth::user()->branch !=  $result->DestinationBranch){
+            if (Auth::user()->branch !=  $result->DestinationBranch) {
                 return redirect()->back()->withInput()->with('error', 'You have no permission to receive at this branch');
             }
             return view('receive-stock')->with(['title' => 'Receive Stock', 'data' => $result]);
@@ -230,12 +230,12 @@ class StockController extends Controller
         return $car;
     }
 
-    public function getGatePass(Request $request , string $id)
+    public function getGatePass(Request $request, string $id)
     {
         try {
             $message = '';
-            $TransferStock = TransferStock::with(['CarMaster','Source','Destination'])->findOrFail($id);
-            if(isset($request->input()['from']) == 'transfer-stock'){
+            $TransferStock = TransferStock::with(['CarMaster', 'Source', 'Destination'])->findOrFail($id);
+            if (isset($request->input()['from']) == 'transfer-stock') {
                 $message = 'On ' . Carbon::today()->format('d-m-Y') . ', ' . $TransferStock->ChasisNo . ' cars were transferred from ' . $TransferStock->Source->name . ' Branch to ' . $TransferStock->Destination->name . ' Branch';
                 session(['message' => $message]);
             }
@@ -245,12 +245,16 @@ class StockController extends Controller
         }
     }
 
-        public function generateGatePassPDF()
-        {
-            $TransferStock = TransferStock::with(['CarMaster','Source','Destination'])->findOrFail(1);
+    public function generateGatePassPDF(Request $request, string $id)
+    {
+        try {
+            $TransferStock = TransferStock::with(['CarMaster', 'Source', 'Destination'])->findOrFail($id);
 
-        $pdf = Pdf::loadView('pdf.gate-pass', ['title' => 'Gate Pass', 'data' => $TransferStock]);
-        
-        return $pdf->stream('document.pdf');
-        } 
+            $pdf = Pdf::loadView('pdf.gate-pass', ['title' => 'Gate Pass', 'data' => $TransferStock]);
+
+            return $pdf->stream('TF' . $id . '.pdf');
+        } catch (ModelNotFoundException $e) {
+            return redirect()->route('view-stock')->with('error', 'Record not found.');
+        }
+    }
 }

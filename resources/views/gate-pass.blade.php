@@ -54,13 +54,13 @@
         <div id="main">
             @include('layout.title')
             <div class="page-content">
-            <section id="basic-horizontal-layouts">
+                <section id="basic-horizontal-layouts">
                     <div class="row match-height">
                         <div class="col-12">
                             <div class="card">
                                 <div class="card-header" style="display: flex;justify-content: space-between;">
                                     <h4 class="card-title">Gate Pass</h4>
-                                    <a href="{{ route('print-gate-pass-pdf') }}"  class="btn btn-primary me-1 mb-1" style="width:100px" target="_blank">Print</a>
+                                    <a href="{{ route('print-gate-pass-pdf',['id'=>str_replace('TF','',$data->GatePassId)]) }}" class="btn btn-primary me-1 mb-1" style="width:100px" target="_blank">Print</a>
                                 </div>
                                 <div class="card-content">
                                     <div class="card-body">
@@ -71,13 +71,13 @@
                                                         <label for="first-name-horizontal">Stock T/F ID</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
-                                                        <input type="text" id="first-name-horizontal" class="form-control"  value="{{$data->GatePassId}}" placeholder="Stock T/F ID" disabled>
+                                                        <input type="text" id="first-name-horizontal" class="form-control" value="{{$data->GatePassId}}" placeholder="Stock T/F ID" disabled>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <label for="email-horizontal">Chasis No</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
-                                                        <input type="text" id="first-name-horizontal" class="form-control"  value="{{$data->ChasisNo}}" placeholder="Chasis No" disabled>
+                                                        <input type="text" id="first-name-horizontal" class="form-control" value="{{$data->ChasisNo}}" placeholder="Chasis No" disabled>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <label for="contact-info-horizontal">Car Name & Model</label>
@@ -132,7 +132,7 @@
     @include('layout.script')
     <script>
         $(document).ready(function() {
-           
+
         });
     </script>
 </body>
