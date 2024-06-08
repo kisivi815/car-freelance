@@ -132,7 +132,7 @@
                                                             @endif
                                                         </div>
                                                     </div>
-                                                    @if(in_array($data->CarMaster->PhysicalStatus, ['APPROVED','REJECTED']))
+                                                    @if($data->ApprovedBy || $data->RejectedBy)
                                                     <div class="col-md-4">
                                                         <label for="horizontal">Received By</label>
                                                     </div>

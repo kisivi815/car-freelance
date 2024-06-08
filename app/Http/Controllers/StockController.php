@@ -15,6 +15,7 @@ use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class StockController extends Controller
 {
@@ -27,8 +28,8 @@ class StockController extends Controller
             $branch = Branch::all();
             $status = [
                 ['text' => 'All', 'value' => ''],
-                ['text' => 'RECEIVED Approved', 'value' => 'APPROVED'],
-                ['text' => 'RECEIVED Rejected', 'value' => 'REJECTED'],
+                ['text' => 'Received Approved', 'value' => 'RECEIVED APPROVED'],
+                ['text' => 'Received Rejected', 'value' => 'RECEIVED REJECTED'],
                 ['text' => 'Stock T/F', 'value' => 'STOCK TF']
             ];
             $query = TransferStock::with(['CarMaster', 'Source', 'Destination']);
@@ -80,8 +81,9 @@ class StockController extends Controller
 
             $car = CarMaster::where('ChasisNo', $validatedData['ChasisNo'])->first();
             $lastTransferStock = TransferStock::with('CarMaster', 'Destination')->where('ChasisNo', $validatedData['ChasisNo'])->orderBy('id', 'desc')->first();
-            if (in_array($car->PhysicalStatus, ['APPROVED', 'REJECTED'])  && $lastTransferStock->DestinationBranch == $validatedData['DestinationBranch']) {
-                return redirect()->back()->withInput()->with(['error' => 'Chasis No ' . $validatedData['ChasisNo'] . 'is already at ' . $lastTransferStock->Destination->name . ' branch.']);
+            if (in_array($car->PhysicalStatus, ['RECEIVED APPROVED', 'RECEIVED REJECTED'])  && $lastTransferStock->DestinationBranch == $validatedData['DestinationBranch']) {
+                $errorMessage = 'Chasis No ' . $validatedData['ChasisNo'] . 'is already at ' . $lastTransferStock->Destination->name . ' branch.';
+                return response()->json(["error" =>$errorMessage], '409');
             }
 
             $validatedData['DateOfTransfer'] = Carbon::today();
@@ -109,12 +111,8 @@ class StockController extends Controller
                 'PhysicalStatus' => 'STOCK TF'
             ]);
 
-            //route('gate-pass', ['id' => $newRecordId]);
-
-            return redirect()->route('gate-pass', ['id' => $newRecordId])->with([
-                'id' => $newRecordId,
-                'title' => 'Gate Pass',
-                'message' => 'On ' . Carbon::today()->format('d-m-Y') . ', ' . $validatedData['ChasisNo'] . ' cars were transferred from ' . $TransferStock->Source->name . ' Branch to ' . $TransferStock->Destination->name . ' Branch',
+            return response()->json([
+                'id' => $newRecordId
             ]);
         } catch (ModelNotFoundException $e) {
             return response()->json(["error" => $e->getMessage(), '500']);
@@ -125,6 +123,9 @@ class StockController extends Controller
     {
         try {
             $result = TransferStock::with('CarMaster', 'Source', 'Destination')->findOrFail($request->id);
+            if(Auth::user()->branch !=  $result->DestinationBranch){
+                return redirect()->back()->withInput()->with('error', 'You have no permission to receive at this branch');
+            }
             return view('receive-stock')->with(['title' => 'Receive Stock', 'data' => $result]);
         } catch (ModelNotFoundException $e) {
             return redirect()->route('view-stock')->with('error', 'Record not found.');
@@ -143,7 +144,7 @@ class StockController extends Controller
             if ($request->status == 'approve') {
                 $TransferStock->ApprovedBy = $userName;
             } else {
-                $TransferStock->RejectBy = $userName;
+                $TransferStock->RejectedBy = $userName;
             }
 
             if ($request->hasfile('photo')) {
@@ -162,17 +163,17 @@ class StockController extends Controller
 
             if ($request->status == 'approve') {
                 $car = CarMaster::where('ChasisNo', $TransferStock->ChasisNo)->update([
-                    'PhysicalStatus' => 'APPROVED'
+                    'PhysicalStatus' => 'RECEIVED APPROVED'
                 ]);
             } else {
                 $car = CarMaster::where('ChasisNo', $TransferStock->ChasisNo)->update([
-                    'PhysicalStatus' => 'REJECTED'
+                    'PhysicalStatus' => 'RECEIVED REJECTED'
                 ]);
             }
             $message = 'Stock received successfully';
             return redirect()->route('view-stock')->with(['title' => 'View Stock', 'message' => $message]);
         } catch (ModelNotFoundException $e) {
-            return redirect()->route('view-stock')->with('error', 'Record not found.');
+            return redirect()->route('view-stock')->withInput()->with('error', 'Record not found.');
         }
     }
 
@@ -229,13 +230,27 @@ class StockController extends Controller
         return $car;
     }
 
-    public function getGatePass(string $id)
+    public function getGatePass(Request $request , string $id)
     {
         try {
-            $TransferStock = TransferStock::with(['CarMaster'])->findOrFail($id);
+            $message = '';
+            $TransferStock = TransferStock::with(['CarMaster','Source','Destination'])->findOrFail($id);
+            if(isset($request->input()['from']) == 'transfer-stock'){
+                $message = 'On ' . Carbon::today()->format('d-m-Y') . ', ' . $TransferStock->ChasisNo . ' cars were transferred from ' . $TransferStock->Source->name . ' Branch to ' . $TransferStock->Destination->name . ' Branch';
+                session(['message' => $message]);
+            }
             return view('gate-pass')->with(['title' => 'Gate Pass', 'data' => $TransferStock]);
         } catch (ModelNotFoundException $e) {
             return redirect()->route('view-stock')->with('error', 'Record not found.');
         }
     }
+
+        public function generateGatePassPDF()
+        {
+            $TransferStock = TransferStock::with(['CarMaster','Source','Destination'])->findOrFail(1);
+
+        $pdf = Pdf::loadView('pdf.gate-pass', ['title' => 'Gate Pass', 'data' => $TransferStock]);
+        
+        return $pdf->stream('document.pdf');
+        } 
 }

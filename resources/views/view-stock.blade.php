@@ -106,6 +106,7 @@
                                                         <th>Chasis No</th>
                                                         <th>Approve</th>
                                                         <th>Reject</th>
+                                                        <th>Date Of Received</th>
                                                         <th>Delete</th>
                                                     </tr>
                                                 </thead>
@@ -126,6 +127,8 @@
                                                         <td>
                                                             @if (!$d->ReceivedBy && in_array(Auth::user()->role_id,['1','6']))
                                                             <a href="receive-stock/{{$d->id}}?status=approve">Approve with note</a>
+                                                            @elseif($d->ApprovedBy)
+                                                            {{$d->ApprovedBy}}
                                                             @else
                                                             -
                                                             @endif
@@ -133,9 +136,14 @@
                                                         <td>
                                                             @if (!$d->ReceivedBy && in_array(Auth::user()->role_id,['1','6']))
                                                             <a href="receive-stock/{{$d->id}}?status=reject">Reject with note</a>
+                                                            @elseif($d->RejectedBy)
+                                                            {{$d->RejectedBy}}
                                                             @else
                                                             -
                                                             @endif
+                                                        </td>
+                                                        <td>
+                                                            {{$d->DateOfReceive}}
                                                         </td>
                                                         <td>
                                                             @if(in_array(Auth::user()->role_id,['1']))

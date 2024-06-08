@@ -55,4 +55,6 @@ Route::middleware(RedirectIfAuthenticated::class)->group(function () {
     Route::get('/stock-details/{id}', [StockController::class, 'getStockDetails'])->name('stock-details');
     Route::post('/submit-transfer-stock', [StockController::class, 'store'])->name('submit-transfer-stock');
     Route::get('/car-details', [StockController::class, 'getCarDetais'])->name('car-details');
+
+    Route::get('/generate-gat-pass-pdf', [StockController::class, 'generateGatePassPDF'])->name('print-gate-pass-pdf');
 });

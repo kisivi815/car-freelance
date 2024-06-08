@@ -27,7 +27,9 @@ class TransferStock extends Model
         'SendBy',
         'ReceivedBy',
         'DateOfReceive',
-        'ReceiveNote'
+        'ReceiveNote',
+        'ApprovedBy',
+        'RejectedBy'
     ];
 
     public function Car()

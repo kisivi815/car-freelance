@@ -24268,3 +24268,7 @@ a {
     text-align: center;
     margin:0 !important;
 }
+
+.red-border {
+    border-color: red !important;
+}

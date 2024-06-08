@@ -29,7 +29,7 @@
                                         @php
                                         $currentId = request()->route('id');
                                         @endphp
-                                        <form class="form form-horizontal" action="{{route('submit-receive-stock', ['id' => $currentId])}}" method="POST" enctype="multipart/form-data">
+                                        <form class="form form-horizontal" action="{{route('submit-receive-stock', ['id' => $currentId])}}" id="receive-stock-form" name="receivestockform" method="POST" enctype="multipart/form-data">
                                             @csrf
                                             <div class="form-body">
                                                 <div class="row">
@@ -67,7 +67,7 @@
                                                         <label for="horizontal">Received By</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
-                                                        <input type="text" id="ReceivedBy" class="form-control" placeholder="Received By" name="ReceivedBy" value="">
+                                                        <input type="text" id="ReceivedBy" class="form-control" placeholder="Received By" name="ReceivedBy" value="{{ old('ReceivedBy')}}" required>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <label for="horizontal">Add Note</label>
@@ -82,9 +82,9 @@
                                                         <input type="file" class="image-preview-filepond" name="photo[]"  multiple>
                                                     </div>
                                                     <div class="col-sm-12 d-flex justify-content-center">
-                                                        <button type="submit" class="btn btn-primary me-1 mb-1" style="width:200px">Submit</button>
+                                                        <button type="submit" class="btn btn-primary me-1 mb-1" id="submit-btn" style="width:200px">Submit</button>
                                                     </div>
-                                                    <input type="hidden" name="status" value="{{request()->query('status')}}">
+                                                    <input type="hidden" name="status" value="{{ request()->query('status') }}">
                                                 </div>
                                             </div>
                                         </form>
@@ -104,9 +104,48 @@
     <script>
         $(document).ready(function() {
             $('#ReceivedBy').on('input', function() {
-                $(this).val($(this).val().toUpperCase());
+                $(this).val($(this).val().toLowerCase().replace(/\b\w/g, function(letter) {
+                    return letter.toUpperCase();
+                }));
             });
         });
+
+        $('#submit-btn').on('click', function(e) {
+                e.preventDefault(); // Prevent the default form submission
+                var valid = true;
+                var message = '';
+                $('#receive-stock-form').find('.red-border').removeClass("red-border");
+                $('.alert-danger').hide();
+
+
+                $('#receive-stock-form').find('input[required], select[required]').each(function() {
+                    if ($(this).is(':checkbox')) {
+                        if (!$(this).is(':checked')) {
+                            valid = false;
+                        }
+                    } else if (!$(this).val()) {
+                        if ($(this).is('select')) {
+                            $(this).next().find('span > ').addClass("red-border");
+                        } else {
+                            $(this).addClass("red-border"); // Add the red-border class
+                        }
+
+                        valid = false;
+
+                    }
+
+                    message = 'Please fill in all required fields.'
+                });
+
+
+                if (!valid) {
+                    $('.alert-danger').show()
+                    $('#error-text').text(message);
+                } else {
+                    document.receivestockform.submit()
+                }
+
+            });
     </script>
 </body>
 

@@ -58,8 +58,9 @@
                     <div class="row match-height">
                         <div class="col-12">
                             <div class="card">
-                                <div class="card-header">
+                                <div class="card-header" style="display: flex;justify-content: space-between;">
                                     <h4 class="card-title">Gate Pass</h4>
+                                    <a href="{{ route('print-gate-pass-pdf') }}"  class="btn btn-primary me-1 mb-1" style="width:100px" target="_blank">Print</a>
                                 </div>
                                 <div class="card-content">
                                     <div class="card-body">
@@ -83,6 +84,12 @@
                                                     </div>
                                                     <div class="col-md-8 form-group">
                                                         <input type="text" id="first-name-horizontal" class="form-control" value="{{$data->CarMaster->Model.' '.$data->CarMaster->ProductLine}}" placeholder="Car Name & Model" disabled>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label for="contact-info-horizontal">Colour</label>
+                                                    </div>
+                                                    <div class="col-md-8 form-group">
+                                                        <input type="text" id="first-name-horizontal" class="form-control" value="{{$data->CarMaster->Colour}}" placeholder="Colour" disabled>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <label for="horizontal">Date of Transfer</label>

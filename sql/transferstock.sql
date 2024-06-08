@@ -10,5 +10,7 @@ CREATE TABLE transferstock (
     DateOfTransfer DATE,
     ReceivedBy VARCHAR(100),
     DateOfReceive DATE,
-    ReceiveNote VARCHAR(1000)
+    ReceiveNote VARCHAR(1000),
+    ApprovedBy VARCHAR(100),
+    RejectedBy VARCHAR(100)
 );

@@ -17,6 +17,9 @@
     {{ session('error') }}
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
+@php
+session()->forget('error');
+@endphp
 @endif
 
 @if(session('message'))
@@ -24,6 +27,9 @@
     {{ session('message') }}
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
+@php
+session()->forget('message');
+@endphp
 @endif
 
 <div class="alert alert-danger alert-dismissible show fade" bis_skin_checked="1" style="display: none;">
@@ -37,7 +43,7 @@
 </div>
 
 <script>
-     $(document).ready(function() {
+    $(document).ready(function() {
         $('.btn-close').on('click', function() {
             $(this).closest('.alert').hide();
         });

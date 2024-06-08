@@ -45,10 +45,6 @@
         .select2-dropdown.select2-dropdown--below {
             border: 1px solid #dce7f1 !important;
         }
-
-        .red-border {
-            border-color: red !important;
-        }
     </style>
 </head>
 
@@ -67,7 +63,7 @@
                                 </div>
                                 <div class="card-content">
                                     <div class="card-body">
-                                         <form class="form form-horizontal" id="transfer-stock-form" action="{{route('submit-transfer-stock')}}" name="transferstockform" method="POST" enctype="multipart/form-data" autocomplete="off">
+                                        <form class="form form-horizontal" id="transfer-stock-form" action="{{route('submit-transfer-stock')}}" name="transferstockform" method="POST" enctype="multipart/form-data" autocomplete="off">
                                             @csrf
                                             <div class="form-body">
                                                 <div class="row">
@@ -155,14 +151,12 @@
             $('.form-select').select2();
 
             $('#DriverName').on('input', function() {
-                $(this).val(ucwords($(this).val()));
+                $(this).val($(this).val().toLowerCase().replace(/\b\w/g, function(letter) {
+                    return letter.toUpperCase();
+                }));
             });
 
-            function ucwords(str) {
-                return str.toLowerCase().replace(/\b\w/g, function(letter) {
-                    return letter.toUpperCase();
-                });
-            }
+
 
             $('#ChasisNo').on('change', function() {
                 $('#Model').text('-');
@@ -186,7 +180,7 @@
                 });
             });
 
-        $('#submit-btn').on('click',function(e) {
+            $('#submit-btn').on('click', function(e) {
                 e.preventDefault(); // Prevent the default form submission
                 var valid = true;
                 var message = '';
@@ -229,17 +223,35 @@
                 if (!valid) {
                     $('.alert-danger').show()
                     $('#error-text').text(message);
-                }else{
-                    document.transferstockform.submit();
+                } else {
+                    $.ajax({
+                        url: '/submit-transfer-stock',
+                        type: 'POST',
+                        data: $('#transfer-stock-form').serialize(),
+                        success: function(response) {
+                            if (response.id) {
+                                window.location.href = '/gate-pass/' + response.id + '?from=transfer-stock';
+                            } else {
+                                $('.alert-danger').show()
+                                $('#error-text').text('Submit Failed');
+                            }
+
+                        },
+                        error: function(xhr, status, error) {
+                            $('.alert-danger').show()
+                            $('#error-text').text(error);
+                            if (xhr.responseJSON.error) {
+                                var errorMessage = xhr.responseJSON.error;
+                                $('#error-text').text(errorMessage);
+                            }
+
+                        }
+                    });
                 }
 
-                
-                
             });
-            
-        });
 
-        
+        });
     </script>
 </body>
 
