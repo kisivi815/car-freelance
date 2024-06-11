@@ -32,6 +32,7 @@ class StockController extends Controller
                 ['text' => 'Received Rejected', 'value' => 'RECEIVED REJECTED'],
                 ['text' => 'Stock T/F', 'value' => 'STOCK TF']
             ];
+            $car = CarMaster::all();
 
             $query = TransferStock::with(['CarMaster', 'Source', 'Destination']);
 
@@ -77,7 +78,7 @@ class StockController extends Controller
             $query->orderBy('id', 'desc');
             $result = $query->paginate(10)->appends($request->all());
 
-            $data = ['status' => $status, 'branch' => $branch, 'result' => $result];
+            $data = ['status' => $status, 'branch' => $branch, 'car'=>$car,'result' => $result];
             return view('view-stock')->with(['title' => 'View Stock', 'data' => $data]);
         } catch (ModelNotFoundException $e) {
             return redirect()->route('view-stock')->with('error', 'Record not found.');

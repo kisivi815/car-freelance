@@ -72,7 +72,12 @@
                                                             <label>Chasis No</label>
                                                         </div>
                                                         <div class="col-md-4 form-group">
-                                                            <input type="text" class="form-control" name="chasisNo" placeholder="Chasis No" value="{{ old('car',request('chasisNo')) }}">
+                                                            <select class="form-select chasisNo-select" name="chasisNo">
+                                                            <option value="">Chasis No</option>
+                                                                @foreach ($data['car'] as $c)
+                                                                <option value="{{$c['ChasisNo']}}" {{ $c['ChasisNo'] == request('chasisNo') ? 'selected' : '' }}>{{$c['ChasisNo']}}</option>
+                                                                @endforeach
+                                                            </select>
                                                         </div>
                                                         <div class="col-sm-12 d-flex justify-content-end">
                                                             <button type="submit" class="btn btn-primary me-1 mb-1">Search</button>
@@ -208,16 +213,19 @@
     @include('layout.script')
     <script>
         $(document).ready(function() {
+
+            $('.chasisNo-select').select2()
+
             $('#reset').on('click', function() {
                 $('#stock-filter input').removeAttr('value');
                 $('#stock-filter select option:selected').removeAttr('selected');
+                $('.chasisNo-select').val(null).trigger('change');
+
             });
 
 
             $('.delete-stock').click(function() {
                 var id = $(this).data('id');
-                
-                console.log(id);
                 $('#delete-stock-confirm').data('id', id);
             });
 
