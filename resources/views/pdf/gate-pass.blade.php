@@ -95,9 +95,17 @@
                 <td>Driver Name</td>
                 <td>{{$data->DriverName}}</td>
             </tr>
+            <tr>
+                <td>Sender Name</td>
+                <td>{{ucwords($data->UserSendBy->name)}}</td>
+            </tr>
+            <tr>
+                <td>Receiver Name</td>
+                <td>{{$data->ReceivedBy ?? '-'}}</td>
+            </tr>
         </table>
         <div class="footer">
-            <p>Generated on {{ date('Y-m-d') }}</p>
+            <p>Generated on {{ date('Y-m-d h:i:s A') }} IST</p>
         </div>
     </div>
 </body>

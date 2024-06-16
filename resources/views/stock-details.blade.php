@@ -104,7 +104,7 @@
                                                         <label for="first-name-horizontal">Sent By</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
-                                                        <input type="text" id="first-name-horizontal" class="form-control" value="{{$data->SendBy}}" disabled>
+                                                        <input type="text" id="first-name-horizontal" class="form-control" value="{{ucwords($data->UserSendBy->name)}}" disabled>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <label for="horizontal">Sender Note</label>

@@ -34,7 +34,7 @@ class StockController extends Controller
             ];
             $car = CarMaster::all();
 
-            $query = TransferStock::with(['CarMaster', 'Source', 'Destination']);
+            $query = TransferStock::with(['CarMaster', 'Source', 'Destination', 'UserSendBy', 'UserApprovedBy', 'UserRejectedBy']);
 
             if ($request->car) {
                 $query->whereHas('CarMaster', function ($subQuery) use ($request) {
@@ -51,16 +51,16 @@ class StockController extends Controller
             }
 
             if ($request->status) {
-                if($request->status=='RECEIVED APPROVED'){
+                if ($request->status == 'RECEIVED APPROVED') {
                     $query->WhereNotNull('ApprovedBy');
                 }
 
-                if($request->status=='RECEIVED REJECTED'){
+                if ($request->status == 'RECEIVED REJECTED') {
                     $query->WhereNotNull('RejectedBy');
                 }
 
-                if($request->status=='STOCK TF'){
-                    $query->where('ApprovedBy',null)->where('RejectedBy',null);
+                if ($request->status == 'STOCK TF') {
+                    $query->where('ApprovedBy', null)->where('RejectedBy', null);
                 }
             }
 
@@ -71,14 +71,14 @@ class StockController extends Controller
                 });
             }
 
-            if($request->chasisNo){
-                $query->Where('ChasisNo','like', '%'.$request->chasisNo.'%');
+            if ($request->chasisNo) {
+                $query->Where('ChasisNo', 'like', '%' . $request->chasisNo . '%');
             }
 
             $query->orderBy('id', 'desc');
             $result = $query->paginate(10)->appends($request->all());
 
-            $data = ['status' => $status, 'branch' => $branch, 'car'=>$car,'result' => $result];
+            $data = ['status' => $status, 'branch' => $branch, 'car' => $car, 'result' => $result];
             return view('view-stock')->with(['title' => 'View Stock', 'data' => $data]);
         } catch (ModelNotFoundException $e) {
             return redirect()->route('view-stock')->with('error', 'Record not found.');
@@ -91,7 +91,7 @@ class StockController extends Controller
     public function store(TransferStockRequest $request)
     {
         try {
-            $userName = ucwords(strtolower(Auth::user()->name));
+            $user = Auth::user();
             $validatedData = $request->validated();
 
             $car = CarMaster::where('ChasisNo', $validatedData['ChasisNo'])->first();
@@ -102,7 +102,7 @@ class StockController extends Controller
             }
 
             $validatedData['DateOfTransfer'] = Carbon::today();
-            $validatedData['SendBy'] = $userName;
+            $validatedData['SendBy'] = $user->id;
             $newRecord = TransferStock::create($validatedData);
             $newRecordId = $newRecord->id;
             $data['GatePassId'] = 'TF' . $newRecordId;
@@ -137,8 +137,9 @@ class StockController extends Controller
     public function getReceiveStock(Request $request)
     {
         try {
+            $user = Auth::user();
             $result = TransferStock::with('CarMaster', 'Source', 'Destination')->findOrFail($request->id);
-            if (Auth::user()->branch !=  $result->DestinationBranch) {
+            if (!in_array($result->DestinationBranch, array_column($user->UserBranch->toArray(), 'branch_id'))) {
                 return redirect()->back()->withInput()->with('error', 'You have no permission to receive at this branch');
             }
             return view('receive-stock')->with(['title' => 'Receive Stock', 'data' => $result]);
@@ -150,16 +151,16 @@ class StockController extends Controller
     public function submitReceiveStock(Request $request)
     {
         try {
-            $userName = ucwords(strtolower(Auth::user()->name));
+            $user = Auth::user();
             $TransferStock = TransferStock::with('CarMaster')->findOrFail($request->id);
             $TransferStock->ReceivedBy = $request->ReceivedBy;
             $TransferStock->DateOfReceive = Carbon::today();
             $TransferStock->ReceiveNote = $request->Note;
 
             if ($request->status == 'approve') {
-                $TransferStock->ApprovedBy = $userName;
+                $TransferStock->ApprovedBy = $user->id;
             } else {
-                $TransferStock->RejectedBy = $userName;
+                $TransferStock->RejectedBy = $user->id;
             }
 
             if ($request->hasfile('photo')) {
@@ -198,7 +199,7 @@ class StockController extends Controller
     public function getStockDetails(Request $request)
     {
         try {
-            $result = TransferStock::with(['CarMaster', 'Source', 'Destination', 'Image'])->findOrFail($request->id);
+            $result = TransferStock::with(['CarMaster', 'Source', 'Destination', 'Image', 'UserSendBy', 'UserApprovedBy', 'UserRejectedBy'])->findOrFail($request->id);
             return view('stock-details')->with(['title' => 'Stock Details', 'data' => $result]);
         } catch (ModelNotFoundException $e) {
             return redirect()->route('view-stock')->with('error', 'Record not found.');
@@ -249,7 +250,7 @@ class StockController extends Controller
     {
         try {
             $message = '';
-            $TransferStock = TransferStock::with(['CarMaster', 'Source', 'Destination'])->findOrFail($id);
+            $TransferStock = TransferStock::with(['CarMaster', 'Source', 'Destination', 'UserSendBy', 'UserApprovedBy', 'UserRejectedBy'])->findOrFail($id);
             if (isset($request->input()['from']) == 'transfer-stock') {
                 $message = 'On ' . Carbon::today()->format('d-m-Y') . ', ' . $TransferStock->ChasisNo . ' cars were transferred from ' . $TransferStock->Source->name . ' Branch to ' . $TransferStock->Destination->name . ' Branch';
                 session(['message' => $message]);
@@ -263,7 +264,7 @@ class StockController extends Controller
     public function generateGatePassPDF(Request $request, string $id)
     {
         try {
-            $TransferStock = TransferStock::with(['CarMaster', 'Source', 'Destination'])->findOrFail($id);
+            $TransferStock = TransferStock::with(['CarMaster', 'Source', 'Destination', 'UserSendBy', 'UserApprovedBy', 'UserRejectedBy'])->findOrFail($id);
 
             $pdf = Pdf::loadView('pdf.gate-pass', ['title' => 'Gate Pass', 'data' => $TransferStock]);
 

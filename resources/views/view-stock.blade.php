@@ -73,7 +73,7 @@
                                                         </div>
                                                         <div class="col-md-4 form-group">
                                                             <select class="form-select chasisNo-select" name="chasisNo">
-                                                            <option value="">Chasis No</option>
+                                                                <option value="">Chasis No</option>
                                                                 @foreach ($data['car'] as $c)
                                                                 <option value="{{$c['ChasisNo']}}" {{ $c['ChasisNo'] == request('chasisNo') ? 'selected' : '' }}>{{$c['ChasisNo']}}</option>
                                                                 @endforeach
@@ -114,6 +114,7 @@
                                                         <th>Receiver Detail</th>
                                                         <th>Car Name</th>
                                                         <th>Model</th>
+                                                        <th>Colour</th>
                                                         <th>Chasis No</th>
                                                         <th>Approve</th>
                                                         <th>Reject</th>
@@ -124,22 +125,23 @@
                                                 <tbody>
                                                     @foreach ($data['result'] as $d)
                                                     <tr>
-                                                        <td>{{$d->id}}</td>
+                                                        <td><a href="gate-pass/{{$d->id}}">{{$d->id}}</a></td>
                                                         <td>{{$d->DateOfTransfer}}</td>
                                                         <td>{{$d->Source->name}}</td>
-                                                        <td>{{$d->SendBy}}</td>
+                                                        <td>{{ucwords($d->UserSendBy->name)}}</td>
                                                         <td><a href="stock-details/{{$d->id}}">Details</td>
                                                         <td>{{$d->Destination->name}}</td>
                                                         <td>{{ $d->ReceivedBy ? $d->ReceivedBy : '-' }}</td>
                                                         <td><a href="stock-details/{{$d->id}}">{{ $d->ReceivedBy ? 'Details' : '-' }}</td>
                                                         <td>{{$d->CarMaster->Model}}</td>
                                                         <td>{{$d->CarMaster->ProductLine}}</td>
+                                                        <td>{{$d->CarMaster->Colour}}</td>
                                                         <td>{{$d->ChasisNo}}</td>
                                                         <td>
                                                             @if (!$d->ReceivedBy && in_array(Auth::user()->role_id,['1','6']))
                                                             <a href="receive-stock/{{$d->id}}?status=approve">Approve with note</a>
-                                                            @elseif($d->ApprovedBy)
-                                                            {{$d->ApprovedBy}}
+                                                            @elseif($d->UserApprovedBy)
+                                                            {{ucwords($d->UserApprovedBy->name)}}
                                                             @else
                                                             -
                                                             @endif
@@ -147,8 +149,8 @@
                                                         <td>
                                                             @if (!$d->ReceivedBy && in_array(Auth::user()->role_id,['1','6']))
                                                             <a href="receive-stock/{{$d->id}}?status=reject">Reject with note</a>
-                                                            @elseif($d->RejectedBy)
-                                                            {{$d->RejectedBy}}
+                                                            @elseif($d->UserRejectedBy)
+                                                            {{ucwords($d->UserRejectedBy->name)}}
                                                             @else
                                                             -
                                                             @endif
@@ -245,7 +247,7 @@
                         url: "/delete-transfer-stock/" + id, // Change to your server URL
                         type: 'DELETE',
                         success: function(response) {
-                            if(response=='success'){
+                            if (response == 'success') {
                                 window.location.href = '/view-stock';
                             }
                         },

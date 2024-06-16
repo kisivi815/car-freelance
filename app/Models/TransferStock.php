@@ -54,4 +54,16 @@ class TransferStock extends Model
     public function Destination(){
         return $this->hasOne(Branch::class,'id','DestinationBranch');
     }
+
+    public function UserSendBy(){
+        return $this->hasOne(User::class,'id','SendBy');
+    }
+
+    public function UserApprovedBy(){
+        return $this->hasOne(User::class,'id','ApprovedBy');
+    }
+
+    public function UserRejectedBy(){
+        return $this->hasOne(User::class,'id','RejectBy');
+    }
 }

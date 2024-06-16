@@ -43,4 +43,24 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
         ];
     }
+
+    public function UserBranch()
+    {
+        return $this->hasMany(UserBranch::class,'user_id','id');
+    }
+
+    public function TransferStockSendBy()
+    {
+        return $this->hasOne(TransferStock::class,'SendBy','id');
+    }
+
+    public function TransferStockApprovedBy()
+    {
+        return $this->hasOne(TransferStock::class, 'ApprovedBy', 'id');
+    }
+
+    public function TransferStockRejectedBy()
+    {
+        return $this->hasOne(TransferStock::class, 'RejectedBy', 'id');
+    }
 }
