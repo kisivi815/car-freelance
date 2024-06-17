@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\StockController;
 use App\Http\Middleware\RedirectIfAuthenticated;
-use App\Http\Middleware\CheckRole;
+use App\Http\Controllers\CarMasterController;
 use Illuminate\Support\Facades\Auth;
 
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -57,4 +57,7 @@ Route::middleware(RedirectIfAuthenticated::class)->group(function () {
     Route::get('/car-details', [StockController::class, 'getCarDetais'])->name('car-details');
 
     Route::get('/generate-gat-pass-pdf/{id}', [StockController::class, 'generateGatePassPDF'])->name('print-gate-pass-pdf');
+
+    Route::get('/upload-car-stock', [CarMasterController::class, 'index'])->name('upload-car-stock');
+    Route::post('/upload-car-sheets', [CarMasterController::class, 'store'])->name('upload-car-sheets');
 });
