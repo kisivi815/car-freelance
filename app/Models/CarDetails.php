@@ -4,19 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\TransferStock;
 
-class CarMaster extends Model
+class CarDetails extends Model
 {
     use HasFactory;
 
-    public $timestamps = false;
+    protected $table = 'car_details';
 
-    protected $table = 'carmaster';
-
-    protected $primaryKey = 'ChasisNo';
-
-    protected $fillable = [
+    /* protected $fillable = [
         'ChasisNo',
         'Model',
         'ProductLine',
@@ -44,10 +39,5 @@ class CarMaster extends Model
         'Rate',
         'TaxableValue',
         'Amount',
-    ];
-
-    public function TrasnferStock()
-    {
-        return $this->belongsTo(TransferStock::class, 'ChasisNo', 'ChasisNo');
-    }
+    ]; */
 }

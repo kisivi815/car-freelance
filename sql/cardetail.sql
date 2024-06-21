@@ -2,6 +2,7 @@ CREATE TABLE car_details (
     id INT PRIMARY KEY AUTO_INCREMENT,
     PPL VARCHAR(50),
     Fuel VARCHAR(20),
+    HorsePower VARCHAR(20),
     Variant VARCHAR(100),
     EmissionNorm VARCHAR(10),
     MakersName VARCHAR(100),

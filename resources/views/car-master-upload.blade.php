@@ -24,7 +24,7 @@
                                                     <label for="formFile" class="form-label">Upload Stock</label>
                                                     <div class="row">
                                                         <div class="col-lg-6 col-md-12">
-                                                            <input class="form-control" type="file" id="formFile">
+                                                            <input class="form-control" type="file" name="file" id="formFile">
                                                         </div>
                                                         <div class="col-lg-6 col-md-12">
                                                             <button type="submit" class="btn btn-primary me-1 mb-1" id="submit-btn" style="width:100px" value="submit">Submit</button>

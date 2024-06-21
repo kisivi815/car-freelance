@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\CarMasterImport;
 
 class CarMasterController extends Controller
 {
@@ -28,7 +30,13 @@ class CarMasterController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls',
+        ]);
+
+        Excel::import(new CarMasterImport, $request->file('file'));
+        exit();
+        return back()->with('success', 'Data imported successfully.');
     }
 
     /**
