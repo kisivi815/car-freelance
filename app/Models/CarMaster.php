@@ -16,6 +16,10 @@ class CarMaster extends Model
 
     protected $primaryKey = 'ChasisNo';
 
+    public $incrementing = false;
+
+    protected $keyType = 'string';
+
     protected $fillable = [
         'ChasisNo',
         'Model',

@@ -2,9 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ImportCompleted;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\CarMasterImport;
+use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Event;
+use Exception;
 
 class CarMasterController extends Controller
 {
@@ -30,13 +35,42 @@ class CarMasterController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'file' => 'required|mimes:xlsx,xls',
-        ]);
+        try{
 
-        Excel::import(new CarMasterImport, $request->file('file'));
-        exit();
-        return back()->with('success', 'Data imported successfully.');
+            $request->validate([
+                'file' => 'required|mimes:xlsx,xls',
+            ]);
+
+            $today = Carbon::today()->format('dmY');
+            $message = '';
+            $missingDetails = [];
+           
+            if ($request->file('file')) {
+                $test=Excel::import(new CarMasterImport($missingDetails), $request->file('file'));
+                $extension = $request->file('file')->getClientOriginalExtension();
+                // Get all files from a specific directory (or root directory)
+                $allFiles = Storage::disk('s3')->allFiles('car-inventory');
+    
+                // Filter files that include the keyword
+                $filteredFiles = array_filter($allFiles, function($filename) use ($today) {
+                    return stripos($filename, $today) !== false;
+                });
+                
+                $version = count($filteredFiles) + 1;
+                //$result = Storage::disk('s3')->put("car-inventory/" . $today . "_car_inventory_v" . $version . ".".$extension, file_get_contents($request->file('file')));
+
+                foreach ($missingDetails as $missingDetail) {
+                    $message .= $missingDetail . '<br>';
+                }
+
+                $message .= 'not found in product details.';
+            }
+            return back()->with('message', 'Data imported successfully. <br>'.$message);
+
+        }catch(Exception $e){
+            return back()->with('error', 'Error occurred while importing data. Please try again later.');
+        }
+        
     }
 
     /**

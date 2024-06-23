@@ -208,7 +208,7 @@ class StockController extends Controller
 
     public function show(Request $request)
     {
-        $car = CarMaster::all();
+        $car = CarMaster::where('PhysicalStatus','In Transit')->get();
         $branch = Branch::all();
         $data = ['car' => $car, 'branch' => $branch];
         return view('transfer-stock')->with(['title' => 'Transfer Stock', 'data' => $data]);

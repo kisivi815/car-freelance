@@ -82,7 +82,7 @@
                                                         <label for="horizontal">Receiver Name</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
-                                                        <input type="text" id="first-name-horizontal" class="form-control" value="{{$data->ReceivedBy}}" placeholder="Driver Name" disabled>
+                                                        <input type="text" id="first-name-horizontal" class="form-control" value="{{$data->ReceivedBy ?? '-'}}" placeholder="Receiver Name" disabled>
                                                     </div>
                                                 </div>
                                             </div>

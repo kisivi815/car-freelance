@@ -14,7 +14,7 @@
 
 @if (session('error'))
 <div class="alert alert-danger alert-dismissible show fade" bis_skin_checked="1">
-    {{ session('error') }}
+    {!! session('error') !!}
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
 @php
@@ -24,7 +24,7 @@ session()->forget('error');
 
 @if(session('message'))
 <div class="alert alert-success alert-dismissible show fade">
-    {{ session('message') }}
+    {!! session('message') !!}
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
 @php
