@@ -20,7 +20,7 @@
                                         <form class="form form-horizontal" id="upload-stock-form" action="{{route('upload-car-sheets')}}" name="uploadstockform" method="POST" enctype="multipart/form-data" autocomplete="off">
                                             @csrf
                                             <div class="form-body">
-                                                <div class="col-lg-6 col-md-12">
+                                                <div class="col-lg-12 col-md-12">
                                                     <label for="formFile" class="form-label">Upload Stock</label>
                                                     <div class="row">
                                                         <div class="col-lg-6 col-md-12">

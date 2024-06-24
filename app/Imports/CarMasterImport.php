@@ -57,6 +57,7 @@ class CarMasterImport implements ToModel, WithHeadingRow
                 'TandemAxle' => $exist->TandemAxle,
                 'GrossWeight' => $exist->GrossWeight,
                 'TypeOfBody' => $exist->TypeOfBody,
+                'TypeOfFuel' => $exist->Fuel,
                 'HorsePower' => null,
             ];
             $queryArray = array_merge($queryArray, $additionalData);
