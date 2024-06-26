@@ -25,6 +25,7 @@ class CarMasterImport implements ToModel, WithHeadingRow
      */
     public function model(array $row)
     {
+        
         // Fetch the existing car details based on the variant
         $exist = ModelsCarDetails::where('variant', $row['product_line'])->orderBy('id', 'desc')->first();
 

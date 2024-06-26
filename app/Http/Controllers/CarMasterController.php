@@ -46,7 +46,8 @@ class CarMasterController extends Controller
             $missingDetails = [];
            
             if ($request->file('file')) {
-                Excel::import(new CarMasterImport($missingDetails), $request->file('file'));
+                $result = Excel::import(new CarMasterImport($missingDetails), $request->file('file'));
+                
                 $extension = $request->file('file')->getClientOriginalExtension();
                 // Get all files from a specific directory (or root directory)
                 $allFiles = Storage::disk('s3')->allFiles('car-inventory');
