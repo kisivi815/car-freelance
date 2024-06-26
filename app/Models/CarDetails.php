@@ -11,20 +11,14 @@ class CarDetails extends Model
 
     protected $table = 'car_details';
 
-    /* protected $fillable = [
-        'ChasisNo',
-        'Model',
-        'ProductLine',
-        'Colour',
-        'PhysicalStatus',
-        'EngineNo',
+    protected $fillable = [
+        'id',
+        'PPL',
+        'Fuel',
+        'Variant',
         'EmissionNorm',
-        'ManufacturingDate',
-        'TMInvoiceDate',
-        'CommercialInvoiceNo',
-        'HSNCode',
-        'TypeOfFuel',
         'MakersName',
+        'HSNCode',
         'NoOfCylinders',
         'SeatingCapacity',
         'CatalyticConverter',
@@ -35,9 +29,8 @@ class CarDetails extends Model
         'TandemAxle',
         'GrossWeight',
         'TypeOfBody',
-        'HorsePower',
-        'Rate',
-        'TaxableValue',
-        'Amount',
-    ]; */
+        'active',
+        'created_at',
+        'updated_at',
+    ];
 }

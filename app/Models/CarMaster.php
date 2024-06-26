@@ -10,8 +10,6 @@ class CarMaster extends Model
 {
     use HasFactory;
 
-    public $timestamps = false;
-
     protected $table = 'carmaster';
 
     protected $primaryKey = 'ChasisNo';
@@ -48,6 +46,9 @@ class CarMaster extends Model
         'Rate',
         'TaxableValue',
         'Amount',
+        'active',
+        'created_at',
+        'updated_at',
     ];
 
     public function TrasnferStock()

@@ -35,7 +35,7 @@ class CarMasterController extends Controller
      */
     public function store(Request $request)
     {
-        try{
+       /*  try{ */
 
             $request->validate([
                 'file' => 'required|mimes:xlsx,xls',
@@ -46,8 +46,10 @@ class CarMasterController extends Controller
             $missingDetails = [];
            
             if ($request->file('file')) {
-                $result = Excel::import(new CarMasterImport($missingDetails), $request->file('file'));
-                
+                $import = new CarMasterImport($missingDetails);
+                Excel::import($import, $request->file('file'));
+                $counts = $import->getCounts();
+
                 $extension = $request->file('file')->getClientOriginalExtension();
                 // Get all files from a specific directory (or root directory)
                 $allFiles = Storage::disk('s3')->allFiles('car-inventory');
@@ -64,13 +66,16 @@ class CarMasterController extends Controller
                     $message .= $missingDetail . '<br>';
                 }
 
-                $message .= 'not found in product details.';
+                $message .= 'not found in product details. ';
             }
+
+            $message .= '( '.$counts['processed'].' row prcessed ';
+            $message .= $counts['failed'].' row failed )';
             return back()->with('message', 'Data imported successfully. <br>'.$message);
 
-        }catch(Exception $e){
+       /*  }catch(Exception $e){
             return back()->with('error', 'Error occurred while importing data. Please try again later.');
-        }
+        } */
         
     }
 
