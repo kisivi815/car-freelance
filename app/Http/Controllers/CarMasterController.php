@@ -47,10 +47,10 @@ class CarMasterController extends Controller
             $missingDetails = [];
            
             if ($request->file('file')) {
-                $import = new CarMasterImport($missingDetails);
+                $import = new CarMasterImport();
                 Excel::import($import, $request->file('file'));
                 $counts = $import->getCounts();
-
+                $missingDetail = $import->getMissingDetails();
                 $extension = $request->file('file')->getClientOriginalExtension();
                 // Get all files from a specific directory (or root directory)
                 $allFiles = Storage::disk('s3')->allFiles('car-inventory');
@@ -63,15 +63,16 @@ class CarMasterController extends Controller
                 $version = count($filteredFiles) + 1;
                 //$result = Storage::disk('s3')->put("car-inventory/" . $today . "_car_inventory_v" . $version . ".".$extension, file_get_contents($request->file('file')));
 
-                foreach ($missingDetails as $missingDetail) {
-                    $message .= $missingDetail . '<br>';
+                if(count($missingDetail) > 0){
+                    $message .= implode(',',$missingDetail) .'<br> ';
+                    $message .= 'not found in product details. <br>';
                 }
 
-                $message .= 'not found in product details. ';
+               
             }
 
-            $message .= '( '.$counts['processed'].' row prcessed ';
-            $message .= $counts['failed'].' row failed )';
+            $message .= 'Car : ( '.$counts['carProcessedCount'].' row processed / '. $counts['carFailedCount'].' row failed ) <br>';
+            $message .= 'Car Master :( '.$counts['carMasterProcessedCount'].' row processed / '. $counts['carMasterFailedCount'].' row failed ) <br>';
             return back()->with('message', 'Data imported successfully. <br>'.$message);
 
         }catch(Exception $e){
@@ -113,7 +114,10 @@ class CarMasterController extends Controller
                 //$result = Storage::disk('s3')->put("car-inventory/" . $today . "_car_inventory_v" . $version . ".".$extension, file_get_contents($request->file('file')));
 
             }
-            $message .= implode(',',$counts['rowNumber']).'<br>';
+            if(count($counts['rowNumber']) > 0){
+                $message .= implode(',',$counts['rowNumber']).'<br>';
+            }
+
             $message .= 'Car Details : ( '.$counts['carDetailsProcessedCount'].' row processed / '. $counts['carDetailsFailedCount'].' row failed ) <br>';
             $message .= 'Car Master :( '.$counts['carMasterProcessedCount'].' row processed / '. $counts['carMasterFailedCount'].' row failed ) <br>';
 
