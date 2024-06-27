@@ -60,4 +60,5 @@ Route::middleware(RedirectIfAuthenticated::class)->group(function () {
 
     Route::get('/upload-car-stock', [CarMasterController::class, 'index'])->name('upload-car-stock');
     Route::post('/upload-car-sheets', [CarMasterController::class, 'store'])->name('upload-car-sheets');
+    Route::post('/upload-car-details-sheets', [CarMasterController::class, 'storeCarDetails'])->name('upload-car-details-sheets');
 });
