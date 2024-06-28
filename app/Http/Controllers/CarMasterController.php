@@ -67,8 +67,6 @@ class CarMasterController extends Controller
                     $message .= implode(',',$missingDetail) .'<br> ';
                     $message .= 'not found in product details. <br>';
                 }
-
-               
             }
 
             $message .= 'Car : ( '.$counts['carProcessedCount'].' row processed / '. $counts['carFailedCount'].' row failed ) <br>';
@@ -94,7 +92,6 @@ class CarMasterController extends Controller
 
             $today = Carbon::today()->format('dmY');
             $message = '';
-            $missingDetails = [];
            
             if ($request->file('file')) {
                 $import = new CarDetailsImport();
@@ -103,7 +100,7 @@ class CarMasterController extends Controller
 
                 $extension = $request->file('file')->getClientOriginalExtension();
                 // Get all files from a specific directory (or root directory)
-                $allFiles = Storage::disk('s3')->allFiles('car-inventory');
+                $allFiles = Storage::disk('s3')->allFiles('car-details');
     
                 // Filter files that include the keyword
                 $filteredFiles = array_filter($allFiles, function($filename) use ($today) {
@@ -111,7 +108,7 @@ class CarMasterController extends Controller
                 });
                 
                 $version = count($filteredFiles) + 1;
-                //$result = Storage::disk('s3')->put("car-inventory/" . $today . "_car_inventory_v" . $version . ".".$extension, file_get_contents($request->file('file')));
+                //$result = Storage::disk('s3')->put("car-details/" . $today . "_car_details_v" . $version . ".".$extension, file_get_contents($request->file('file')));
 
             }
             if(count($counts['rowNumber']) > 0){
