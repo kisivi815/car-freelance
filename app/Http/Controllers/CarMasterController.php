@@ -112,7 +112,7 @@ class CarMasterController extends Controller
 
             }
             if(count($counts['rowNumber']) > 0){
-                $message .= implode(',',$counts['rowNumber']).'<br>';
+                $message .= implode(',',$counts['rowNumber']).'<br> data not correct. <br>';
             }
 
             $message .= 'Car Details : ( '.$counts['carDetailsProcessedCount'].' row processed / '. $counts['carDetailsFailedCount'].' row failed ) <br>';

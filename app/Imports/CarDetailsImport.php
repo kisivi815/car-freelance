@@ -21,6 +21,7 @@ class CarDetailsImport implements OnEachRow, WithHeadingRow, WithChunkReading
     private $carDetailsFailedCount = 0;
     private $carMasterFailedCount = 0;
     private $rowNumber = [];
+    private $updatedChasisNumber = [];
 
     public function __construct()
     {
@@ -37,12 +38,14 @@ class CarDetailsImport implements OnEachRow, WithHeadingRow, WithChunkReading
         try {
             $rowNumber = $dataRow->getIndex();
             $row = $dataRow->toArray();
-            $this->carDetailsInsert($row,$rowNumber);
-            // Fetch the existing car details based on the variant
-            $exist = ModelsCarDetails::where('variant', $row['variant'])->where('active', '1')->orderBy('id', 'desc')->first();
+            $carDetailsInsert = $this->carDetailsInsert($row, $rowNumber);
+            if ($carDetailsInsert) {
+                // Fetch the existing car details based on the variant
+                $exist = ModelsCarDetails::where('variant', $row['variant'])->where('active', '1')->orderBy('id', 'desc')->first();
 
-            if ($exist) {
-                $this->carMasterUpdateInsert($exist);
+                if ($exist) {
+                    $this->carMasterUpdateInsert($exist);
+                }
             }
         } catch (\Exception $e) {
             Log::error("Failed to process row: " . json_encode($row) . ". Error: " . $e->getMessage());
@@ -70,14 +73,15 @@ class CarDetailsImport implements OnEachRow, WithHeadingRow, WithChunkReading
             'carMasterProcessedCount' => $this->carMasterProcessedCount,
             'carDetailsFailedCount' => $this->carDetailsFailedCount,
             'carMasterFailedCount' => $this->carMasterFailedCount,
-            'rowNumber' => $this->rowNumber
+            'rowNumber' => $this->rowNumber,
+            'updatedChasisNumber' => $this->updatedChasisNumber
         ];
     }
 
-    private function carDetailsInsert($row,$rowNumber)
+    private function carDetailsInsert($row, $rowNumber)
     {
         try {
-            
+
             $ModelsCarDetails = ModelsCarDetails::create([
                 'PPL' => $row['ppl'],
                 'Fuel' => $row['fuel'],
@@ -95,19 +99,25 @@ class CarDetailsImport implements OnEachRow, WithHeadingRow, WithChunkReading
                 'TandemAxle' => $row['tandem_axle_wtkg'],
                 'GrossWeight' => $row['gross_weight'],
                 'TypeOfBody' => $row['type_of_body'],
+                'active' => $row['active']
+
             ]);
 
             if ($ModelsCarDetails) {
                 $this->carDetailsProcessedCount++;
+                return true;
             } else {
                 $this->rowNumber[] = $rowNumber;
                 $this->carDetailsFailedCount++;
+                return false;
             }
         } catch (\Exception $e) {
             $this->rowNumber[] = $rowNumber;
             $this->carDetailsFailedCount++;
             Log::error("Failed to process row: " . json_encode($row) . ". Error: " . $e->getMessage());
+            return false;
         }
+        return false;
     }
 
     private function carMasterUpdateInsert($data)
@@ -130,12 +140,23 @@ class CarDetailsImport implements OnEachRow, WithHeadingRow, WithChunkReading
                 'updated_at' => Carbon::now()->format('Y-m-d H:i:s'),
             ];
 
-            $carMaster = CarMaster::where('ProductLine', $data->variant)->where('active', '1')->update($cardetails);
 
-            if ($carMaster) {
-                $this->carMasterProcessedCount++;
+
+            $existingCarMaster = CarMaster::where('ProductLine', $data->Variant)
+            ->where('PhysicalStatus', '!=', 'Sold')
+            ->where('active', '1')
+            ->first();
+
+            if ($existingCarMaster) {
+                // Update the existing record
+              $updatedRow = $existingCarMaster->update($cardetails);
             }
 
+            if ((isset($updatedRow) && $updatedRow)) {
+                $this->carMasterProcessedCount += $updatedRow;
+                $this->updatedChasisNumber[] = $existingCarMaster->ChasisNo;
+            }
+  
         } catch (\Exception $e) {
             $this->carDetailsFailedCount++;
             Log::error("Failed to process row: " . json_encode($data) . ". Error: " . $e->getMessage());
@@ -144,6 +165,6 @@ class CarDetailsImport implements OnEachRow, WithHeadingRow, WithChunkReading
 
     public function chunkSize(): int
     {
-        return 1000;
+        return 10000;
     }
 }
