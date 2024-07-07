@@ -41,11 +41,7 @@ class CarDetailsImport implements OnEachRow, WithHeadingRow, WithChunkReading
             $carDetailsInsert = $this->carDetailsInsert($row, $rowNumber);
             if ($carDetailsInsert) {
                 // Fetch the existing car details based on the variant
-                $exist = ModelsCarDetails::where('variant', $row['variant'])->where('active', '1')->orderBy('id', 'desc')->first();
-
-                if ($exist) {
-                    $this->carMasterUpdateInsert($exist);
-                }
+                $this->carMasterUpdateInsert($row);
             }
         } catch (\Exception $e) {
             Log::error("Failed to process row: " . json_encode($row) . ". Error: " . $e->getMessage());
@@ -81,6 +77,8 @@ class CarDetailsImport implements OnEachRow, WithHeadingRow, WithChunkReading
     private function carDetailsInsert($row, $rowNumber)
     {
         try {
+            $active = 1;
+            ModelsCarDetails::where('variant', $row['variant'])->update(['active'=>'0','updated_at' => Carbon::now()->format('Y-m-d H:i:s')]);
 
             $ModelsCarDetails = ModelsCarDetails::create([
                 'PPL' => $row['ppl'],
@@ -99,7 +97,7 @@ class CarDetailsImport implements OnEachRow, WithHeadingRow, WithChunkReading
                 'TandemAxle' => $row['tandem_axle_wtkg'],
                 'GrossWeight' => $row['gross_weight'],
                 'TypeOfBody' => $row['type_of_body'],
-                'active' => $row['active']
+                'active' => $active
 
             ]);
 
@@ -120,9 +118,15 @@ class CarDetailsImport implements OnEachRow, WithHeadingRow, WithChunkReading
         return false;
     }
 
-    private function carMasterUpdateInsert($data)
+    private function carMasterUpdateInsert($row)
     {
         try {
+            $data = ModelsCarDetails::where('variant', $row['variant'])->where('active', '1')->orderBy('id', 'desc')->first();
+
+            if(!$data){
+                return false;
+            }
+
             $cardetails = [
                 'MakersName' => $data->MakersName,
                 'NoOfCylinders' => $data->NoOfCylinders,
@@ -140,8 +144,6 @@ class CarDetailsImport implements OnEachRow, WithHeadingRow, WithChunkReading
                 'updated_at' => Carbon::now()->format('Y-m-d H:i:s'),
             ];
 
-
-
             $existingCarMaster = CarMaster::where('ProductLine', $data->Variant)
             ->where('PhysicalStatus', '!=', 'Sold')
             ->where('active', '1')
@@ -149,7 +151,10 @@ class CarDetailsImport implements OnEachRow, WithHeadingRow, WithChunkReading
 
             if ($existingCarMaster) {
                 // Update the existing record
-              $updatedRow = $existingCarMaster->update($cardetails);
+                $carExist = Car::where('ChasisNo', $existingCarMaster->ChasisNo)->where('active', '1')->orderBy('ID', 'desc')->first();
+                if($carExist){
+                    $updatedRow = $existingCarMaster->update($cardetails);
+                }
             }
 
             if ((isset($updatedRow) && $updatedRow)) {

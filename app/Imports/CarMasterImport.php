@@ -39,17 +39,15 @@ class CarMasterImport implements OnEachRow, WithHeadingRow, WithChunkReading
             $row = $dataRow->toArray();
             $carInsert=$this->carInsert($row, $rowNumber);
             if($carInsert){
-                $exist = ModelsCarDetails::where('variant', $row['product_line'])->where('active', '1')->orderBy('id', 'desc')->first();
-
-                if ($exist) {
-                    $this->carMasterUpdateInsert($row, $exist);
-                } else {
+                $carDetailsExist = ModelsCarDetails::where('variant', $row['product_line'])->where('active','1')->orderBy('id', 'desc')->first();
+                $carExist = Car::where('ChasisNo',$row['chassis_no'])->where('active', '1')->orderBy('ID','desc')->first();
+                if ($carDetailsExist && $carExist) {
+                    $this->carMasterUpdateInsert($row, $carDetailsExist);
+                } else if (!$carDetailsExist){
                     $this->carMasterFailedCount++;
                     $this->missingDetails[] = $row['chassis_no'];
                 }
             }
-
-
 
         } catch (\Exception $e) {
             Log::error("Failed to process row: " . json_encode($row) . ". Error: " . $e->getMessage());
@@ -88,6 +86,9 @@ class CarMasterImport implements OnEachRow, WithHeadingRow, WithChunkReading
     private function carInsert($row, $rowNumber)
     {
         try {
+            $active = 1;
+            Car::where('ChasisNo',$row['chassis_no'])->update(['active'=>'0','updated_at' => Carbon::now()->format('Y-m-d H:i:s')]);
+
             $car = Car::create([
                 'ChasisNo' => $row['chassis_no'],
                 'Model' => $row['model'],
@@ -100,7 +101,7 @@ class CarMasterImport implements OnEachRow, WithHeadingRow, WithChunkReading
                 'TMInvoiceDate' => $this->dateFormat($row['tm_invoice_date']),
                 'CommercialInvoiceNo' => $row['commercial_invoice'],
                 'HSNCode' => $row['hsn_code'],
-                'active' => $row['active'],
+                'active' => $active,
             ]);
 
             if ($car) {
@@ -120,7 +121,7 @@ class CarMasterImport implements OnEachRow, WithHeadingRow, WithChunkReading
         return false;
     }
 
-    private function carMasterUpdateInsert($rowData, $data)
+    private function carMasterUpdateInsert($rowData, $carDetailsExist)
     {
         try {
             $queryArray = [
@@ -135,18 +136,18 @@ class CarMasterImport implements OnEachRow, WithHeadingRow, WithChunkReading
                 'TMInvoiceDate' => $this->dateFormat($rowData['tm_invoice_date']),
                 'CommercialInvoiceNo' => $rowData['commercial_invoice'],
                 'HSNCode' => $rowData['hsn_code'],
-                'MakersName' => $data->MakersName,
-                'NoOfCylinders' => $data->NoOfCylinders,
-                'CatalyticConverter' => $data->CatalyticConverter,
-                'UnladenWeight' => $data->UnladenWeight,
-                'SeatingCapacity' => $data->SeatingCapacity,
-                'FrontAxle' => $data->FrontAxle,
-                'RearAxle' => $data->RearAxle,
-                'AnyOtherAxle' => $data->AnyOtherAxle,
-                'TandemAxle' => $data->TandemAxle,
-                'GrossWeight' => $data->GrossWeight,
-                'TypeOfBody' => $data->TypeOfBody,
-                'TypeOfFuel' => $data->Fuel,
+                'MakersName' => $carDetailsExist->MakersName,
+                'NoOfCylinders' => $carDetailsExist->NoOfCylinders,
+                'CatalyticConverter' => $carDetailsExist->CatalyticConverter,
+                'UnladenWeight' => $carDetailsExist->UnladenWeight,
+                'SeatingCapacity' => $carDetailsExist->SeatingCapacity,
+                'FrontAxle' => $carDetailsExist->FrontAxle,
+                'RearAxle' => $carDetailsExist->RearAxle,
+                'AnyOtherAxle' => $carDetailsExist->AnyOtherAxle,
+                'TandemAxle' => $carDetailsExist->TandemAxle,
+                'GrossWeight' => $carDetailsExist->GrossWeight,
+                'TypeOfBody' => $carDetailsExist->TypeOfBody,
+                'TypeOfFuel' => $carDetailsExist->Fuel,
                 'HorsePower' => null,
                 'updated_at' => Carbon::now()->format('Y-m-d H:i:s'),
             ];
@@ -182,7 +183,7 @@ class CarMasterImport implements OnEachRow, WithHeadingRow, WithChunkReading
             
         } catch (\Exception $e) {
             $this->carMasterFailedCount++;
-            Log::error("Failed to process row: " . json_encode($data) . ". Error: " . $e->getMessage());
+            Log::error("Failed to process row: " . json_encode($rowData) . ". Error: " . $e->getMessage());
         }
     }
 
