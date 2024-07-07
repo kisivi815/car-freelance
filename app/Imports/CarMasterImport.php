@@ -136,23 +136,31 @@ class CarMasterImport implements OnEachRow, WithHeadingRow, WithChunkReading
                 'TMInvoiceDate' => $this->dateFormat($rowData['tm_invoice_date']),
                 'CommercialInvoiceNo' => $rowData['commercial_invoice'],
                 'HSNCode' => $rowData['hsn_code'],
-                'MakersName' => $carDetailsExist->MakersName,
-                'NoOfCylinders' => $carDetailsExist->NoOfCylinders,
-                'CatalyticConverter' => $carDetailsExist->CatalyticConverter,
-                'UnladenWeight' => $carDetailsExist->UnladenWeight,
-                'SeatingCapacity' => $carDetailsExist->SeatingCapacity,
-                'FrontAxle' => $carDetailsExist->FrontAxle,
-                'RearAxle' => $carDetailsExist->RearAxle,
-                'AnyOtherAxle' => $carDetailsExist->AnyOtherAxle,
-                'TandemAxle' => $carDetailsExist->TandemAxle,
-                'GrossWeight' => $carDetailsExist->GrossWeight,
-                'TypeOfBody' => $carDetailsExist->TypeOfBody,
-                'TypeOfFuel' => $carDetailsExist->Fuel,
                 'HorsePower' => null,
+                'active' => '1',
                 'updated_at' => Carbon::now()->format('Y-m-d H:i:s'),
             ];
-            
+           
+            if($carDetailsExist){
+               $carDetails = [
+                    'MakersName' => $carDetailsExist->MakersName,
+                    'NoOfCylinders' => $carDetailsExist->NoOfCylinders,
+                    'CatalyticConverter' => $carDetailsExist->CatalyticConverter,
+                    'UnladenWeight' => $carDetailsExist->UnladenWeight,
+                    'SeatingCapacity' => $carDetailsExist->SeatingCapacity,
+                    'FrontAxle' => $carDetailsExist->FrontAxle,
+                    'RearAxle' => $carDetailsExist->RearAxle,
+                    'AnyOtherAxle' => $carDetailsExist->AnyOtherAxle,
+                    'TandemAxle' => $carDetailsExist->TandemAxle,
+                    'GrossWeight' => $carDetailsExist->GrossWeight,
+                    'TypeOfBody' => $carDetailsExist->TypeOfBody,
+                    'TypeOfFuel' => $carDetailsExist->Fuel,
+               ];
 
+              $queryArray = array_merge($queryArray,$carDetails);
+            }
+
+            
             // Check if a record exists with the given conditions
 
             if($rowData['physical_status'] != 'Sold'){
@@ -161,6 +169,8 @@ class CarMasterImport implements OnEachRow, WithHeadingRow, WithChunkReading
                 ->where('PhysicalStatus', '!=', 'Sold')
                 ->where('active', '1')
                 ->first();
+
+                
 
                 if ($existingCarMaster) {
                     // Update the existing record
