@@ -121,7 +121,7 @@ class CarMasterImport implements OnEachRow, WithHeadingRow, WithChunkReading
             $carDetailsExist = ModelsCarDetails::where('variant', $rowData['product_line'])->where('active','1')->orderBy('id', 'desc')->first();
             $carExist = Car::where('ChasisNo',$rowData['chassis_no'])->where('active', '1')->orderBy('ID','desc')->first();
 
-            if($carExist && $carDetailsExist){
+            if($carExist){
                 $queryArray = [
                     'ChasisNo' => $rowData['chassis_no'],
                     'Model' => $rowData['model'],

@@ -39,10 +39,6 @@ class CarDetailsImport implements OnEachRow, WithHeadingRow, WithChunkReading
             $rowNumber = $dataRow->getIndex();
             $row = $dataRow->toArray();
             $carDetailsInsert = $this->carDetailsInsert($row, $rowNumber);
-            if ($carDetailsInsert) {
-                // Fetch the existing car details based on the variant
-                $this->carMasterUpdateInsert($row);
-            }
         } catch (\Exception $e) {
             Log::error("Failed to process row: " . json_encode($row) . ". Error: " . $e->getMessage());
         }
@@ -66,9 +62,7 @@ class CarDetailsImport implements OnEachRow, WithHeadingRow, WithChunkReading
     {
         return [
             'carDetailsProcessedCount' => $this->carDetailsProcessedCount,
-            'carMasterProcessedCount' => $this->carMasterProcessedCount,
             'carDetailsFailedCount' => $this->carDetailsFailedCount,
-            'carMasterFailedCount' => $this->carMasterFailedCount,
             'rowNumber' => $this->rowNumber,
             'updatedChasisNumber' => $this->updatedChasisNumber
         ];
@@ -116,56 +110,6 @@ class CarDetailsImport implements OnEachRow, WithHeadingRow, WithChunkReading
             return false;
         }
         return false;
-    }
-
-    private function carMasterUpdateInsert($row)
-    {
-        try {
-            $data = ModelsCarDetails::where('variant', $row['variant'])->where('active', '1')->orderBy('id', 'desc')->first();
-
-            if(!$data){
-                return false;
-            }
-
-            $cardetails = [
-                'MakersName' => $data->MakersName,
-                'NoOfCylinders' => $data->NoOfCylinders,
-                'CatalyticConverter' => $data->CatalyticConverter,
-                'UnladenWeight' => $data->UnladenWeight,
-                'SeatingCapacity' => $data->SeatingCapacity,
-                'FrontAxle' => $data->FrontAxle,
-                'RearAxle' => $data->RearAxle,
-                'AnyOtherAxle' => $data->AnyOtherAxle,
-                'TandemAxle' => $data->TandemAxle,
-                'GrossWeight' => $data->GrossWeight,
-                'TypeOfBody' => $data->TypeOfBody,
-                'TypeOfFuel' => $data->Fuel,
-                'HorsePower' => null,
-                'updated_at' => Carbon::now()->format('Y-m-d H:i:s'),
-            ];
-
-            $existingCarMaster = CarMaster::where('ProductLine', $data->Variant)
-            ->where('PhysicalStatus', '!=', 'Sold')
-            ->where('active', '1')
-            ->first();
-
-            if ($existingCarMaster) {
-                // Update the existing record
-                $carExist = Car::where('ChasisNo', $existingCarMaster->ChasisNo)->where('active', '1')->orderBy('ID', 'desc')->first();
-                if($carExist){
-                    $updatedRow = $existingCarMaster->update($cardetails);
-                }
-            }
-
-            if ((isset($updatedRow) && $updatedRow)) {
-                $this->carMasterProcessedCount += $updatedRow;
-                $this->updatedChasisNumber[] = $existingCarMaster->ChasisNo;
-            }
-  
-        } catch (\Exception $e) {
-            $this->carDetailsFailedCount++;
-            Log::error("Failed to process row: " . json_encode($data) . ". Error: " . $e->getMessage());
-        }
     }
 
     public function chunkSize(): int

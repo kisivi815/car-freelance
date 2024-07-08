@@ -28,12 +28,12 @@
                                                                 <input class="form-control" type="file" name="file" id="formFile">
                                                             </div>
                                                             <div class="col-lg-4 col-md-2 col-sm-4">
-                                                                <button type="submit" class="btn btn-primary me-1 mb-1" id="submit-btn" style="width:100px" value="submit">Submit</button>
+                                                                <button type="submit" class="btn btn-primary me-1 mb-1 submit-btn" id="submit-upload-stock-form-btn" style="width:100px" value="submit">Submit</button>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </form>
-                                                <form class="form form-horizontal col-lg-6 col-md-12" id="upload-stock-form" action="{{route('upload-car-details-sheets')}}" name="uploadstockform" method="POST" enctype="multipart/form-data" autocomplete="off">
+                                                <form class="form form-horizontal col-lg-6 col-md-12" id="upload-stock-details-form" action="{{route('upload-car-details-sheets')}}" name="uploadstockdetailsform" method="POST" enctype="multipart/form-data" autocomplete="off">
                                                 @csrf
                                                 <div>
                                                     <label for="formFile" class="form-label">Upload Car Details</label>
@@ -42,7 +42,7 @@
                                                             <input class="form-control" type="file" name="file" id="formFile">
                                                         </div>
                                                         <div class="col-lg-4 col-md-2 col-sm-4">
-                                                            <button type="submit" class="btn btn-primary me-1 mb-1" id="submit-btn" style="width:100px" value="submit">Submit</button>
+                                                            <button type="submit" class="btn btn-primary me-1 mb-1 submit-btn" id="submit-upload-stock-details-btn" style="width:100px" value="submit">Submit</button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -63,8 +63,17 @@
         @include('layout.script')
         <script>
             $(document).ready(function() {
+                $('#submit-upload-stock-form-btn').on('click', function() {
+                    $('#upload-stock-form').submit();
+                    $('.form-control').attr('disabled', true);
+                    $('.submit-btn').attr('disabled', true);
+                })
 
-
+                $('#submit-upload-stock-details-btn').on('click', function() {
+                    $('#upload-stock-details-form').submit();
+                    $('.form-control').attr('disabled', true);
+                    $('.submit-btn').attr('disabled', true);
+                })
             });
         </script>
 </body>
