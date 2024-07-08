@@ -39,14 +39,7 @@ class CarMasterImport implements OnEachRow, WithHeadingRow, WithChunkReading
             $row = $dataRow->toArray();
             $carInsert=$this->carInsert($row, $rowNumber);
             if($carInsert){
-                $carDetailsExist = ModelsCarDetails::where('variant', $row['product_line'])->where('active','1')->orderBy('id', 'desc')->first();
-                $carExist = Car::where('ChasisNo',$row['chassis_no'])->where('active', '1')->orderBy('ID','desc')->first();
-                if ($carDetailsExist && $carExist) {
-                    $this->carMasterUpdateInsert($row, $carDetailsExist);
-                } else if (!$carDetailsExist){
-                    $this->carMasterFailedCount++;
-                    $this->missingDetails[] = $row['chassis_no'];
-                }
+                $this->carMasterUpdateInsert($row);
             }
 
         } catch (\Exception $e) {
@@ -121,76 +114,76 @@ class CarMasterImport implements OnEachRow, WithHeadingRow, WithChunkReading
         return false;
     }
 
-    private function carMasterUpdateInsert($rowData, $carDetailsExist)
+    private function carMasterUpdateInsert($rowData)
     {
         try {
-            $queryArray = [
-                'ChasisNo' => $rowData['chassis_no'],
-                'Model' => $rowData['model'],
-                'ProductLine' => $rowData['product_line'],
-                'Colour' => $rowData['chassis_color'],
-                'PhysicalStatus' => $rowData['physical_status'],
-                'EngineNo' => $rowData['engine_no'],
-                'EmissionNorm' => $rowData['emission_norm'],
-                'ManufacturingDate' => $this->dateFormat($rowData['manufacturing_date']),
-                'TMInvoiceDate' => $this->dateFormat($rowData['tm_invoice_date']),
-                'CommercialInvoiceNo' => $rowData['commercial_invoice'],
-                'HSNCode' => $rowData['hsn_code'],
-                'HorsePower' => null,
-                'active' => '1',
-                'updated_at' => Carbon::now()->format('Y-m-d H:i:s'),
-            ];
-           
-            if($carDetailsExist){
-               $carDetails = [
-                    'MakersName' => $carDetailsExist->MakersName,
-                    'NoOfCylinders' => $carDetailsExist->NoOfCylinders,
-                    'CatalyticConverter' => $carDetailsExist->CatalyticConverter,
-                    'UnladenWeight' => $carDetailsExist->UnladenWeight,
-                    'SeatingCapacity' => $carDetailsExist->SeatingCapacity,
-                    'FrontAxle' => $carDetailsExist->FrontAxle,
-                    'RearAxle' => $carDetailsExist->RearAxle,
-                    'AnyOtherAxle' => $carDetailsExist->AnyOtherAxle,
-                    'TandemAxle' => $carDetailsExist->TandemAxle,
-                    'GrossWeight' => $carDetailsExist->GrossWeight,
-                    'TypeOfBody' => $carDetailsExist->TypeOfBody,
-                    'TypeOfFuel' => $carDetailsExist->Fuel,
-               ];
 
-              $queryArray = array_merge($queryArray,$carDetails);
-            }
+            $carDetailsExist = ModelsCarDetails::where('variant', $rowData['product_line'])->where('active','1')->orderBy('id', 'desc')->first();
+            $carExist = Car::where('ChasisNo',$rowData['chassis_no'])->where('active', '1')->orderBy('ID','desc')->first();
 
-            
-            // Check if a record exists with the given conditions
-
-            if($rowData['physical_status'] != 'Sold'){
-
-                $existingCarMaster = CarMaster::where('ChasisNo', $rowData['chassis_no'])
-                ->where('PhysicalStatus', '!=', 'Sold')
-                ->where('active', '1')
-                ->first();
-
-                
-
-                if ($existingCarMaster) {
-                    // Update the existing record
-                    $existingCarMaster->update($queryArray);
-                } else {
-                    // Create a new record if no existing record is found
-                    $carMaster = CarMaster::create($queryArray);
+            if($carExist && $carDetailsExist){
+                $queryArray = [
+                    'ChasisNo' => $rowData['chassis_no'],
+                    'Model' => $rowData['model'],
+                    'ProductLine' => $rowData['product_line'],
+                    'Colour' => $rowData['chassis_color'],
+                    'PhysicalStatus' => $rowData['physical_status'],
+                    'EngineNo' => $rowData['engine_no'],
+                    'EmissionNorm' => $rowData['emission_norm'],
+                    'ManufacturingDate' => $this->dateFormat($rowData['manufacturing_date']),
+                    'TMInvoiceDate' => $this->dateFormat($rowData['tm_invoice_date']),
+                    'CommercialInvoiceNo' => $rowData['commercial_invoice'],
+                    'HSNCode' => $rowData['hsn_code'],
+                    'HorsePower' => null,
+                    'active' => '1',
+                    'updated_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                ];
+               
+                if($carDetailsExist){
+                   $carDetails = [
+                        'MakersName' => $carDetailsExist->MakersName,
+                        'NoOfCylinders' => $carDetailsExist->NoOfCylinders,
+                        'CatalyticConverter' => $carDetailsExist->CatalyticConverter,
+                        'UnladenWeight' => $carDetailsExist->UnladenWeight,
+                        'SeatingCapacity' => $carDetailsExist->SeatingCapacity,
+                        'FrontAxle' => $carDetailsExist->FrontAxle,
+                        'RearAxle' => $carDetailsExist->RearAxle,
+                        'AnyOtherAxle' => $carDetailsExist->AnyOtherAxle,
+                        'TandemAxle' => $carDetailsExist->TandemAxle,
+                        'GrossWeight' => $carDetailsExist->GrossWeight,
+                        'TypeOfBody' => $carDetailsExist->TypeOfBody,
+                        'TypeOfFuel' => $carDetailsExist->Fuel,
+                   ];
+    
+                  $queryArray = array_merge($queryArray,$carDetails);
                 }
 
-                if ((isset($carMaster) && $carMaster) || (isset($existingCarMaster) && $existingCarMaster)) {
-                    $this->carMasterProcessedCount++;
-                } else {
+                // Check if a record exists with the given conditions
+    
+                if($rowData['physical_status'] != 'Sold'){
+    
+                    $existingCarMaster = CarMaster::where('ChasisNo', $rowData['chassis_no'])
+                    ->where('PhysicalStatus', '!=', 'Sold')
+                    ->where('active', '1')
+                    ->first();
+    
+                    if ($existingCarMaster) {
+                        // Update the existing record
+                        $existingCarMaster->update($queryArray);
+                    } else {
+                        // Create a new record if no existing record is found
+                        $carMaster = CarMaster::create($queryArray);
+                    }
+    
+                    if ((isset($carMaster) && $carMaster) || (isset($existingCarMaster) && $existingCarMaster)) {
+                        $this->carMasterProcessedCount++;
+                    }
+                }else {
                     $this->missingDetails[] = $rowData['chassis_no'];
                     $this->carMasterFailedCount++;
                 }
             }
            
-
-
-            
         } catch (\Exception $e) {
             $this->carMasterFailedCount++;
             Log::error("Failed to process row: " . json_encode($rowData) . ". Error: " . $e->getMessage());
