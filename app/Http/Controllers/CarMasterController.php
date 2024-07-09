@@ -128,6 +128,7 @@ class CarMasterController extends Controller
 
             return back()->with('message', 'Data imported successfully. <br>' . $message);
         } catch (Exception $e) {
+            Log::error( "Error: " . $e->getMessage());
             return back()->with('error', 'Error occurred while importing data. Please try again later.');
         }
     }
