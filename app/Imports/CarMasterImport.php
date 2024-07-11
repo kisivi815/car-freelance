@@ -12,6 +12,7 @@ use Maatwebsite\Excel\Row;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
+use App\Models\PhysicalStatus;
 
 class CarMasterImport implements OnEachRow, WithHeadingRow, WithChunkReading
 {
@@ -22,9 +23,11 @@ class CarMasterImport implements OnEachRow, WithHeadingRow, WithChunkReading
     private $carMasterFailedCount = 0;
     private $rowNumber = [];
     private $missingDetails = [];
+    private $phyicalStatus;
 
     public function __construct()
     {
+        $this->phyicalStatus = PhysicalStatus::pluck('name')->toArray();
     }
 
     /**
@@ -160,14 +163,13 @@ class CarMasterImport implements OnEachRow, WithHeadingRow, WithChunkReading
 
                 // Check if a record exists with the given conditions
     
-                if($rowData['physical_status'] != 'Sold'){
+                /* if(!in_array($rowData['physical_status'],$this->phyicalStatus)){ */
     
                     $existingCarMaster = CarMaster::where('ChasisNo', $rowData['chassis_no'])
-                    ->where('PhysicalStatus', '!=', 'Sold')
                     ->where('active', '1')
                     ->first();
-    
-                    if ($existingCarMaster) {
+
+                    if ($existingCarMaster && !in_array($existingCarMaster->PhysicalStatus, $this->phyicalStatus)) {
                         // Update the existing record
                         $existingCarMaster->update($queryArray);
                     } else {
@@ -178,10 +180,10 @@ class CarMasterImport implements OnEachRow, WithHeadingRow, WithChunkReading
                     if ((isset($carMaster) && $carMaster) || (isset($existingCarMaster) && $existingCarMaster)) {
                         $this->carMasterProcessedCount++;
                     }
-                }else {
+                /* }else {
                     $this->missingDetails[] = $rowData['chassis_no'];
                     $this->carMasterFailedCount++;
-                }
+                } */
             }
            
         } catch (\Exception $e) {
