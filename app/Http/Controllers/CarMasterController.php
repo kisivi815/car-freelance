@@ -10,6 +10,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\CarMasterImport;
 use App\Models\Car;
 use App\Models\CarMaster;
+use App\Models\PhysicalStatus;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Event;
@@ -22,6 +23,12 @@ class CarMasterController extends Controller
     private $carMasterProcessedCount = 0;
     private $carMasterFailedCount = 0;
     private $updatedChasisNumber = [];
+    private $phyicalStatus;
+
+    public function __construct()
+    {
+        $this->phyicalStatus = PhysicalStatus::pluck('name')->toArray();
+    }
 
     /**
      * Display a listing of the resource.
@@ -162,7 +169,9 @@ class CarMasterController extends Controller
                 ];
 
                 $existingCarMaster = CarMaster::where('ProductLine', $d->Variant)
-                    ->where('PhysicalStatus', '!=', 'Sold')
+                    ->where(function($query){
+                        $query->whereNotIn('PhysicalStatus',$this->phyicalStatus)->orWhereNull('PhysicalStatus');
+                    })
                     ->where('active', '1')
                     ->get();
 
