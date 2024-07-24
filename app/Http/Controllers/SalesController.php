@@ -52,4 +52,18 @@ class SalesController extends Controller
             return redirect()->route('quick-sale')->with('error', 'Error occurred while submitting!');
         }
     }
+
+    public function getQuickSalesGatePass(Request $request, string $id){
+        try {
+            $message = '';
+            $quickSales = QuickSales::findOrFail($id);
+            if (isset($request->input()['from']) == 'quick-sales') {
+                $message = 'On ' . Carbon::today()->format('d-m-Y') . ', ' . $quickSales->ChasisNo . ' cars were sold from ' . $quickSales->Source->name ;
+                session(['message' => $message]);
+            }
+            return view('quick-sale-gate-pass')->with(['title' => 'Quick Sales Gate Pass', 'data' => $quickSales]);
+        } catch (ModelNotFoundException $e) {
+            return redirect()->route('view-sale')->with('error', 'Record not found.');
+        }
+    }
 }

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Branch;
 
 class QuickSales extends Model
 {
@@ -23,5 +24,9 @@ class QuickSales extends Model
         'created_at',
         'updated_at',
     ];
+
+    public function SalesBranch(){
+        return $this->hasOne(Branch::class,'id','Branch');
+    }
 
 }

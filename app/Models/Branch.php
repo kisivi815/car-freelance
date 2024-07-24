@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\TransferStock;
+use App\Models\QuickSales;
 
 class Branch extends Model
 {
@@ -18,5 +19,8 @@ class Branch extends Model
 
     public function TransferStockDestination(){
         return $this->belongsTo(TransferStock::class, 'DestinationBranch' , 'id');
+    }
+    public function QuickSalesBranch(){
+        return $this->belongsTo(QuickSales::class, 'Branch' , 'id');
     }
 }
