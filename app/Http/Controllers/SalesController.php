@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\QuickSalesRequest;
+use App\Http\Requests\SubmitSalesRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\QuickSales;
 use App\Models\CarMaster;
 use App\Models\Branch;
+use App\Models\Sales;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -62,6 +64,32 @@ class SalesController extends Controller
                 session(['message' => $message]);
             }
             return view('quick-sale-gate-pass')->with(['title' => 'Quick Sales Gate Pass', 'data' => $quickSales]);
+        } catch (ModelNotFoundException $e) {
+            return redirect()->route('view-sale')->with('error', 'Record not found.');
+        }
+    }
+
+    public function salesForm(Request $request, string $id = null)
+    {
+        $car = CarMaster::where('PhysicalStatus','In Transit')->get();
+        $branch = Branch::all();
+
+        if($id){
+            $sales = Sales::where('id', $id)->first();
+        }
+        
+        $data = ['car' => $car, 'branch' => $branch,'data'=>(isset($sales))?$sales:null];
+        return view('sales-form')->with(['title' => 'Transfer Stock', 'data' => $data]);
+    }
+
+    public function submitSalesForm(SubmitSalesRequest $request,string $id = null){
+        try {
+            if(!$id){
+                $validatedData = $request->validated();
+                $newRecord = Sales::create($validatedData);
+                return redirect()->route('view-sale')->with('message', 'Submitted successfully!');
+            }
+            
         } catch (ModelNotFoundException $e) {
             return redirect()->route('view-sale')->with('error', 'Record not found.');
         }

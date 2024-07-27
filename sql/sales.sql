@@ -1,0 +1,20 @@
+CREATE TABLE sales (
+    ID INT PRIMARY KEY AUTO_INCREMENT,
+    Mobile bigint,
+    Saluation varchar(10),
+    FirstName varchar(50),
+    LastName varchar(50),
+    FathersName varchar(50),
+    Email  varchar(50),
+    Aadhar varchar(50),
+    PAN varchar(50),
+    GST varchar(50),
+    PermanentAddress varchar (500),
+    TemporaryAddress varchar (500),
+    ChasisNo VARCHAR(50),
+    Bank varchar(100),
+    InsuranceName varchar(100),
+    DiscountType VARCHAR(50),
+    Accessories VARCHAR(50),
+    TypeofGST SMALLINT(4) NOT NULL DEFAULT 1
+);

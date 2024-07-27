@@ -30,6 +30,10 @@ Route::middleware(RedirectIfAuthenticated::class)->group(function () {
     Route::post('/submit-quick-sales', [SalesController::class, 'store'])->name('submit-quick-sales');
     Route::get('/quick-sales-gate-pass/{id}', [SalesController::class, 'getQuickSalesGatePass'])->name('quick-sales-gate-pass');
 
+    Route::get('/sales-form/{id?}',[SalesController::class,'salesForm'])->name('salesForm');
+    Route::post('/submit-sales', [SalesController::class, 'submitSalesForm'])->name('submit-sales');
+    
+
     Route::get('/view-sale', function () {
         return view('view-sale')->with(['title' => 'View Sale']);
     })->name('view-sale');

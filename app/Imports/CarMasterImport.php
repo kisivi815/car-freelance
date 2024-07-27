@@ -124,6 +124,11 @@ class CarMasterImport implements OnEachRow, WithHeadingRow, WithChunkReading
             $carDetailsExist = ModelsCarDetails::where('variant', $rowData['product_line'])->where('active','1')->orderBy('id', 'desc')->first();
             $carExist = Car::where('ChasisNo',$rowData['chassis_no'])->where('active', '1')->orderBy('ID','desc')->first();
 
+            if($rowData['dealer_purchase_order_price']){
+                $rowData['dealer_purchase_order_price'] = str_replace(',', '', $rowData['dealer_purchase_order_price']);
+                $rowData['dealer_purchase_order_price'] = str_replace('Rs.', '', $rowData['dealer_purchase_order_price']);
+            }
+
             if($carExist){
                 $queryArray = [
                     'ChasisNo' => $rowData['chassis_no'],
@@ -137,6 +142,7 @@ class CarMasterImport implements OnEachRow, WithHeadingRow, WithChunkReading
                     'TMInvoiceDate' => $this->dateFormat($rowData['tm_invoice_date']),
                     'CommercialInvoiceNo' => $rowData['commercial_invoice'],
                     'HSNCode' => $rowData['hsn_code'],
+                    'Amount' => $rowData['dealer_purchase_order_price'],
                     'HorsePower' => null,
                     'active' => '1',
                     'updated_at' => Carbon::now()->format('Y-m-d H:i:s'),
