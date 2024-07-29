@@ -33,10 +33,7 @@ Route::middleware(RedirectIfAuthenticated::class)->group(function () {
     Route::get('/sales-form/{id?}',[SalesController::class,'salesForm'])->name('salesForm');
     Route::post('/submit-sales', [SalesController::class, 'submitSalesForm'])->name('submit-sales');
     
-
-    Route::get('/view-sale', function () {
-        return view('view-sale')->with(['title' => 'View Sale']);
-    })->name('view-sale');
+    Route::get('/view-sales',[SalesController::class,'index'])->name('view-sales');
 
     Route::get('/view-stock', [StockController::class, 'index'])->name('view-stock');
 

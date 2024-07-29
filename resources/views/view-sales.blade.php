@@ -29,7 +29,7 @@
                                                         <th>Car Name</th>
                                                         <th>Chasis No</th>
                                                         <th>Status</th>
-                                                        <th style="min-width: 100px">Submit For Approval</th>
+                                                        <th>Submit For Approval</th>
                                                         <th>Approve</th>
                                                         <th>Reject</th>
                                                         <th>Download</th>
@@ -37,20 +37,22 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
+                                                    @foreach ($data['result'] as $d)
                                                     <tr>
-                                                        <td class="text-bold-500">Michael Right</td>
-                                                        <td>$15/hr</td>
-                                                        <td class="text-bold-500">UI/UX</td>
-                                                        <td>Remote</td>
-                                                        <td>Austin,Taxes</td>
-                                                        <td><a href="#"><i class="badge-circle badge-circle-light-secondary font-medium-1" data-feather="mail"></i></a></td>
-                                                        <td class="text-bold-500">Michael Right</td>
-                                                        <td>$15/hr</td>
-                                                        <td class="text-bold-500">UI/UX</td>
-                                                        <td>Remote</td>
-                                                        <td>Austin,Taxes</td>
-                                                        <td><a href="#"><i class="badge-circle badge-circle-light-secondary font-medium-1" data-feather="mail"></i></a></td>
+                                                        <td>{{$d->ID}}</td>
+                                                        <td>-</td>
+                                                        <td>{{date("Y-m-d", strtotime($d->DateOfSales))}}</td>
+                                                        <td>{{$d->FirstName}} {{$d->LastName}}</td>
+                                                        <td>-</td>
+                                                        <td>{{$d->ChasisNo}}</td>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                        <td>-</td>
                                                     </tr>
+                                                    @endforeach
                                                 </tbody>
                                             </table>
                                         </div>

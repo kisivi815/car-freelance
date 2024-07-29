@@ -23,7 +23,63 @@ class SalesController extends Controller
     public function index(Request $request)
     {
         try {
+            $branch = Branch::all();
+            $status = [
+                ['text' => 'All', 'value' => ''],
+                ['text' => 'Received Approved', 'value' => 'RECEIVED APPROVED'],
+                ['text' => 'Received Rejected', 'value' => 'RECEIVED REJECTED'],
+                ['text' => 'Stock T/F', 'value' => 'STOCK TF']
+            ];
+            $car = CarMaster::all();
+
+            $query = Sales::query();
+
+            /* if ($request->car) {
+                $query->whereHas('CarMaster', function ($subQuery) use ($request) {
+                    $subQuery->where('Model', 'like', '%' . $request->car . '%');
+                });
+            }
+
+            if ($request->source) {
+                $query->Where('SourceBranch', $request->source);
+            }
+
+            if ($request->destination) {
+                $query->Where('DestinationBranch', $request->destination);
+            }
+
+            if ($request->status) {
+                if ($request->status == 'RECEIVED APPROVED') {
+                    $query->WhereNotNull('ApprovedBy');
+                }
+
+                if ($request->status == 'RECEIVED REJECTED') {
+                    $query->WhereNotNull('RejectedBy');
+                }
+
+                if ($request->status == 'STOCK TF') {
+                    $query->where('ApprovedBy', null)->where('RejectedBy', null);
+                }
+            }
+
+            if ($request->name) {
+                $query->where(function ($subQuery) use ($request) {
+                    $subQuery->orWhere('SendBy', 'like', '%' . $request->name . '%');
+                    $subQuery->orWhere('ReceivedBy', 'like', '%' . $request->name . '%');
+                });
+            }
+
+            if ($request->chasisNo) {
+                $query->Where('ChasisNo', 'like', '%' . $request->chasisNo . '%');
+            } */
+
+            $query->orderBy('id', 'desc');
+            $result = $query->paginate(10)->appends($request->all());
+
+            $data = ['status' => $status, 'branch' => $branch, 'car' => $car, 'result' => $result];
+            return view('view-sales')->with(['title' => 'View Sales', 'data' => $data]);
         } catch (ModelNotFoundException $e) {
+            return redirect()->route('view-sales')->with('error', 'Record not found.');
         }
     }
 
@@ -65,7 +121,7 @@ class SalesController extends Controller
             }
             return view('quick-sale-gate-pass')->with(['title' => 'Quick Sales Gate Pass', 'data' => $quickSales]);
         } catch (ModelNotFoundException $e) {
-            return redirect()->route('view-sale')->with('error', 'Record not found.');
+            return redirect()->route('view-sales')->with('error', 'Record not found.');
         }
     }
 
@@ -87,11 +143,11 @@ class SalesController extends Controller
             if(!$id){
                 $validatedData = $request->validated();
                 $newRecord = Sales::create($validatedData);
-                return redirect()->route('view-sale')->with('message', 'Submitted successfully!');
+                return redirect()->route('view-sales')->with('message', 'Submitted successfully!');
             }
             
         } catch (ModelNotFoundException $e) {
-            return redirect()->route('view-sale')->with('error', 'Record not found.');
+            return redirect()->route('view-sales')->with('error', 'Record not found.');
         }
     }
 }

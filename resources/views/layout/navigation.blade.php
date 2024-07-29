@@ -26,10 +26,10 @@
                         <span>Quick Sale</span>
                     </a>
                 </li>
-                <li class="sidebar-item {{ Request::routeIs('view-sale') ? 'active' : '' }}">
-                    <a href="{{ route('view-sale') }}" class='sidebar-link'>
+                <li class="sidebar-item {{ Request::routeIs('view-sales') ? 'active' : '' }}">
+                    <a href="{{ route('view-sales') }}" class='sidebar-link'>
                         <i class=""></i>
-                        <span>View Sale</span>
+                        <span>View Sales</span>
                     </a>
                 </li>
                 @if (in_array(Auth::user()->role_id,['1']))

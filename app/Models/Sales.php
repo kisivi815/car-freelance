@@ -11,8 +11,6 @@ class Sales extends Model
 
     protected $table = 'sales';
 
-    public $timestamps = false;
-
     protected $fillable = [
         'Mobile',
         'Saluation',

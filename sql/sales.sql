@@ -16,5 +16,8 @@ CREATE TABLE sales (
     InsuranceName varchar(100),
     DiscountType VARCHAR(50),
     Accessories VARCHAR(50),
-    TypeofGST SMALLINT(4) NOT NULL DEFAULT 1
+    TypeofGST SMALLINT(4) NOT NULL DEFAULT 1,
+    DateOfSales DATETIME DEFAULT CURRENT_TIMESTAMP,
+    created_at DATETIME,
+    updated_at DATETIME
 );
