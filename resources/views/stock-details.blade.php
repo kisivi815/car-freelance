@@ -83,6 +83,12 @@
                                                         <input type="text" id="first-name-horizontal" class="form-control" value="{{$data->ChasisNo}}" disabled>
                                                     </div>
                                                     <div class="col-md-4">
+                                                        <label for="first-name-horizontal">Mileage(S)</label>
+                                                    </div>
+                                                    <div class="col-md-8 form-group">
+                                                        <input type="text" id="first-name-horizontal" class="form-control" value="{{$data->MileageSend}}" disabled>
+                                                    </div>
+                                                    <div class="col-md-4">
                                                         <label for="first-name-horizontal">TF ID</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
@@ -138,6 +144,12 @@
                                                     </div>
                                                     <div class="col-md-8 form-group">
                                                         <input type="text" id="first-name-horizontal" class="form-control" placeholder="Received By" name="ReceivedBy" value="{{$data->ReceivedBy}}" disabled>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label for="horizontal">Mileage(R)</label>
+                                                    </div>
+                                                    <div class="col-md-8 form-group">
+                                                        <input type="text" id="first-name-horizontal" class="form-control" value="{{$data->MileageReceive}}" disabled>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <label for="horizontal">Received Note</label>

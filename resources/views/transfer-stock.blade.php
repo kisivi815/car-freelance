@@ -31,7 +31,7 @@
                                                         <select class="form-select" name="ChasisNo" id="ChasisNo" required>
                                                             <option value="">Select Chasis No</option>
                                                             @foreach ($data['car'] as $c)
-                                                            <option value="{{$c->ChasisNo}}" {{ old('ChasisNo') == $c->ChasisNo ? 'selected' : '' }}>{{$c->ChasisNo}}</option>
+                                                            <option value="{{$c->ChasisNo}}" {{ old('ChasisNo') == $c->ChasisNo ? 'selected' : '' }} data-status="{{$c->PhysicalStatus}}">{{$c->ChasisNo}}</option>
                                                             @endforeach
                                                         </select>
                                                     </div>
@@ -49,13 +49,13 @@
                                                         <label>Mileage</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
-                                                        <input type="number" id="Mileage" class="form-control" name="MileageSend" placeholder="Mileage" value="" min="0" max="9" required>
+                                                        <input type="text" id="Mileage" class="form-control" name="MileageSend" placeholder="Mileage" value="" maxlength="1" oninput="this.value=this.value.replace(/[^0-9]/g,'');" required>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <label>Source Branch</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
-                                                        <select class="form-select" name="SourceBranch" required>
+                                                        <select class="form-select" name="SourceBranch" id="SourceBranch" required>
                                                             <option value="">Select Source Branch</option>
                                                             @foreach ($data['branch'] as $b)
                                                             <option value="{{$b->id}}" {{ old('SourceBranch') == $b->id ? 'selected' : '' }}>{{$b->name}}</option>
@@ -120,7 +120,6 @@
             });
 
 
-
             $('#ChasisNo').on('change', function() {
                 $('#Model').text('-');
                 $('#ProductLine').text('-');
@@ -141,6 +140,13 @@
                         console.error("An error occurred: " + error);
                     }
                 });
+
+                var status = $(this).find(':selected').data('status');
+                if (status == 'In Transit') {
+                    $('#SourceBranch').val('9').trigger('change');
+                }else{
+                    $('#SourceBranch').prop('disabled', false);
+                } 
             });
 
             $('#submit-btn').on('click', function(e) {
@@ -186,11 +192,20 @@
                 if (!valid) {
                     $('.alert-danger').show()
                     $('#error-text').text(message);
-                } else {
+                } else {          
+                    var form = $('#transfer-stock-form')[0];
+                    var formData = new FormData(form);
+                    var files = $('.image-preview-filepond .filepond--browser')[0].files;
+                    for (var i = 0; i < files.length; i++) {
+                        formData.append('photo[]', files[i]);
+                    }
+
                     $.ajax({
                         url: '/submit-transfer-stock',
                         type: 'POST',
-                        data: $('#transfer-stock-form').serialize(),
+                        data: formData,
+                        contentType: false, // Important
+                        processData: false, // Important
                         success: function(response) {
                             if (response.id) {
                                 window.location.href = '/gate-pass/' + response.id + '?from=transfer-stock';

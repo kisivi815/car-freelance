@@ -40,6 +40,12 @@
                                                         <input type="text" id="first-name-horizontal" class="form-control" value="{{$data->ChasisNo}}" disabled>
                                                     </div>
                                                     <div class="col-md-4">
+                                                        <label for="first-name-horizontal">Mileage(S)</label>
+                                                    </div>
+                                                    <div class="col-md-8 form-group">
+                                                        <input type="text" id="first-name-horizontal" class="form-control" value="{{$data->MileageSend}}" disabled>
+                                                    </div>
+                                                    <div class="col-md-4">
                                                         <label for="first-name-horizontal">TF ID</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
@@ -58,6 +64,31 @@
                                                         <input type="text" id="first-name-horizontal" class="form-control" value="{{$data->Destination->name}}" disabled>
                                                     </div>
                                                     <div class="col-md-4">
+                                                        <label for="horizontal">Sender Note</label>
+                                                    </div>
+                                                    <div class="col-md-8 form-group">
+                                                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="Note" disabled>{{$data->Note}}</textarea>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label for="horizontal">Sender Pics</label>
+                                                    </div>
+                                                    <div class="col-md-8 form-group">
+                                                        <div class="image-container">
+                                                            @php
+                                                            $receiverCount = $data->Image->where('type', 'sender')->count();
+                                                            @endphp
+                                                            @if($receiverCount > 0)
+                                                            @foreach ($data->Image as $image)
+                                                            @if($image->type=='sender')
+                                                            <img src=" {{$image->imageurl}}" alt="image" width="200" height="200">
+                                                            @endif
+                                                            @endforeach
+                                                            @else
+                                                            NO SENDER PICS
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
                                                         <label for="first-name-horizontal">Sent By</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
@@ -68,6 +99,12 @@
                                                     </div>
                                                     <div class="col-md-8 form-group">
                                                         <input type="text" id="ReceivedBy" class="form-control" placeholder="Received By" name="ReceivedBy" value="{{ old('ReceivedBy')}}" required>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label for="first-name-horizontal">Mileage(R)</label>
+                                                    </div>
+                                                    <div class="col-md-8 form-group">
+                                                        <input type="text" id="first-name-horizontal" class="form-control" name="MileageReceive" value="" maxlength="1" oninput="this.value=this.value.replace(/[^0-9]/g,'');" required>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <label for="horizontal">Add Note</label>

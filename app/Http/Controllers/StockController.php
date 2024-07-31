@@ -109,7 +109,6 @@ class StockController extends Controller
             $TransferStock = TransferStock::with('CarMaster', 'Source', 'Destination')->find($newRecordId);
             $TransferStock->GatePassId = 'TF' . $newRecordId;
             $TransferStock->save();
-
             if ($request->hasfile('photo')) {
                 foreach ($request->file('photo') as $index => $file) {
                     $result = Storage::disk('s3')->put("car-images/" . $newRecordId . "_" . $index . ".jpg", file_get_contents($file));
@@ -156,6 +155,7 @@ class StockController extends Controller
             $TransferStock->ReceivedBy = $request->ReceivedBy;
             $TransferStock->DateOfReceive = Carbon::today();
             $TransferStock->ReceiveNote = $request->Note;
+            $TransferStock->MileageReceive = $request->MileageReceive;
 
             if ($request->status == 'approve') {
                 $TransferStock->ApprovedBy = $user->id;
