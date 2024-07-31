@@ -49,6 +49,18 @@
                                                         <input type="text" id="first-name-horizontal" class="form-control" value="{{$data->CarMaster->Colour}}" placeholder="Colour" disabled>
                                                     </div>
                                                     <div class="col-md-4">
+                                                        <label for="contact-info-horizontal">Mileage(S)</label>
+                                                    </div>
+                                                    <div class="col-md-8 form-group">
+                                                        <input type="text" id="first-name-horizontal" class="form-control" value="{{$data->MileageSend}}" placeholder="Mileage(S)" disabled>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label for="contact-info-horizontal">Mileage(R)</label>
+                                                    </div>
+                                                    <div class="col-md-8 form-group">
+                                                        <input type="text" id="first-name-horizontal" class="form-control" value="{{$data->MileageReceive ?? '-'}}" placeholder="Mileage(R)" disabled>
+                                                    </div>
+                                                    <div class="col-md-4">
                                                         <label for="horizontal">Date of Transfer</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
@@ -79,10 +91,22 @@
                                                         <input type="text" id="first-name-horizontal" class="form-control" value="{{ucwords($data->UserSendBy->name)}}" placeholder="Driver Name" disabled>
                                                     </div>
                                                     <div class="col-md-4">
+                                                        <label for="horizontal">Sender Note</label>
+                                                    </div>
+                                                    <div class="col-md-8 form-group">
+                                                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="Note" disabled>{{$data->Note}}</textarea>
+                                                    </div>
+                                                    <div class="col-md-4">
                                                         <label for="horizontal">Receiver Name</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
                                                         <input type="text" id="first-name-horizontal" class="form-control" value="{{$data->ReceivedBy ?? '-'}}" placeholder="Receiver Name" disabled>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label for="horizontal">Receiver Note</label>
+                                                    </div>
+                                                    <div class="col-md-8 form-group">
+                                                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="Note" disabled>{{$data->ReceivedNote ?? '-'}}</textarea>
                                                     </div>
                                                 </div>
                                             </div>

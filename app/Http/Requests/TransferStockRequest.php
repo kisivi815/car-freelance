@@ -16,6 +16,7 @@ class TransferStockRequest extends FormRequest
     {
         return [
             'ChasisNo' => 'required|string|max:50',
+            'MileageSend' => 'required|numeric',
             'SourceBranch' => 'required|string|max:100',
             'DestinationBranch' => 'required|string|max:100',
             'DriverName' => 'required|string|max:100',

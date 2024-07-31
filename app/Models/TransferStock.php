@@ -20,6 +20,8 @@ class TransferStock extends Model
         'ChasisNo', 
         'SourceBranch', 
         'DestinationBranch', 
+        'MileageSend',
+        'MileageReceive',
         'DriverName', 
         'Note',
         'GatePassId', 

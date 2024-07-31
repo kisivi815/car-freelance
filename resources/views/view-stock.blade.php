@@ -116,6 +116,11 @@
                                                         <th>Model</th>
                                                         <th>Colour</th>
                                                         <th>Chasis No</th>
+                                                        <th>Mileage(S)</th>
+                                                        <th>Mileage(R)</th>
+                                                        <th>TM Invoice Date</th>
+                                                        <th>Age</th>
+                                                        <th>Emission Norm</th>
                                                         <th>Approve</th>
                                                         <th>Reject</th>
                                                         <th>Date Of Received</th>
@@ -137,6 +142,11 @@
                                                         <td>{{$d->CarMaster->ProductLine}}</td>
                                                         <td>{{$d->CarMaster->Colour}}</td>
                                                         <td>{{$d->ChasisNo}}</td>
+                                                        <td>{{$d->MileageSend}}</td>
+                                                        <td>{{$d->MileageReceive}}</td>
+                                                        <td>{{$d->CarMaster->TMInvoiceDate}}</td>
+                                                        <td>{{$d->CarMaster->TMInvoiceDate ? floor(Carbon\Carbon::parse($d->CarMaster->TMInvoiceDate)->diffInDays()) : '-'}}</td>
+                                                        <td>{{$d->CarMaster->EmissionNorm}}</td>
                                                         <td>
                                                             @if (!$d->ReceivedBy && in_array(Auth::user()->role_id,['1','6']))
                                                             <a href="receive-stock/{{$d->id}}?status=approve">Approve with note</a>

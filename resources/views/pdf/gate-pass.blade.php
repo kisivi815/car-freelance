@@ -80,6 +80,14 @@
                 <td>{{$data->CarMaster->Colour}}</td>
             </tr>
             <tr>
+                <td>Mileage(S)</td>
+                <td>{{$data->MileageSend ?? '-'}}</td>
+            </tr>
+            <tr>
+                <td>Mileage(R)</td>
+                <td>{{$data->MileageReceive ?? '-'}}</td>
+            </tr>
+            <tr>
                 <td>Date of Transfer</td>
                 <td>{{$data->DateOfTransfer}}</td>
             </tr>
@@ -100,8 +108,16 @@
                 <td>{{ucwords($data->UserSendBy->name)}}</td>
             </tr>
             <tr>
+                <td>Sender Note</td>
+                <td>{{$data->Note ?? '-'}}</td>
+            </tr>
+            <tr>
                 <td>Receiver Name</td>
                 <td>{{$data->ReceivedBy ?? '-'}}</td>
+            </tr>
+            <tr>
+                <td>Receiver Note</td>
+                <td>{{$data->ReceiverNote ?? '-'}}</td>
             </tr>
         </table>
         <div class="footer">

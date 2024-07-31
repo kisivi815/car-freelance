@@ -46,6 +46,12 @@
                                                         </div>
                                                     </div>
                                                     <div class="col-md-4">
+                                                        <label>Mileage</label>
+                                                    </div>
+                                                    <div class="col-md-8 form-group">
+                                                        <input type="number" id="Mileage" class="form-control" name="MileageSend" placeholder="Mileage" value="" min="0" max="9" required>
+                                                    </div>
+                                                    <div class="col-md-4">
                                                         <label>Source Branch</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
