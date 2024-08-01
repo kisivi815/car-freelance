@@ -13,6 +13,7 @@ use PhpOffice\PhpSpreadsheet\Shared\Date;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use App\Models\PhysicalStatus;
+use App\Services\CarMasterStatusService;
 
 class CarMasterImport implements OnEachRow, WithHeadingRow, WithChunkReading
 {
@@ -180,6 +181,7 @@ class CarMasterImport implements OnEachRow, WithHeadingRow, WithChunkReading
                     if ($existingCarMaster) {
                         // Update the existing record
                         $existingCarMaster->update($queryArray);
+                        CarMasterStatusService::insertStatus($queryArray['ChasisNo'],$rowData['PhysicalStatus']);
                     } else {
                         $existingSystemCarMaster = CarMaster::where('ChasisNo', $rowData['chassis_no'])
                         ->whereIn('PhysicalStatus',$this->phyicalStatus)
@@ -189,6 +191,7 @@ class CarMasterImport implements OnEachRow, WithHeadingRow, WithChunkReading
                         if(!$existingSystemCarMaster){
                             // Create a new record if no existing record is found
                             $carMaster = CarMaster::create($queryArray);
+                            CarMasterStatusService::insertStatus($queryArray['ChasisNo'],$rowData['PhysicalStatus']);
                         }
                     }
     

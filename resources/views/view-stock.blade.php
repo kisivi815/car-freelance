@@ -116,6 +116,7 @@
                                                         <th>Model</th>
                                                         <th>Colour</th>
                                                         <th>Chasis No</th>
+                                                        <th>Physical Location</th>
                                                         <th>Mileage(S)</th>
                                                         <th>Mileage(R)</th>
                                                         <th>TM Invoice Date</th>
@@ -142,6 +143,7 @@
                                                         <td>{{$d->CarMaster->ProductLine}}</td>
                                                         <td>{{$d->CarMaster->Colour}}</td>
                                                         <td>{{$d->ChasisNo}}</td>
+                                                        <td>{{($d->ReceivedBy)?$d->Destination->name:$d->Source->name}}</td>
                                                         <td>{{$d->MileageSend}}</td>
                                                         <td>{{$d->MileageReceive}}</td>
                                                         <td>{{$d->CarMaster->TMInvoiceDate}}</td>

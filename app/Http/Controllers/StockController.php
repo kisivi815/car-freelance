@@ -10,6 +10,7 @@ use App\Models\CarMaster;
 use App\Models\Branch;
 use App\Models\TransferStock;
 use App\Models\Image;
+use App\Services\CarMasterStatusService;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -124,6 +125,7 @@ class StockController extends Controller
             CarMaster::where('ChasisNo', $validatedData['ChasisNo'])->update([
                 'PhysicalStatus' => 'STOCK TF'
             ]);
+            CarMasterStatusService::insertStatus($validatedData['ChasisNo'],'STOCK TF');
 
             return response()->json([
                 'id' => $newRecordId
@@ -181,10 +183,12 @@ class StockController extends Controller
                 $car = CarMaster::where('ChasisNo', $TransferStock->ChasisNo)->update([
                     'PhysicalStatus' => 'RECEIVED APPROVED'
                 ]);
+                CarMasterStatusService::insertStatus($TransferStock->ChasisNo,'RECEIVED APPROVED');
             } else {
                 $car = CarMaster::where('ChasisNo', $TransferStock->ChasisNo)->update([
                     'PhysicalStatus' => 'RECEIVED REJECTED'
                 ]);
+                CarMasterStatusService::insertStatus($TransferStock->ChasisNo,'RECEIVED REJECTED');
             }
             $message = 'Stock received successfully';
             return redirect()->route('view-stock')->with(['title' => 'View Stock', 'message' => $message]);
