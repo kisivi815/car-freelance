@@ -31,7 +31,7 @@
                                                         <select class="form-select" name="ChasisNo" id="ChasisNo" required>
                                                             <option value="">Select Chasis No</option>
                                                             @foreach ($data['car'] as $c)
-                                                            <option value="{{$c->ChasisNo}}" {{ old('ChasisNo') == $c->ChasisNo ? 'selected' : '' }} data-status="{{$c->PhysicalStatus}}">{{$c->ChasisNo}}</option>
+                                                            <option value="{{$c->ChasisNo}}" {{ old('ChasisNo') == $c->ChasisNo ? 'selected' : '' }} data-status="{{$c->PhysicalStatus}}" data-current-location="{{isset($c->TransferStockBranch->DestinationBranch)?$c->TransferStockBranch->DestinationBranch :''}}">{{$c->ChasisNo}}</option>
                                                             @endforeach
                                                         </select>
                                                     </div>
@@ -142,8 +142,11 @@
                 });
 
                 var status = $(this).find(':selected').data('status');
+                var currentLocation = $(this).find(':selected').data('current-location');
                 if (status == 'In Transit') {
                     $('#SourceBranch').val('9').trigger('change');
+                }else if(currentLocation){
+                    $('#SourceBranch').val(currentLocation).trigger('change');
                 }else{
                     $('#SourceBranch').prop('disabled', false);
                 } 

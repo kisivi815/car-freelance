@@ -39,6 +39,11 @@ class TransferStock extends Model
         return $this->hasOne(Car::class,'ChasisNo','ChasisNo');
     }
 
+    public function CarMasterBranch()
+    {
+        return $this->belongsTo(CarMaster::class,'ChasisNo','ChasisNo');
+    }
+
     public function CarMaster()
     {
         return $this->hasOne(CarMaster::class,'ChasisNo','ChasisNo');

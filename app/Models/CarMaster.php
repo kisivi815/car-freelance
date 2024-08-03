@@ -58,6 +58,6 @@ class CarMaster extends Model
 
     public function TransferStockBranch()
     {
-        return $this->hasMany(TransferStock::class,'ChasisNo','ChasisNo');
+        return $this->hasOne(TransferStock::class,'ChasisNo','ChasisNo');
     }
 }
