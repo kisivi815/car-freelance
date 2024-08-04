@@ -104,7 +104,7 @@
                                                         <label for="first-name-horizontal">Mileage(R)</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
-                                                        <input type="text" id="first-name-horizontal" class="form-control" name="MileageReceive" value="" maxlength="1" oninput="this.value=this.value.replace(/[^0-9]/g,'');" required>
+                                                        <input type="number" id="first-name-horizontal" class="form-control" name="MileageReceive" min="1" max="10" value="" oninput="validateMileage(this)" required>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <label for="horizontal">Add Note</label>

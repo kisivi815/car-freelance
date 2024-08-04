@@ -4,6 +4,21 @@
 <head>
     @include('layout.header')
 </head>
+<style>
+    .select2-container--fake-disabled .select2-selection--single {
+        background-color: #e9ecef;
+        /* Light gray background to indicate disabled state */
+        cursor: not-allowed;
+        /* Change cursor to indicate it's not clickable */
+        opacity: 0.5;
+        /* Reduce opacity to make it look disabled */
+    }
+
+    .select2-container--fake-disabled .select2-selection__arrow b {
+        display: none;
+        /* Hide the dropdown arrow */
+    }
+</style>
 
 <body>
     <div id="app">
@@ -49,7 +64,7 @@
                                                         <label>Mileage</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
-                                                        <input type="text" id="Mileage" class="form-control" name="MileageSend" placeholder="Mileage" value="" maxlength="1" oninput="this.value=this.value.replace(/[^0-9]/g,'');" required>
+                                                        <input type="number" id="Mileage" class="form-control" name="MileageSend" placeholder="Mileage" min="1" max="10" value="" oninput="validateMileage(this)" required>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <label>Source Branch</label>
@@ -145,11 +160,15 @@
                 var currentLocation = $(this).find(':selected').data('current-location');
                 if (status == 'In Transit') {
                     $('#SourceBranch').val('9').trigger('change');
-                }else if(currentLocation){
+                    $('#SourceBranch').next('.select2-container').addClass('select2-container--fake-disabled');
+                } else if (currentLocation) {
                     $('#SourceBranch').val(currentLocation).trigger('change');
-                }else{
+                    $('#SourceBranch').next('.select2-container').addClass('select2-container--fake-disabled');
+                } else {
                     $('#SourceBranch').prop('disabled', false);
-                } 
+                    $('#SourceBranch').val('').trigger('change');
+                    $('#SourceBranch').next('.select2-container').removeClass('select2-container--fake-disabled');
+                }
             });
 
             $('#submit-btn').on('click', function(e) {
@@ -195,7 +214,7 @@
                 if (!valid) {
                     $('.alert-danger').show()
                     $('#error-text').text(message);
-                } else {          
+                } else {
                     var form = $('#transfer-stock-form')[0];
                     var formData = new FormData(form);
                     var files = $('.image-preview-filepond .filepond--browser')[0].files;

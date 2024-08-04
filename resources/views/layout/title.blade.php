@@ -48,4 +48,12 @@ session()->forget('message');
             $(this).closest('.alert').hide();
         });
     });
+
+    function validateMileage(input) {
+    if (input.value !== '') {
+        let value = parseInt(input.value, 10);
+        if (value < 1) input.value = 1;
+        if (value > 10) input.value = 10;
+    }
+}
 </script>
