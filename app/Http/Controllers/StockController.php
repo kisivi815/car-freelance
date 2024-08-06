@@ -104,6 +104,9 @@ class StockController extends Controller
 
             $validatedData['DateOfTransfer'] = Carbon::today();
             $validatedData['SendBy'] = $user->id;
+            if($validatedData['SourceBranch'] == '9'){
+                $validatedData['ReceivedBy'] = $validatedData['SendBy'];
+            }
             $newRecord = TransferStock::create($validatedData);
             $newRecordId = $newRecord->id;
             $data['GatePassId'] = 'TF' . $newRecordId;

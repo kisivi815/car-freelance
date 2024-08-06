@@ -150,7 +150,7 @@
                                                         <td>{{$d->CarMaster->TMInvoiceDate ? floor(Carbon\Carbon::parse($d->CarMaster->TMInvoiceDate)->diffInDays()) : '-'}}</td>
                                                         <td>{{$d->CarMaster->EmissionNorm}}</td>
                                                         <td>
-                                                            @if (!$d->ReceivedBy && in_array(Auth::user()->role_id,['1','6']))
+                                                            @if (!$d->DateOfReceive && in_array(Auth::user()->role_id,['1','6']))
                                                             <a href="receive-stock/{{$d->id}}?status=approve">Approve with note</a>
                                                             @elseif($d->UserApprovedBy)
                                                             {{ucwords($d->UserApprovedBy->name)}}
@@ -159,7 +159,7 @@
                                                             @endif
                                                         </td>
                                                         <td>
-                                                            @if (!$d->ReceivedBy && in_array(Auth::user()->role_id,['1','6']))
+                                                            @if (!$d->DateOfReceive && in_array(Auth::user()->role_id,['1','6']))
                                                             <a href="receive-stock/{{$d->id}}?status=reject">Reject with note</a>
                                                             @elseif($d->UserRejectedBy)
                                                             {{ucwords($d->UserRejectedBy->name)}}

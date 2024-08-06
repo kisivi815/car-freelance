@@ -117,7 +117,7 @@
             </tr>
             <tr>
                 <td>Receiver Note</td>
-                <td>{{$data->ReceiverNote ?? '-'}}</td>
+                <td>{{$data->ReceiveNote ?? '-'}}</td>
             </tr>
         </table>
         <div class="footer">

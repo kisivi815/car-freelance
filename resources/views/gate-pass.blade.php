@@ -106,7 +106,7 @@
                                                         <label for="horizontal">Receiver Note</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
-                                                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="Note" disabled>{{$data->ReceivedNote ?? '-'}}</textarea>
+                                                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="Note" disabled>{{$data->ReceiveNote ?? '-'}}</textarea>
                                                     </div>
                                                 </div>
                                             </div>

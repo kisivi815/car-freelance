@@ -98,7 +98,7 @@
                                                         <label for="horizontal">Received By</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
-                                                        <input type="text" id="ReceivedBy" class="form-control" placeholder="Received By" name="ReceivedBy" value="{{ old('ReceivedBy')}}" required>
+                                                        <input type="text" id="ReceivedBy" class="form-control" placeholder="Received By" name="ReceivedBy" value="{{$data->ReceivedBy}}" required>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <label for="first-name-horizontal">Mileage(R)</label>
