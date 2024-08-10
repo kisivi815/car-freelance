@@ -36,8 +36,8 @@
                                                     <div class="col-md-8 form-group">
                                                         <select class="form-select" name="Saluation" id="Saluation" required>
                                                             <option value="">Select Saluation</option>
-                                                            <option value="Mr">Mr</option>
-                                                            <option value="Ms">Ms</option>
+                                                            <option value="Mr" {{((isset($data['data']) && $data['data']->Saluation == 'Mr') || old('Saluation') == 'Mr' ) ?'selected' : '' }}>Mr</option>
+                                                            <option value="Ms" {{((isset($data['data']) && $data['data']->Saluation == 'Ms') || old('Saluation') == 'Ms' ) ?'selected' : '' }}>Ms</option>
                                                         </select>
                                                     </div>
                                                     <div class="col-md-4">
@@ -115,7 +115,8 @@
                                                         <div>
                                                             <label>Model :</label> <span id="Model">-</span><br>
                                                             <label>Product Line :</label> <span id="ProductLine">-</span><br>
-                                                            <label>Colour :</label> <span id="Colour">-</span>
+                                                            <label>Colour :</label> <span id="Colour">-</span><br>
+                                                            <label>Price :</label> <span id="Price">-</span>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-12 mb-3">
@@ -127,8 +128,8 @@
                                                     <div class="col-md-8 form-group">
                                                         <select class="form-select" name="Bank" required>
                                                             <option value="">Select Bank & Branch</option>
-                                                            @foreach ($data['branch'] as $b)
-                                                            <option value="{{$b->id}}" {{ old('SourceBranch') == $b->id ? 'selected' : '' }}>{{$b->name}}</option>
+                                                            @foreach ($data['bank'] as $b)
+                                                            <option value="{{$b->ID}}" {{((isset($data['data']) && $data['data']->Bank == $b->ID) || old('Bank') == $b->ID ) ?'selected' : '' }}>{{$b->Name}}</option>
                                                             @endforeach
                                                         </select>
                                                     </div>
@@ -141,8 +142,8 @@
                                                     <div class="col-md-8 form-group">
                                                         <select class="form-select" name="InsuranceName" required>
                                                             <option value="">Select Insurance</option>
-                                                            @foreach ($data['branch'] as $b)
-                                                            <option value="{{$b->id}}" {{ old('DestinationBranch') == $b->id ? 'selected' : '' }}>{{$b->name}}</option>
+                                                            @foreach ($data['insurance'] as $i)
+                                                            <option value="{{$i->ID}}" {{((isset($data['data']) && $data['data']->InsuranceName == $i->ID) || old('InsuranceName') == $b->ID ) ?'selected' : '' }}>{{$i->Name}}</option>
                                                             @endforeach
                                                         </select>
                                                     </div>
@@ -210,6 +211,32 @@
         $(document).ready(function() {
             $('.form-select').select2();
 
+            $('#ChasisNo').on('change', function() {
+                $('#Model').text('-');
+                $('#ProductLine').text('-');
+                $('#Colour').text('-');
+                $('#Price').text('-');
+                var selectedValue = $(this).val();
+                $.ajax({
+                    url: '/car-details',
+                    type: 'GET',
+                    data: {
+                        'ChasisNo': selectedValue
+                    },
+                    success: function(response) {
+                        $('#Model').text(response.Model);
+                        $('#ProductLine').text(response.ProductLine);
+                        $('#Colour').text(response.Colour);
+                        $('#Price').text(response.Amount);
+
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("An error occurred: " + error);
+                    }
+                });
+
+        
+            });
         });
     </script>
 </body>

@@ -92,7 +92,7 @@
                                                         <label>Driver Name</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
-                                                        <input type="text" id="DriverName" class="form-control" name="DriverName" placeholder="Driver Name" value="{{ old('DriverName')}}" required>
+                                                        <input type="text" id="DriverName" class="form-control" name="DriverName" placeholder="Driver Name" value="{{ old('DriverName')}}" oninput="removeNumbers(this)" required>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <label>Upload Pics</label>
@@ -138,6 +138,7 @@
             $('#ChasisNo').on('change', function() {
                 $('#Model').text('-');
                 $('#ProductLine').text('-');
+                $('#Colour').text('-');
                 var selectedValue = $(this).val();
                 $.ajax({
                     url: '/car-details',

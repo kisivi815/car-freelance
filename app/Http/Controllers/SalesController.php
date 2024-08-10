@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\QuickSalesRequest;
 use App\Http\Requests\SubmitSalesRequest;
+use App\Models\Bank;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\QuickSales;
 use App\Models\CarMaster;
 use App\Models\Branch;
+use App\Models\Insurance;
 use App\Models\Sales;
 use Carbon\Carbon;
 use Exception;
@@ -127,15 +129,21 @@ class SalesController extends Controller
 
     public function salesForm(Request $request, string $id = null)
     {
-        $car = CarMaster::where('PhysicalStatus','In Transit')->get();
+        $car = CarMaster::whereIn('PhysicalStatus',['RECEIVED APPROVED','RECEIVED REJECTED'])->get();
         $branch = Branch::all();
+        $insurance = Insurance::all();
+        $bank = Bank::all();
 
         if($id){
             $sales = Sales::where('id', $id)->first();
+
+            if(!$sales){
+                return redirect()->route('view-sales')->with('error', 'Record not found.');
+            }
         }
         
-        $data = ['car' => $car, 'branch' => $branch,'data'=>(isset($sales))?$sales:null];
-        return view('sales-form')->with(['title' => 'Transfer Stock', 'data' => $data]);
+        $data = ['car' => $car, 'branch' => $branch,'insurance' => $insurance,'bank' => $bank,'data'=>(isset($sales))?$sales:null];
+        return view('sales-form')->with(['title' => 'Sales', 'data' => $data]);
     }
 
     public function submitSalesForm(SubmitSalesRequest $request,string $id = null){

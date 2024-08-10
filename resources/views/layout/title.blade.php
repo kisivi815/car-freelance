@@ -4,7 +4,7 @@
             <i class="bi bi-justify fs-3"></i>
         </a>
         <div style="align-content: center;">
-            <span style="font-size: 1.5rem">Hi, {{Auth::user()->name}} </span>
+            <span style="font-size: 1.5rem">Hi, {{ucwords(Auth::user()->name.' User')}} </span>
         </div>
     </div>
 </header>
@@ -50,10 +50,25 @@ session()->forget('message');
     });
 
     function validateMileage(input) {
-    if (input.value !== '') {
-        let value = parseInt(input.value, 10);
-        if (value < 1) input.value = 1;
-        if (value > 10) input.value = 10;
+        // Allow only numeric input and restrict to 7 digits
+        input.addEventListener('input', function() {
+            let value = input.value;
+
+            // Remove any non-digit characters
+            value = value.replace(/\D/g, '');
+
+            // Restrict to 7 digits
+            if (value.length > 7) {
+                value = value.slice(0, 7);
+            }
+
+            input.value = value;
+        });
     }
-}
+
+
+    function removeNumbers(input) {
+        // Replace any number in the input value with an empty string
+        input.value = input.value.replace(/\d/g, '');
+    }
 </script>
