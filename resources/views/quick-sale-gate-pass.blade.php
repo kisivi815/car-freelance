@@ -39,7 +39,7 @@
                                                         <label for="contact-info-horizontal">Date of Booking</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
-                                                        <input type="text" id="first-name-horizontal" class="form-control" value="{{$data->DateOfBooking}}" disabled>
+                                                        <input type="text" id="first-name-horizontal" class="form-control" value="{{date('Y-m-d',strtotime($data->DateOfBooking))}}" disabled>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <label for="contact-info-horizontal">Sales Person Name</label>
