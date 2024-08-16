@@ -29,4 +29,9 @@ class QuickSales extends Model
         return $this->hasOne(Branch::class,'id','Branch');
     }
 
+    public function CarMaster()
+    {
+        return $this->hasOne(CarMaster::class,'ChasisNo','ChasisNo');
+    }
+
 }

@@ -72,8 +72,12 @@
                 <td>{{$data->ChasisNo}}</td>
             </tr>
             <tr>
-                <td>Car Name & Model</td>
-                <td>{{$data->CarMaster->Model.' '.$data->CarMaster->ProductLine}}</td>
+                <td>Model</td>
+                <td>{{$data->CarMaster->Model}}</td>
+            </tr>
+            <tr>
+                <td>Product Line</td>
+                <td>{{$data->CarMaster->ProductLine}}</td>
             </tr>
             <tr>
                 <td>Colour</td>

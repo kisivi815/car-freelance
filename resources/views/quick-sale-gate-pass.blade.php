@@ -36,6 +36,24 @@
                                                         <input type="text" id="first-name-horizontal" class="form-control" value="{{$data->ChasisNo}}"  disabled>
                                                     </div>
                                                     <div class="col-md-4">
+                                                        <label for="email-horizontal">Model</label>
+                                                    </div>
+                                                    <div class="col-md-8 form-group">
+                                                        <input type="text" id="first-name-horizontal" class="form-control" value="{{$data->CarMaster->Model}}"  disabled>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label for="email-horizontal">Product Line</label>
+                                                    </div>
+                                                    <div class="col-md-8 form-group">
+                                                        <input type="text" id="first-name-horizontal" class="form-control" value="{{$data->CarMaster->ProductLine}}"  disabled>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label for="email-horizontal">Colour</label>
+                                                    </div>
+                                                    <div class="col-md-8 form-group">
+                                                        <input type="text" id="first-name-horizontal" class="form-control" value="{{$data->CarMaster->Colour}}"  disabled>
+                                                    </div>
+                                                    <div class="col-md-4">
                                                         <label for="contact-info-horizontal">Date of Booking</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">

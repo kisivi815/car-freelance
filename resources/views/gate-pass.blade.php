@@ -37,10 +37,16 @@
                                                         <input type="text" id="first-name-horizontal" class="form-control" value="{{$data->ChasisNo}}" placeholder="Chasis No" disabled>
                                                     </div>
                                                     <div class="col-md-4">
-                                                        <label for="contact-info-horizontal">Car Name & Model</label>
+                                                        <label for="contact-info-horizontal">Model</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
-                                                        <input type="text" id="first-name-horizontal" class="form-control" value="{{$data->CarMaster->Model.' '.$data->CarMaster->ProductLine}}" placeholder="Car Name & Model" disabled>
+                                                        <input type="text" id="first-name-horizontal" class="form-control" value="{{$data->CarMaster->Model}}" placeholder="Car Name & Model" disabled>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label for="contact-info-horizontal">Product Line</label>
+                                                    </div>
+                                                    <div class="col-md-8 form-group">
+                                                        <input type="text" id="first-name-horizontal" class="form-control" value="{{$data->CarMaster->ProductLine}}" placeholder="Car Name & Model" disabled>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <label for="contact-info-horizontal">Colour</label>

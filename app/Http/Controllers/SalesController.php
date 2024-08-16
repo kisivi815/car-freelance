@@ -116,7 +116,7 @@ class SalesController extends Controller
     public function getQuickSalesGatePass(Request $request, string $id){
         try {
             $message = '';
-            $quickSales = QuickSales::findOrFail($id);
+            $quickSales = QuickSales::with(['CarMaster'])->findOrFail($id);
             if (isset($request->input()['from']) == 'quick-sales') {
                 $message = 'On ' . Carbon::today()->format('d-m-Y') . ', ' . $quickSales->ChasisNo . ' cars were sold from ' . $quickSales->Source->name ;
                 session(['message' => $message]);
