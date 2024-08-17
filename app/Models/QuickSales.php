@@ -20,7 +20,8 @@ class QuickSales extends Model
         'Branch', 
         'CustomerMobileNo', 
         'CustomerName',
-        'DateOfBooking', 
+        'DateOfBooking',
+        'TMInvoiceNo', 
         'created_at',
         'updated_at',
     ];

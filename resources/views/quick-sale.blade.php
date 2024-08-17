@@ -182,7 +182,7 @@
                     $('.alert-danger').show()
                     $('#error-text').text(message);
                 } else {
-                    document.receivestockform.submit()
+                    $('#quickSaleForm').submit()
                 }
 
             });

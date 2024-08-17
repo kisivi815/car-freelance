@@ -17,6 +17,7 @@
                             <div class="card">
                                 <div class="card-header" style="display: flex;justify-content: space-between;">
                                     <h4 class="card-title">Quick Sale Gate Pass</h4>
+                                    <a href="{{ route('print-quick-sales-gate-pass-pdf',['id'=>$data->ID]) }}" class="btn btn-primary me-1 mb-1" style="width:100px" target="_blank">Print</a>
                                 </div>
                                 <div class="card-content">
                                     <div class="card-body">
@@ -28,6 +29,12 @@
                                                     </div>
                                                     <div class="col-md-8 form-group">
                                                         <input type="text" id="first-name-horizontal" class="form-control" value="{{$data->SalesId}}"  disabled>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label for="first-name-horizontal">TM Invoice No</label>
+                                                    </div>
+                                                    <div class="col-md-8 form-group">
+                                                        <input type="text" id="first-name-horizontal" class="form-control" value="{{$data->TMInvoiceNo}}"  disabled>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <label for="email-horizontal">Chasis No</label>

@@ -12,6 +12,7 @@ use App\Models\CarMaster;
 use App\Models\Branch;
 use App\Models\Insurance;
 use App\Models\Sales;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -100,25 +101,31 @@ class SalesController extends Controller
             $validatedData = $request->validated();
             $branch = Branch::where('id', $request->input('Branch'))->first();
             $count = QuickSales::where('Branch', $request->input('Branch'))->count();
-            $salesId = strtoupper(substr($branch->name, 0, 3)).$count+1;
+            $salesId = strtoupper(substr($branch->name, 0, 3)) . $count + 1;
             $validatedData['SalesId'] = $salesId;
+            $validatedData['TMInvoiceNo'] = CarMaster::where('ChasisNo', $request->input('ChasisNo'))->first()->CommercialInvoiceNo;
             $newRecord = QuickSales::create($validatedData);
 
-            return redirect()->route('quick-sale')->with('message', 'Submitted successfully!');
-
-
+            return redirect()->route('quick-sales-gate-pass', ['id' => $newRecord->id])
+            ->withInput(['from' => 'quick-sales'])
+            ->with([
+                'title' => 'Quick Sales Gate Pass', 
+                'data' => $newRecord,
+                'message' => 'Submitted successfully!'
+            ]);
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return redirect()->route('quick-sale')->with('error', 'Error occurred while submitting!');
         }
     }
 
-    public function getQuickSalesGatePass(Request $request, string $id){
+    public function getQuickSalesGatePass(Request $request, string $id)
+    {
         try {
             $message = '';
             $quickSales = QuickSales::with(['CarMaster'])->findOrFail($id);
             if (isset($request->input()['from']) == 'quick-sales') {
-                $message = 'On ' . Carbon::today()->format('d-m-Y') . ', ' . $quickSales->ChasisNo . ' cars were sold from ' . $quickSales->Source->name ;
+                $message = 'On ' . Carbon::today()->format('d-m-Y') . ', ' . $quickSales->ChasisNo . ' cars were sold from ' . $quickSales->Source->name;
                 session(['message' => $message]);
             }
             return view('quick-sale-gate-pass')->with(['title' => 'Quick Sales Gate Pass', 'data' => $quickSales]);
@@ -127,33 +134,46 @@ class SalesController extends Controller
         }
     }
 
+    public function generateQuickSalesGatePassPDF(Request $request, string $id)
+    {
+        try {
+            $message = '';
+            $quickSales = QuickSales::with(['CarMaster'])->findOrFail($id);
+            $pdf = Pdf::loadView('pdf.quick-sales-gate-pass', ['title' => 'Gate Pass', 'data' => $quickSales]);
+
+            return $pdf->stream('TF' . $id . '.pdf');
+        } catch (ModelNotFoundException $e) {
+            return redirect()->route('view-sales')->with('error', 'Record not found.');
+        }
+    }
+
     public function salesForm(Request $request, string $id = null)
     {
-        $car = CarMaster::whereIn('PhysicalStatus',['RECEIVED APPROVED','RECEIVED REJECTED'])->get();
+        $car = CarMaster::whereIn('PhysicalStatus', ['RECEIVED APPROVED', 'RECEIVED REJECTED'])->get();
         $branch = Branch::all();
         $insurance = Insurance::all();
         $bank = Bank::all();
 
-        if($id){
+        if ($id) {
             $sales = Sales::where('id', $id)->first();
 
-            if(!$sales){
+            if (!$sales) {
                 return redirect()->route('view-sales')->with('error', 'Record not found.');
             }
         }
-        
-        $data = ['car' => $car, 'branch' => $branch,'insurance' => $insurance,'bank' => $bank,'data'=>(isset($sales))?$sales:null];
+
+        $data = ['car' => $car, 'branch' => $branch, 'insurance' => $insurance, 'bank' => $bank, 'data' => (isset($sales)) ? $sales : null];
         return view('sales-form')->with(['title' => 'Sales', 'data' => $data]);
     }
 
-    public function submitSalesForm(SubmitSalesRequest $request,string $id = null){
+    public function submitSalesForm(SubmitSalesRequest $request, string $id = null)
+    {
         try {
-            if(!$id){
+            if (!$id) {
                 $validatedData = $request->validated();
                 $newRecord = Sales::create($validatedData);
                 return redirect()->route('view-sales')->with('message', 'Submitted successfully!');
             }
-            
         } catch (ModelNotFoundException $e) {
             return redirect()->route('view-sales')->with('error', 'Record not found.');
         }
