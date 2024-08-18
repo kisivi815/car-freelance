@@ -42,7 +42,8 @@
                                                         <div>
                                                             <label>Model :</label> <span id="Model">-</span><br>
                                                             <label>Product Line :</label> <span id="ProductLine">-</span><br>
-                                                            <label>Colour :</label> <span id="Colour">-</span>
+                                                            <label>Colour :</label> <span id="Colour">-</span><br>
+                                                            <label>TM Invoice No :</label> <span id="TMInvoiceNo">-</span>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-4">
@@ -113,6 +114,7 @@
                 $('#Model').text('-');
                 $('#ProductLine').text('-');
                 $('#Colour').text('-');
+                $('#TMInvoiceNo').text('-');
                 var selectedValue = $(this).val();
                 $.ajax({
                     url: '/car-details',
@@ -124,6 +126,7 @@
                         $('#Model').text(response.Model);
                         $('#ProductLine').text(response.ProductLine);
                         $('#Colour').text(response.Colour);
+                        $('#TMInvoiceNo').text(response.CommercialInvoiceNo);
 
                     },
                     error: function(xhr, status, error) {
