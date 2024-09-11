@@ -106,12 +106,8 @@ class SalesController extends Controller
             $validatedData['TMInvoiceNo'] = CarMaster::where('ChasisNo', $request->input('ChasisNo'))->first()->CommercialInvoiceNo;
             $newRecord = QuickSales::create($validatedData);
 
-            return redirect()->route('quick-sales-gate-pass', ['id' => $newRecord->id])
-            ->withInput(['from' => 'quick-sales'])
-            ->with([
-                'title' => 'Quick Sales Gate Pass', 
-                'data' => $newRecord,
-                'message' => 'Submitted successfully!'
+            return response()->json([
+                'id' => $newRecord->id
             ]);
         } catch (Exception $e) {
             Log::error($e->getMessage());
@@ -125,7 +121,7 @@ class SalesController extends Controller
             $message = '';
             $quickSales = QuickSales::with(['CarMaster'])->findOrFail($id);
             if (isset($request->input()['from']) == 'quick-sales') {
-                $message = 'On ' . Carbon::today()->format('d-m-Y') . ', ' . $quickSales->ChasisNo . ' cars were sold from ' . $quickSales->Source->name;
+                $message = 'On ' . Carbon::today()->format('d-m-Y') . ', ' . $quickSales->ChasisNo . ' cars were sold from ' . $quickSales->SalesBranch->name;
                 session(['message' => $message]);
             }
             return view('quick-sale-gate-pass')->with(['title' => 'Quick Sales Gate Pass', 'data' => $quickSales]);

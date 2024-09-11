@@ -231,7 +231,7 @@
                         processData: false, // Important
                         success: function(response) {
                             if (response.id) {
-                                window.location.href = '/gate-pass/' + response.id + '?from=transfer-stock';
+                                window.location.href = '/gate-pass/' + response.id + '?from=quick-sales';
                             } else {
                                 $('.alert-danger').show()
                                 $('#error-text').text('Submit Failed');

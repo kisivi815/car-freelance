@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Requests;
 
+use App\Rules\SalesMobileNoCheck;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -19,7 +20,7 @@ class QuickSalesRequest extends FormRequest
             'DateOfBooking' => 'required|string|max:100',
             'Branch' => 'required|string|max:100',
             'SalesPersonName' => 'required|string|max:100',
-            'CustomerMobileNo' => 'required|string|max:100',
+            'CustomerMobileNo' => ['required', 'numeric', new SalesMobileNoCheck()],
             'CustomerName' => 'required|string|max:1000',
         ];
     }

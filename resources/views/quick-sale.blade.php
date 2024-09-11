@@ -20,7 +20,7 @@
                                 </div>
                                 <div class="card-content">
                                     <div class="card-body">
-                                        <form class="form form-horizontal" method="POST" action="{{ route('submit-quick-sales') }}" id="quickSaleForm" name="quickSaleForm">
+                                        <form class="form form-horizontal" method="POST" id="quickSaleForm" name="quickSaleForm">
                                             @csrf
                                             <div class="form-body">
                                                 <div class="row">
@@ -185,7 +185,50 @@
                     $('.alert-danger').show()
                     $('#error-text').text(message);
                 } else {
-                    $('#quickSaleForm').submit()
+                    var form = $('#quickSaleForm')[0];
+                    var formData = new FormData(form);
+                    $.ajaxSetup({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        }
+                    });
+                    $.ajax({
+                        url: '/submit-quick-sales',
+                        type: 'POST',
+                        data: formData,
+                        contentType: false, // Important
+                        processData: false, // Important
+                        success: function(response) {
+                            if (response.id) {
+                                window.location.href = '/quick-sales-gate-pass/' + response.id + '?from=transfer-stock';
+                            } else {
+                                $('.alert-danger').show()
+                                $('#error-text').text('Submit Failed');
+                            }
+
+                        },
+                        error: function(xhr, status, error) {
+                            $('.alert-danger').show()
+                            var response = JSON.parse(xhr.responseText); // Parse JSON response
+                            for (const key in response.errors) {
+                                if (response.errors.hasOwnProperty(key)) {
+                                    const messages = response.errors[key];
+                                    messages.forEach(message => {
+                                        if(message){
+                                            $('#error-text').text(message);
+                                        }
+                                        
+                                    });
+                                }
+                            }
+                            
+                            if (xhr.responseJSON.error) {
+                                var errorMessage = xhr.responseJSON.error;
+                                $('#error-text').text(xhr.responseJSON);
+                            }
+
+                        }
+                    });
                 }
 
             });
