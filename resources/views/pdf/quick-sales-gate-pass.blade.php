@@ -100,6 +100,10 @@
                 <td>{{$data->SalesBranch->name}}</td>
             </tr>
             <tr>
+                <td>Customer ID</td>
+                <td>{{$data->CustomerMobileNo}}</td>
+            </tr>
+            <tr>
                 <td>Customer Name</td>
                 <td>{{$data->CustomerName}}</td>
             </tr>
