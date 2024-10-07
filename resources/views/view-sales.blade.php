@@ -43,14 +43,14 @@
                                                         <td>-</td>
                                                         <td>{{date("Y-m-d", strtotime($d->DateOfSales))}}</td>
                                                         <td>{{$d->FirstName}} {{$d->LastName}}</td>
-                                                        <td>-</td>
+                                                        <td>{{$d->carMaster->Model}} {{$d->carMaster->ProductLine}}</td>
                                                         <td>{{$d->ChasisNo}}</td>
+                                                        <td><a href="{{route('salesForm', $d->ID)}}">Edit</a></td>
+                                                        <td><a href ="{{route('sendOfApproval', $d->ID)}}">Send of Approval</a></td>
+                                                        <td>Approve</td>
+                                                        <td>Reject</td>
                                                         <td>-</td>
-                                                        <td>-</td>
-                                                        <td>-</td>
-                                                        <td>-</td>
-                                                        <td>-</td>
-                                                        <td>-</td>
+                                                        <td>Delete</td>
                                                     </tr>
                                                     @endforeach
                                                 </tbody>

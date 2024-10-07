@@ -31,5 +31,15 @@ class Sales extends Model
         'TypeofGST',
     ];
 
-    
+    public function carMaster(){
+        return $this->hasOne(CarMaster::class, 'ChasisNo', 'ChasisNo');
+    }
+
+    public function bank(){
+        return $this->hasOne(Bank::class, 'ID', 'Bank');
+    }
+
+    public function insurance(){
+        return $this->hasOne(Insurance::class, 'ID', 'InsuranceName');
+    }
 }

@@ -11,4 +11,7 @@ class Bank extends Model
 
     protected $table = 'bank';
 
+    public function sales(){
+        return $this->belongsTo(Sales::class, 'ID', 'Bank');
+    }
 }

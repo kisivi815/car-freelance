@@ -26,7 +26,13 @@
                         <span>Quick Sale</span>
                     </a>
                 </li>
-                <li class="sidebar-item {{ Request::routeIs('view-sales') ? 'active' : '' }}">
+                <li class="sidebar-item {{ Request::routeIs('salesForm') ? 'active' : '' }}">
+                    <a href="{{ route('salesForm') }}" class='sidebar-link'>
+                        <i class=""></i>
+                        <span>Add Sales</span>
+                    </a>
+                </li>
+                <li class="sidebar-item {{ Request::routeIs('sales-form') ? 'active' : '' }}">
                     <a href="{{ route('view-sales') }}" class='sidebar-link'>
                         <i class=""></i>
                         <span>View Sales</span>

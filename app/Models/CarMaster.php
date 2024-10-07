@@ -60,4 +60,8 @@ class CarMaster extends Model
     {
         return $this->hasOne(TransferStock::class,'ChasisNo','ChasisNo');
     }
+
+    public function Sales(){
+        return $this->belongsTo(Sales::class, 'ChasisNo', 'ChasisNo');
+    }
 }

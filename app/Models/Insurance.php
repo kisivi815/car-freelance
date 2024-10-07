@@ -11,4 +11,7 @@ class Insurance extends Model
 
     protected $table = 'insurance';
 
+    public function sales(){
+        return $this->belongsTo(Sales::class, 'InsuranceName', 'ID');
+    }
 }

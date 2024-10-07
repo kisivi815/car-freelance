@@ -169,8 +169,26 @@ class SalesController extends Controller
                 $validatedData = $request->validated();
                 $newRecord = Sales::create($validatedData);
                 return redirect()->route('view-sales')->with('message', 'Submitted successfully!');
+            }else{
+                $validatedData = $request->validated();
+                $sales = Sales::where('id', $id)->first();
+                $sales->update($validatedData);
+                return redirect()->route('view-sales')->with('message', 'Updated successfully!');
             }
         } catch (ModelNotFoundException $e) {
+            return redirect()->route('view-sales')->with('error', 'Record not found.');
+        }
+    }
+
+    public function sendOfApproval(Request $request, string $id = null){
+        try{
+            if($id) {
+                $sales = Sales::where('id', $id)->first();
+                return view('send-of-approval-form')->with(['title' => 'Send of Approval', 'data' => $sales]);
+            }else{
+                return redirect()->route('view-sales')->with('error', 'Record not found.');
+            }
+        }catch(Exception $e){
             return redirect()->route('view-sales')->with('error', 'Record not found.');
         }
     }
