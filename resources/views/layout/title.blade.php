@@ -71,4 +71,5 @@ session()->forget('message');
         // Replace any number in the input value with an empty string
         input.value = input.value.replace(/\d/g, '');
     }
+
 </script>

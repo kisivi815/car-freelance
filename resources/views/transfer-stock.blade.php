@@ -57,8 +57,21 @@
                                                         <div>
                                                             <label>Model :</label> <span id="Model">-</span><br>
                                                             <label>Product Line :</label> <span id="ProductLine">-</span><br>
-                                                            <label>Colour :</label> <span id="Colour">-</span>
+                                                            <label>Colour :</label> <span id="Colour">-</span><br>
+                                                            <label>HSN Code :</label> <span id="HSN">-</span>
                                                         </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label>Vehicle Amt</label>
+                                                    </div>
+                                                    <div class="col-md-8 form-group">
+                                                        <input type="number" id="VehicleAmt" class="form-control" name="VehicleAmt" placeholder="Vehicle Amt" value="" required>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label>Vehicle No</label>
+                                                    </div>
+                                                    <div class="col-md-8 form-group">
+                                                        <input type="text" id="VehicleNo" class="form-control" name="VehicleNo" placeholder="Vehicle No" value="" required>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <label>Mileage</label>
@@ -139,6 +152,7 @@
                 $('#Model').text('-');
                 $('#ProductLine').text('-');
                 $('#Colour').text('-');
+                $('#HSN').text('-');
                 var selectedValue = $(this).val();
                 $.ajax({
                     url: '/car-details',
@@ -150,6 +164,7 @@
                         $('#Model').text(response.Model);
                         $('#ProductLine').text(response.ProductLine);
                         $('#Colour').text(response.Colour);
+                        $('#HSN').text(response.HSNCode);
 
                     },
                     error: function(xhr, status, error) {
@@ -181,6 +196,12 @@
                 var destinationBranchValue = $('select[name="DestinationBranch"]').val();
                 var sourceBranchValue = $('select[name="SourceBranch"]').val();
 
+                var regex = /^\d+(\.\d{1,2})?$/;
+                if(!regex.test($('#VehicleAmt').val())){
+                    $('#VehicleAmt').addClass("red-border");
+                    valid = false;
+                    message = 'Please enter valid vehicle amount';
+                }
 
                 $('#transfer-stock-form').find('input[required], select[required]').each(function() {
                     if ($(this).is(':checkbox')) {
@@ -210,6 +231,10 @@
                     valid = false;
                 }
 
+                
+                
+                
+
 
 
                 if (!valid) {
@@ -231,7 +256,7 @@
                         processData: false, // Important
                         success: function(response) {
                             if (response.id) {
-                                window.location.href = '/gate-pass/' + response.id + '?from=quick-sales';
+                                window.location.href = '/gate-pass/' + response.id + '?from=transfer-stock';
                             } else {
                                 $('.alert-danger').show()
                                 $('#error-text').text('Submit Failed');

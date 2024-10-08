@@ -18,6 +18,8 @@ class TransferStock extends Model
 
     protected $fillable = [
         'ChasisNo', 
+        'VehicleAmt', 
+        'VehicleNo', 
         'SourceBranch', 
         'DestinationBranch', 
         'MileageSend',

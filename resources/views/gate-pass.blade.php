@@ -55,6 +55,24 @@
                                                         <input type="text" id="first-name-horizontal" class="form-control" value="{{$data->CarMaster->Colour}}" placeholder="Colour" disabled>
                                                     </div>
                                                     <div class="col-md-4">
+                                                        <label for="contact-info-horizontal">HSN Code</label>
+                                                    </div>
+                                                    <div class="col-md-8 form-group">
+                                                        <input type="text" id="first-name-horizontal" class="form-control" value="{{$data->CarMaster->HSNCode}}" placeholder="Colour" disabled>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label for="contact-info-horizontal">Vehicle Amt</label>
+                                                    </div>
+                                                    <div class="col-md-8 form-group">
+                                                        <input type="text" id="first-name-horizontal" class="form-control" value="{{$data->VehicleAmt}}" placeholder="Vehicle Amt" disabled>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label for="contact-info-horizontal">Vehicle No</label>
+                                                    </div>
+                                                    <div class="col-md-8 form-group">
+                                                        <input type="text" id="first-name-horizontal" class="form-control" value="{{$data->VehicleNo}}" placeholder="Vehicle No" disabled>
+                                                    </div>
+                                                    <div class="col-md-4">
                                                         <label for="contact-info-horizontal">Mileage(S)</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">

@@ -84,6 +84,18 @@
                 <td>{{$data->CarMaster->Colour}}</td>
             </tr>
             <tr>
+                <td>HSN Code</td>
+                <td>{{$data->CarMaster->HSNCode}}</td>
+            </tr>
+            <tr>
+                <td>Vehicle Amt</td>
+                <td>{{$data->VehicleAmt}}</td>
+            </tr>
+            <tr>
+                <td>Vehicle No</td>
+                <td>{{$data->VehicleNo}}</td>
+            </tr>
+            <tr>
                 <td>Mileage(S)</td>
                 <td>{{$data->MileageSend ?? '-'}}</td>
             </tr>

@@ -251,6 +251,9 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                                <div class="col-sm-12 d-flex justify-content-center">
+                                                    <button type="submit" class="btn btn-primary me-1 mb-1" id="submit-btn" style="width:200px" value="submit">Submit</button>
+                                                </div>
                                             </div>
                                         </form>
                                     </div>
