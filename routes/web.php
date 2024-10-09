@@ -33,8 +33,10 @@ Route::middleware(RedirectIfAuthenticated::class)->group(function () {
     
 
     Route::get('/sales-form/{id?}',[SalesController::class,'salesForm'])->name('salesForm');
+    Route::post('/submit-sales/{id?}', [SalesController::class, 'submitSalesForm'])->name('submit-sales');
     Route::get('/send-of-approval-form/{id?}',[SalesController::class,'sendOfApproval'])->name('sendOfApproval');
-    Route::post('/submit-sales', [SalesController::class, 'submitSalesForm'])->name('submit-sales');
+    Route::post('/submit-send-of-approval-form/{id?}',[SalesController::class,'submitSendOfApproval'])->name('submitSendOfApproval');
+    
     
     Route::get('/view-sales',[SalesController::class,'index'])->name('view-sales');
 

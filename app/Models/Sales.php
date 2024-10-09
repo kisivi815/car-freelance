@@ -12,6 +12,7 @@ class Sales extends Model
     protected $table = 'sales';
 
     protected $fillable = [
+        'InvoiceNo',
         'Mobile',
         'Saluation',
         'FirstName',
@@ -29,6 +30,7 @@ class Sales extends Model
         'DiscountType',
         'Accessories',
         'TypeofGST',
+        'DateOfBooking',
     ];
 
     public function carMaster(){
@@ -41,5 +43,9 @@ class Sales extends Model
 
     public function insurance(){
         return $this->hasOne(Insurance::class, 'ID', 'InsuranceName');
+    }
+
+    public function discount(){
+        return $this->hasOne(Discount::class, 'ID', 'DiscountType');
     }
 }

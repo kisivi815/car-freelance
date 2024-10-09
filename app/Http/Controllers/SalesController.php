@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\QuickSalesRequest;
 use App\Http\Requests\SubmitSalesRequest;
+use App\Http\Requests\SubmitSendOfApprovalRequest;
 use App\Models\Bank;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\QuickSales;
 use App\Models\CarMaster;
 use App\Models\Branch;
+use App\Models\Discount;
 use App\Models\Insurance;
 use App\Models\Sales;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -149,6 +151,7 @@ class SalesController extends Controller
         $branch = Branch::all();
         $insurance = Insurance::all();
         $bank = Bank::all();
+        $discount = Discount::all();
 
         if ($id) {
             $sales = Sales::where('id', $id)->first();
@@ -158,7 +161,7 @@ class SalesController extends Controller
             }
         }
 
-        $data = ['car' => $car, 'branch' => $branch, 'insurance' => $insurance, 'bank' => $bank, 'data' => (isset($sales)) ? $sales : null];
+        $data = ['car' => $car, 'branch' => $branch, 'insurance' => $insurance, 'bank' => $bank, 'discount' => $discount, 'data' => (isset($sales)) ? $sales : null];
         return view('sales-form')->with(['title' => 'Sales', 'data' => $data]);
     }
 
@@ -182,13 +185,46 @@ class SalesController extends Controller
 
     public function sendOfApproval(Request $request, string $id = null){
         try{
+        $cgst = $sgst = $igst = $rate = $discount = $amount = $total = $cess = 0;
             if($id) {
                 $sales = Sales::where('id', $id)->first();
-                return view('send-of-approval-form')->with(['title' => 'Send of Approval', 'data' => $sales]);
+                
+                $rate = $sales->carMaster->Rate ? $sales->carMaster->Rate : 0;
+                $discountvalue = $sales->discount->value ? $sales->discount->value : 0;
+                if($rate != 0){
+                    $discount = $rate * $discountvalue/100;
+                    $amount = $rate - $discount;
+     
+                    if($sales->TypeofGST == '1'){
+                        $cgst = $rate * 14/100;
+                        $sgst = $rate * 14/100;
+                        $total = $rate + $cgst + $sgst;
+                    }else{
+                        $igst = $rate * 28/100;
+                        $total = $rate + $igst;
+                    }
+    
+                    $cess = $rate * 1/100;
+                    $total = $total + $cess;
+                }
+                $rateDetails = ['Amount' => number_format($amount,2), 'Discount' => number_format($discount,2), 'Total' => number_format($total,2), 'CGST' => number_format($cgst,2), 'SGST' => number_format($sgst,2), 'IGST' => number_format($igst,2), 'CESS' => number_format($cess,2)];
+
+                return view('send-of-approval-form')->with(['title' => 'Send of Approval', 'data' => $sales, 'rateDetails'=> $rateDetails]);
             }else{
                 return redirect()->route('view-sales')->with('error', 'Record not found.');
             }
         }catch(Exception $e){
+            return redirect()->route('view-sales')->with('error', 'Record not found.');
+        }
+    }
+
+    public function submitSendOfApproval(SubmitSendOfApprovalRequest $request, $id = null){
+        try {
+                $validatedData = $request->validated();
+                Sales::where('id', $id)->update($validatedData);
+            
+                return redirect()->route('view-sales')->with('message', 'Send of Approval submitted successfully!');
+        } catch (ModelNotFoundException $e) {
             return redirect()->route('view-sales')->with('error', 'Record not found.');
         }
     }

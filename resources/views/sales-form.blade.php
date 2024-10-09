@@ -154,13 +154,14 @@
                                                         <label>Discount Type</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
-                                                        <input type="text" id="discountType" class="form-control" name="DiscountType" placeholder="Discount Type" value="{{isset($data['data'])? $data['data']->DiscountType : old('DiscountType')}}" required>
-                                                    </div>
-                                                    <div class="col-md-4">
-                                                        <label>Upload</label>
-                                                    </div>
-                                                    <div class="col-md-8 form-group">
-                                                        <input type="file" class="image-preview-filepond" name="discountFile[]" multiple>
+                                                        <select class="form-select" name="DiscountType" required>
+                                                        <option value="">Select Discount</option>
+                                                        
+                                                            @foreach ($data['discount'] as $d)
+                                                            <option value="{{$d->ID}}" {{((isset($data['data']) && $data['data']->DiscountType == $d->ID) || old('DiscountType') == $d->ID ) ?'selected' : '' }}>{{$d->value}}%</option>
+                                                            @endforeach
+                                                        </select>
+                                                       
                                                     </div>
                                                     <div class="col-md-12 mb-3">
                                                         <h4 class="card-title">Accessories Details</h4>

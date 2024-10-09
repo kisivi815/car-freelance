@@ -17,7 +17,7 @@
                             <div class="card">
                                 <div class="card-content">
                                     <div class="card-body">
-                                        <form class="form form-horizontal" id="transfer-stock-form" action="{{route('submit-sales')}}" name="transferstockform" method="POST" enctype="multipart/form-data" autocomplete="off">
+                                        <form class="form form-horizontal" id="transfer-stock-form" action="{{ route('submitSendOfApproval', ['id' => $data->ID]) }}" name="transferstockform" method="POST" enctype="multipart/form-data" autocomplete="off">
                                             @csrf
                                             <div class="form-body">
                                                 <div class="row">
@@ -31,7 +31,7 @@
                                                         <label>Invoice No</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
-                                                        <input type="text" id="lastName" class="form-control" name="LastName" placeholder="Invoice No" value="" required>
+                                                        <input type="text" id="lastName" class="form-control" name="InvoiceNo" placeholder="Invoice No" value="" required>
                                                     </div>
                                                 </div>
                                                 <div class="row">
@@ -202,7 +202,7 @@
                                                             Rate :
                                                             </div>
                                                             <div class="col text-left">
-                                                            {{$data->carMaster->Rate}}
+                                                            {{$data->carMaster->Rate ? $data->carMaster->Rate : 0}}
                                                             </div>
                                                         </div>
                                                         <div class="row">
@@ -210,7 +210,7 @@
                                                             Discount :
                                                             </div>
                                                             <div class="col text-left">
-                                                            {{$data->Discount}}
+                                                            {{$rateDetails['Discount']}} ({{$data->discount->value}}%)
                                                             </div>
                                                         </div>
                                                         <div class="row">
@@ -218,27 +218,42 @@
                                                             Amount :
                                                             </div>
                                                             <div class="col text-left">
-                                                            {{$data->carMaster->Amount}}
+                                                            {{$rateDetails['Amount']}}
+                                                            </div>
+                                                        </div>
+                                                        @if($data->TypeofGST == '1')
+                                                        <div class="row">
+                                                            <div class="col-md-2">
+                                                            CGST :
+                                                            </div>
+                                                            <div class="col text-left">
+                                                            {{$rateDetails['CGST']}}
                                                             </div>
                                                         </div>
                                                         <div class="row">
                                                             <div class="col-md-2">
-                                                            @if($data->TypeOfGst == '1')
-                                                            CGST + SGST : 
-                                                            @else
-                                                            IGST :
-                                                            @endif
+                                                            SGST :
                                                             </div>
                                                             <div class="col text-left">
-                                                            123
+                                                            {{$rateDetails['SGST']}}
                                                             </div>
                                                         </div>
+                                                        @else
+                                                        <div class="row">
+                                                            <div class="col-md-2">
+                                                            IGST :
+                                                            </div>
+                                                            <div class="col text-left">
+                                                            {{$rateDetails['IGST']}}
+                                                            </div>
+                                                        </div>
+                                                        @endif
                                                         <div class="row">
                                                             <div class="col-md-2">
                                                             Cess :
                                                             </div>
                                                             <div class="col text-left">
-                                                            1%
+                                                            {{$rateDetails['CESS']}}
                                                             </div>
                                                         </div>
                                                         <div class="row">
@@ -246,7 +261,7 @@
                                                             Total :
                                                             </div>
                                                             <div class="col text-left">
-                                                            10000000
+                                                            {{$rateDetails['Total']}}
                                                             </div>
                                                         </div>
                                                     </div>

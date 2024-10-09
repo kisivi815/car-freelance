@@ -40,13 +40,25 @@
                                                     @foreach ($data['result'] as $d)
                                                     <tr>
                                                         <td>{{$d->ID}}</td>
-                                                        <td>-</td>
+                                                        <td>{{$d->InvoiceNo ? $d->InvoiceNo : '-'}}</td>
                                                         <td>{{date("Y-m-d", strtotime($d->DateOfSales))}}</td>
                                                         <td>{{$d->FirstName}} {{$d->LastName}}</td>
                                                         <td>{{$d->carMaster->Model}} {{$d->carMaster->ProductLine}}</td>
                                                         <td>{{$d->ChasisNo}}</td>
-                                                        <td><a href="{{route('salesForm', $d->ID)}}">Edit</a></td>
-                                                        <td><a href ="{{route('sendOfApproval', $d->ID)}}">Send of Approval</a></td>
+                                                        <td>
+                                                            @if(!$d->InvoiceNo)
+                                                            <a href="{{route('salesForm', $d->ID)}}">Edit</a>
+                                                            @else
+                                                            -
+                                                            @endif
+                                                        </td>
+                                                        <td>
+                                                            @if(!$d->InvoiceNo)
+                                                            <a href="{{route('sendOfApproval', $d->ID)}}">Send of Approval</a>
+                                                            @else
+                                                            -
+                                                            @endif
+                                                        </td>
                                                         <td>Approve</td>
                                                         <td>Reject</td>
                                                         <td>-</td>

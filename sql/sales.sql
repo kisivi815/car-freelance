@@ -21,3 +21,13 @@ CREATE TABLE sales (
     created_at DATETIME,
     updated_at DATETIME
 );
+
+ALTER TABLE `sales` 
+ADD COLUMN `InvoiceNo` VARCHAR(45) NULL AFTER `updated_at`,
+ADD COLUMN `DateOfBooking` DATETIME NULL AFTER `InvoiceNo`;
+
+ALTER TABLE `sales` 
+CHANGE COLUMN `InvoiceNo` `InvoiceNo` VARCHAR(45) NULL DEFAULT NULL AFTER `ID`,
+CHANGE COLUMN `DateOfBooking` `DateOfBooking` DATETIME NULL DEFAULT NULL AFTER `TypeofGST`;
+
+
