@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\QuickSalesRequest;
 use App\Http\Requests\SubmitSalesRequest;
 use App\Http\Requests\SubmitSendOfApprovalRequest;
+use App\Http\Requests\SubmitSendOfStatusRequest;
 use App\Models\Bank;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -224,6 +225,63 @@ class SalesController extends Controller
                 Sales::where('id', $id)->update($validatedData);
             
                 return redirect()->route('view-sales')->with('message', 'Send of Approval submitted successfully!');
+        } catch (ModelNotFoundException $e) {
+            return redirect()->route('view-sales')->with('error', 'Record not found.');
+        }
+    }
+
+    public function statusForm(Request $request, string $id = null){
+        try {
+            try{
+                $cgst = $sgst = $igst = $rate = $discount = $amount = $total = $cess = 0;
+                    if($id) {
+                        $sales = Sales::where('id', $id)->first();
+                        
+                        $rate = $sales->carMaster->Rate ? $sales->carMaster->Rate : 0;
+                        $discountvalue = $sales->discount->value ? $sales->discount->value : 0;
+                        if($rate != 0){
+                            $discount = $rate * $discountvalue/100;
+                            $amount = $rate - $discount;
+             
+                            if($sales->TypeofGST == '1'){
+                                $cgst = $rate * 14/100;
+                                $sgst = $rate * 14/100;
+                                $total = $rate + $cgst + $sgst;
+                            }else{
+                                $igst = $rate * 28/100;
+                                $total = $rate + $igst;
+                            }
+            
+                            $cess = $rate * 1/100;
+                            $total = $total + $cess;
+                        }
+                        $rateDetails = ['Amount' => number_format($amount,2), 'Discount' => number_format($discount,2), 'Total' => number_format($total,2), 'CGST' => number_format($cgst,2), 'SGST' => number_format($sgst,2), 'IGST' => number_format($igst,2), 'CESS' => number_format($cess,2)];
+        
+                        return view('status-form')->with(['title' => 'Invoice Status', 'data' => $sales, 'rateDetails'=> $rateDetails]);
+                    }else{
+                        return redirect()->route('view-sales')->with('error', 'Record not found.');
+                    }
+                }catch(Exception $e){
+                    return redirect()->route('view-sales')->with('error', 'Record not found.');
+                }
+        } catch (ModelNotFoundException $e) {
+            return redirect()->route('view-sales')->with('error', 'Record not found.');
+        }
+    }
+
+    public function submitSatusForm(SubmitSendOfStatusRequest $request, $id = null){
+        try {
+            $action = $request->input('action');
+            $validatedData = $request->validated();
+
+            if ($action === 'approve') {
+                Sales::where('id', $id)->update(['Note'=>$validatedData['Note'],'status'=>'1']);
+                return redirect()->route('view-sales')->with(['message' => 'Approved successfully']);
+            } elseif ($action === 'reject') {
+                Sales::where('id', $id)->update(['Note'=>$validatedData['Note'],'status'=>'2']);
+                return redirect()->route('view-sales')->with(['message' => 'Rejected successfully']);
+            }
+                return redirect()->route('view-sales')->with('message', 'submitted successfully!');
         } catch (ModelNotFoundException $e) {
             return redirect()->route('view-sales')->with('error', 'Record not found.');
         }

@@ -36,6 +36,8 @@ Route::middleware(RedirectIfAuthenticated::class)->group(function () {
     Route::post('/submit-sales/{id?}', [SalesController::class, 'submitSalesForm'])->name('submit-sales');
     Route::get('/send-of-approval-form/{id?}',[SalesController::class,'sendOfApproval'])->name('sendOfApproval');
     Route::post('/submit-send-of-approval-form/{id?}',[SalesController::class,'submitSendOfApproval'])->name('submitSendOfApproval');
+    Route::get('/status-form/{id?}',[SalesController::class,'statusForm'])->name('statusForm');
+    Route::post('/submit-status-form/{id?}',[SalesController::class,'submitSatusForm'])->name('submitSatusForm');
     
     
     Route::get('/view-sales',[SalesController::class,'index'])->name('view-sales');

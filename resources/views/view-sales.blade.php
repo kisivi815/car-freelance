@@ -28,10 +28,9 @@
                                                         <th>Customer Name</th>
                                                         <th>Car Name</th>
                                                         <th>Chasis No</th>
+                                                        <th>Edit</th>
+                                                        <th>Submit For Approval / Status</th>
                                                         <th>Status</th>
-                                                        <th>Submit For Approval</th>
-                                                        <th>Approve</th>
-                                                        <th>Reject</th>
                                                         <th>Download</th>
                                                         <th>Delete</th>
                                                     </tr>
@@ -46,21 +45,30 @@
                                                         <td>{{$d->carMaster->Model}} {{$d->carMaster->ProductLine}}</td>
                                                         <td>{{$d->ChasisNo}}</td>
                                                         <td>
-                                                            @if(!$d->InvoiceNo)
+                                                            @if(!$d->InvoiceNo || $d->status == '2')
                                                             <a href="{{route('salesForm', $d->ID)}}">Edit</a>
                                                             @else
                                                             -
                                                             @endif
                                                         </td>
                                                         <td>
-                                                            @if(!$d->InvoiceNo)
+                                                            @if(!$d->InvoiceNo || $d->status == '0' || $d->status == '2')
                                                             <a href="{{route('sendOfApproval', $d->ID)}}">Send of Approval</a>
-                                                            @else
+                                                            @elseif ($d->status == '1')
                                                             -
+                                                            @else
+                                                            <a href="{{route('statusForm', $d->ID)}}">Status</a>
                                                             @endif
                                                         </td>
-                                                        <td>Approve</td>
-                                                        <td>Reject</td>
+                                                        <td>
+                                                            @if($d->status == '1')
+                                                            Approved
+                                                            @elseif ($d->status == '2')
+                                                            Rejected
+                                                            @else
+                                                            Pending
+                                                            @endif
+                                                        </td>
                                                         <td>-</td>
                                                         <td>Delete</td>
                                                     </tr>

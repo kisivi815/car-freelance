@@ -25,7 +25,7 @@
                                                         <label>Invoice Date</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
-                                                        <input type="date" class="form-control flatpickr-no-config" name="DateOfBooking" placeholder="Date of Booking" required>
+                                                        <input type="date" class="form-control flatpickr-no-config" name="InvoiceDate" placeholder="Invoice Date" required>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <label>Invoice No</label>
