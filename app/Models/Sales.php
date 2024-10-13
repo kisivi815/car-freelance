@@ -10,6 +10,7 @@ class Sales extends Model
     use HasFactory;
 
     protected $table = 'sales';
+    protected $primaryKey = 'ID';
 
     protected $fillable = [
         'InvoiceNo',
@@ -31,6 +32,7 @@ class Sales extends Model
         'Accessories',
         'TypeofGST',
         'DateOfBooking',
+        'Status'
     ];
 
     public function carMaster(){

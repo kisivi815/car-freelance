@@ -70,7 +70,7 @@
                                                             @endif
                                                         </td>
                                                         <td>-</td>
-                                                        <td>Delete</td>
+                                                        <td><a href="#" class="delete-sales" data-id="{{ $d->ID }}" data-bs-toggle="modal" data-bs-target="#inlineForm">Delete</a></td>
                                                     </tr>
                                                     @endforeach
                                                 </tbody>
@@ -85,9 +85,76 @@
         </div>
     </div>
 
+    <div class="modal fade text-left" id="inlineForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel33" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <i data-feather="x"></i>
+                    </button>
+                </div>
+                <form action="#">
+                    <div class="modal-body">
+                        <p class="modal-text">
+                            Are you sure you want to delete this sales?
+                        </p>
+                    </div>
+                    <div class="modal-button-div">
+                        <button type="button" id="delete-sales-confirm" class="btn btn-primary ms-1">
+                            <i class="bx bx-check d-block d-sm-none"></i>
+                            <span class="d-none d-sm-block">Yes</span>
+                        </button>
+                        <button type="button" id="delete-sales-cancel" class="btn btn-light-secondary" data-bs-dismiss="modal">
+                            <i class="bx bx-x d-block d-sm-none"></i>
+                            <span class="d-none d-sm-block">No</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
 
 
     @include('layout.script')
-</body>
+    <script>
+        $(document).ready(function() {
 
+            $('.delete-sales').click(function() {
+                var id = $(this).data('id');
+                $('#delete-sales-confirm').data('id', id);
+            });
+
+            $('#delete-sales-cancel').click(function() {
+                $('#delete-sales-confirm').data('id', '');
+            });
+
+            $('#delete-sales-confirm').click(function() {
+                var id = $(this).data('id');
+                if (id) {
+                    $.ajaxSetup({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        }
+                    });
+                    $.ajax({
+                        url: "/delete-sales/" + id, // Change to your server URL
+                        type: 'DELETE',
+                        success: function(response) {
+                            if (response == 'success') {
+                                window.location.href = '/view-sales';
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Error occurred:', error);
+                            window.location.href = '/view-sales';
+                        }
+                    });
+
+                }
+            });
+        });
+    </script>
+</body>
 </html>

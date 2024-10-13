@@ -38,7 +38,7 @@ class SalesController extends Controller
             ];
             $car = CarMaster::all();
 
-            $query = Sales::query();
+            $query = Sales::query()->where('Status', '!=', '4');
 
             /* if ($request->car) {
                 $query->whereHas('CarMaster', function ($subQuery) use ($request) {
@@ -286,4 +286,19 @@ class SalesController extends Controller
             return redirect()->route('view-sales')->with('error', 'Record not found.');
         }
     }
+
+    public function deleteSalesForm($id = null){
+        try {
+            $sales = Sales::findOrFail($id);
+            $delete = $sales->update(['Status' => '4']);
+            if ($delete) {
+                return 'success';
+            } else {
+                return 'failed';
+            }
+        } catch (ModelNotFoundException $e) {
+            return redirect()->route('view-sales')->with('error', 'Record not found.');
+        }
+    }
+
 }
