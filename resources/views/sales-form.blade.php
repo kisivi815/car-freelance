@@ -102,9 +102,12 @@
                                                     </div>
                                                     <div class="col-md-8 form-group">
                                                         <select class="form-select" name="ChasisNo" id="ChasisNo" required>
-                                                            <option value="">Select Chasis No</option>
                                                             @foreach ($data['car'] as $c)
-                                                            <option value="{{$c->ChasisNo}}" {{ old('ChasisNo') == $c->ChasisNo ? 'selected' : '' }}>{{$c->ChasisNo}}</option>
+                                                            <option value="{{ $c->ChasisNo }}"
+                                                                {{ old('ChasisNo') == $c->ChasisNo ? 'selected' : '' }}
+                                                                {{ isset($data['data']) && $data['data']->ChasisNo == $c->ChasisNo ? 'selected' : '' }}>
+                                                                {{ $c->ChasisNo }}
+                                                            </option>
                                                             @endforeach
                                                         </select>
                                                     </div>
@@ -113,10 +116,10 @@
                                                     </div>
                                                     <div class="col-md-8 form-group">
                                                         <div>
-                                                            <label>Model :</label> <span id="Model">-</span><br>
-                                                            <label>Product Line :</label> <span id="ProductLine">-</span><br>
-                                                            <label>Colour :</label> <span id="Colour">-</span><br>
-                                                            <label>Price :</label> <span id="Price">-</span>
+                                                            <label>Model :</label> <span id="Model">{{isset($data['data']->CarMaster->Model)? $data['data']->CarMaster->Model : '-'}}</span><br>
+                                                            <label>Product Line :</label> <span id="ProductLine">{{isset($data['data']->CarMaster->ProductLine)? $data['data']->CarMaster->ProductLine : '-'}}</span><br>
+                                                            <label>Colour :</label> <span id="Colour">{{isset($data['data']->CarMaster->Colour)? $data['data']->CarMaster->Colour : '-'}}</span><br>
+                                                            <label>Price :</label> <span id="Price">{{isset($data['data']->CarMaster->Amount)? $data['data']->CarMaster->Amount : '-'}}</span>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-12 mb-3">
@@ -155,13 +158,13 @@
                                                     </div>
                                                     <div class="col-md-8 form-group">
                                                         <select class="form-select" name="DiscountType" required>
-                                                        <option value="">Select Discount</option>
-                                                        
+                                                            <option value="">Select Discount</option>
+
                                                             @foreach ($data['discount'] as $d)
                                                             <option value="{{$d->ID}}" {{((isset($data['data']) && $data['data']->DiscountType == $d->ID) || old('DiscountType') == $d->ID ) ?'selected' : '' }}>{{$d->value}}%</option>
                                                             @endforeach
                                                         </select>
-                                                       
+
                                                     </div>
                                                     <div class="col-md-12 mb-3">
                                                         <h4 class="card-title">Accessories Details</h4>
@@ -211,7 +214,8 @@
     <script>
         $(document).ready(function() {
             $('.form-select').select2();
-
+            $('#ChasisNo').trigger('change');
+            
             $('#ChasisNo').on('change', function() {
                 $('#Model').text('-');
                 $('#ProductLine').text('-');
@@ -236,7 +240,7 @@
                     }
                 });
 
-        
+
             });
         });
     </script>

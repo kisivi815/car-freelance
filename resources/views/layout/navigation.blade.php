@@ -32,7 +32,7 @@
                         <span>Add Sales</span>
                     </a>
                 </li>
-                <li class="sidebar-item {{ Request::routeIs('sales-form') ? 'active' : '' }}">
+                <li class="sidebar-item {{ Request::routeIs('view-sales') ? 'active' : '' }}">
                     <a href="{{ route('view-sales') }}" class='sidebar-link'>
                         <i class=""></i>
                         <span>View Sales</span>

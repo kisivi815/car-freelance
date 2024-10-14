@@ -15,6 +15,8 @@ use App\Models\Branch;
 use App\Models\Discount;
 use App\Models\Insurance;
 use App\Models\Sales;
+use App\Services\CarMasterStatusService;
+use App\Services\LogService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Exception;
@@ -108,7 +110,7 @@ class SalesController extends Controller
             $validatedData['SalesId'] = $salesId;
             $validatedData['TMInvoiceNo'] = CarMaster::where('ChasisNo', $request->input('ChasisNo'))->first()->CommercialInvoiceNo;
             $newRecord = QuickSales::create($validatedData);
-
+            LogService::insertlog($newRecord->id,'Add','Quick Sales '.$newRecord->id,'quick_sales');
             return response()->json([
                 'id' => $newRecord->id
             ]);
@@ -172,11 +174,13 @@ class SalesController extends Controller
             if (!$id) {
                 $validatedData = $request->validated();
                 $newRecord = Sales::create($validatedData);
+                LogService::insertlog($newRecord->ID,'Add','Create New Sales '.$newRecord->ID,'sales');
                 return redirect()->route('view-sales')->with('message', 'Submitted successfully!');
             }else{
                 $validatedData = $request->validated();
                 $sales = Sales::where('id', $id)->first();
                 $sales->update($validatedData);
+                LogService::insertlog($sales->ID,'Update','Update Sales '.$sales->ID,'sales');
                 return redirect()->route('view-sales')->with('message', 'Updated successfully!');
             }
         } catch (ModelNotFoundException $e) {
@@ -222,8 +226,9 @@ class SalesController extends Controller
     public function submitSendOfApproval(SubmitSendOfApprovalRequest $request, $id = null){
         try {
                 $validatedData = $request->validated();
-                Sales::where('id', $id)->update($validatedData);
-            
+                $validatedData['status'] = '5';
+                $updatedData=Sales::where('id', $id)->update($validatedData);
+                LogService::insertlog($updatedData->ID,'Update','Submit of Approval '.$updatedData->ID,'sales');
                 return redirect()->route('view-sales')->with('message', 'Send of Approval submitted successfully!');
         } catch (ModelNotFoundException $e) {
             return redirect()->route('view-sales')->with('error', 'Record not found.');
@@ -276,12 +281,15 @@ class SalesController extends Controller
 
             if ($action === 'approve') {
                 Sales::where('id', $id)->update(['Note'=>$validatedData['Note'],'status'=>'1']);
+                CarMasterStatusService::insertStatus($validatedData['ChasisNo'],'SALES APPROVED');
+                LogService::insertlog($id,'Update','Approve Sales '.$id,'sales');
                 return redirect()->route('view-sales')->with(['message' => 'Approved successfully']);
             } elseif ($action === 'reject') {
                 Sales::where('id', $id)->update(['Note'=>$validatedData['Note'],'status'=>'2']);
+                LogService::insertlog($id,'Update','Reject Sales '.$id,'sales');
                 return redirect()->route('view-sales')->with(['message' => 'Rejected successfully']);
             }
-                return redirect()->route('view-sales')->with('message', 'submitted successfully!');
+                return redirect()->route('view-sales')->with('message', 'Submit Error!');
         } catch (ModelNotFoundException $e) {
             return redirect()->route('view-sales')->with('error', 'Record not found.');
         }
@@ -292,6 +300,7 @@ class SalesController extends Controller
             $sales = Sales::findOrFail($id);
             $delete = $sales->update(['Status' => '4']);
             if ($delete) {
+                LogService::insertlog($id,'Delete','Delete Sales '.$id,'sales');
                 return 'success';
             } else {
                 return 'failed';

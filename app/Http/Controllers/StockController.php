@@ -11,6 +11,7 @@ use App\Models\Branch;
 use App\Models\TransferStock;
 use App\Models\Image;
 use App\Services\CarMasterStatusService;
+use App\Services\LogService;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -129,7 +130,7 @@ class StockController extends Controller
                 'PhysicalStatus' => 'STOCK TF'
             ]);
             CarMasterStatusService::insertStatus($validatedData['ChasisNo'],'STOCK TF');
-
+            LogService::insertlog($newRecord->id,'Add','New Stock Created with ID '.$newRecord->id,'transfer_stock');
             return response()->json([
                 'id' => $newRecordId
             ]);
@@ -187,11 +188,13 @@ class StockController extends Controller
                     'PhysicalStatus' => 'RECEIVED APPROVED'
                 ]);
                 CarMasterStatusService::insertStatus($TransferStock->ChasisNo,'RECEIVED APPROVED');
+                LogService::insertlog($request->id,'Update','Approved Stock Received with ID '.$request->id,'transfer_stock');
             } else {
                 $car = CarMaster::where('ChasisNo', $TransferStock->ChasisNo)->update([
                     'PhysicalStatus' => 'RECEIVED REJECTED'
                 ]);
                 CarMasterStatusService::insertStatus($TransferStock->ChasisNo,'RECEIVED REJECTED');
+                LogService::insertlog($request->id,'Update','Rejected Stock Received with ID '.$request->id,'transfer_stock');
             }
             $message = 'Stock received successfully';
             return redirect()->route('view-stock')->with(['title' => 'View Stock', 'message' => $message]);
@@ -238,6 +241,7 @@ class StockController extends Controller
             $TransferStock = TransferStock::findOrFail($id);
             $delete = $TransferStock->delete();
             if ($delete) {
+                LogService::insertlog($id,'Delete','Delete Stock with ID '.$id,'transfer_stock');
                 return 'success';
             } else {
                 return 'failed';
