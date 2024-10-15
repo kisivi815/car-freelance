@@ -17,7 +17,7 @@
                             <div class="card">
                                 <div class="card-content">
                                     <div class="card-body">
-                                        <form class="form form-horizontal" id="transfer-stock-form" action="{{route('submit-sales')}}" name="transferstockform" method="POST" enctype="multipart/form-data" autocomplete="off">
+                                        <form class="form form-horizontal" id="transfer-stock-form"  action="{{ isset($data['data']) ? route('submit-sales', $data['data']->ID) : route('submit-sales') }}" name="transferstockform" method="POST" enctype="multipart/form-data" autocomplete="off">
                                             @csrf
                                             <div class="form-body">
                                                 <div class="row">

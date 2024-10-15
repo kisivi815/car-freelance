@@ -21,6 +21,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class SalesController extends Controller
@@ -34,54 +35,51 @@ class SalesController extends Controller
             $branch = Branch::all();
             $status = [
                 ['text' => 'All', 'value' => ''],
-                ['text' => 'Received Approved', 'value' => 'RECEIVED APPROVED'],
-                ['text' => 'Received Rejected', 'value' => 'RECEIVED REJECTED'],
-                ['text' => 'Stock T/F', 'value' => 'STOCK TF']
+                ['text' => 'Approved', 'value' => '1'],
+                ['text' => 'Rejected', 'value' => '2'],
+                ['text' => 'Pending', 'value' => '3']
             ];
             $car = CarMaster::all();
 
             $query = Sales::query()->where('Status', '!=', '4');
 
-            /* if ($request->car) {
-                $query->whereHas('CarMaster', function ($subQuery) use ($request) {
-                    $subQuery->where('Model', 'like', '%' . $request->car . '%');
-                });
+            if ($request->FromDateOfSales) {
+                $query->Where('DateOfSales', '>=', $request->FromDateOfSales);
             }
 
-            if ($request->source) {
-                $query->Where('SourceBranch', $request->source);
+            if ($request->ToDateOfSales) {
+                $query->Where('DateOfSales', '<=', $request->ToDateOfSales);
             }
 
-            if ($request->destination) {
-                $query->Where('DestinationBranch', $request->destination);
+            if ($request->invoiceNo) {
+                $query->Where('InvoiceNo', $request->invoiceNo);
             }
 
             if ($request->status) {
-                if ($request->status == 'RECEIVED APPROVED') {
-                    $query->WhereNotNull('ApprovedBy');
+                if ($request->status == '1') {
+                    $query->where('status','1');
                 }
 
-                if ($request->status == 'RECEIVED REJECTED') {
-                    $query->WhereNotNull('RejectedBy');
+                if ($request->status == '2') {
+                    $query->where('status','2');
                 }
 
-                if ($request->status == 'STOCK TF') {
-                    $query->where('ApprovedBy', null)->where('RejectedBy', null);
+                if ($request->status == '3') {
+                    $query->whereIn('status',['0','5']);
                 }
             }
 
             if ($request->name) {
-                $query->where(function ($subQuery) use ($request) {
-                    $subQuery->orWhere('SendBy', 'like', '%' . $request->name . '%');
-                    $subQuery->orWhere('ReceivedBy', 'like', '%' . $request->name . '%');
-                });
+                $query->whereRaw('CONCAT(FirstName, " ", LastName) LIKE ?', ['%' . $request->name . '%']);
             }
+            
 
             if ($request->chasisNo) {
                 $query->Where('ChasisNo', 'like', '%' . $request->chasisNo . '%');
-            } */
+            } 
 
             $query->orderBy('id', 'desc');
+            
             $result = $query->paginate(10)->appends($request->all());
 
             $data = ['status' => $status, 'branch' => $branch, 'car' => $car, 'result' => $result];
@@ -280,8 +278,9 @@ class SalesController extends Controller
             $validatedData = $request->validated();
 
             if ($action === 'approve') {
+                $sale = Sales::where('id', $id)->first();
                 Sales::where('id', $id)->update(['Note'=>$validatedData['Note'],'status'=>'1']);
-                CarMasterStatusService::insertStatus($validatedData['ChasisNo'],'SALES APPROVED');
+                CarMasterStatusService::insertStatus($sale->ChasisNo,'SALES APPROVED');
                 LogService::insertlog($id,'Update','Approve Sales '.$id,'sales');
                 return redirect()->route('view-sales')->with(['message' => 'Approved successfully']);
             } elseif ($action === 'reject') {

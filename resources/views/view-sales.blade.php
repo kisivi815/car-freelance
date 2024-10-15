@@ -11,6 +11,79 @@
         <div id="main">
             @include('layout.title')
             <div class="page-content">
+                <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                    Filter
+                </button>
+                </p>
+                <div class="collapse show" id="collapseExample">
+                    <section>
+                        <div class="row match-height">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-content">
+                                        <div class="card-body">
+                                            <form class="form form-horizontal" id="stock-filter" method="GET" action="{{route('view-sales')}}">
+                                                <div class="form-body">
+                                                    <div class="row">
+                                                        <div class="col-md-2">
+                                                            <label for="">From Date of Sales</label>
+                                                        </div>
+                                                        <div class="col-md-4 form-group">
+                                                            <input type="text" class="form-control flatpickr-no-config" name="FromDateOfSales" value="{{ old('FromDateOfSales',request('FromDateOfSales')) }}" placeholder="From Date of Sales">
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <label for="">To Date of Sales</label>
+                                                        </div>
+                                                        <div class="col-md-4 form-group">
+                                                            <input type="text" class="form-control flatpickr-no-config" name="ToDateOfSales" value="{{ old('ToDateOfSales',request('ToDateOfSales')) }}" placeholder="To From Date of Sales">
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <label for="contact-info-horizontal">Name</label>
+                                                        </div>
+                                                        <div class="col-md-4 form-group">
+                                                            <input type="text" class="form-control" name="name" value="{{ old('name',request('name')) }}" placeholder="Name">
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <label for="horizontal">Status</label>
+                                                        </div>
+                                                        <div class="col-md-4 form-group">
+                                                            <select class="form-select" name="status">
+                                                                @foreach ($data['status'] as $s)
+                                                                <option value="{{$s['value']}}" {{ $s['value'] == request('status') ? 'selected' : '' }}>{{$s['text']}}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <label>Invoice No</label>
+                                                        </div>
+                                                        <div class="col-md-4 form-group">
+                                                            <input type="text" class="form-control" name="invoiceNo" placeholder="Invoice No" value="{{ old('invoiceNo',request('invoiceNo')) }}">
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <label>Chasis No</label>
+                                                        </div>
+                                                        <div class="col-md-4 form-group">
+                                                            <select class="form-select chasisNo-select" name="chasisNo">
+                                                                <option value="">Chasis No</option>
+                                                                @foreach ($data['car'] as $c)
+                                                                <option value="{{$c['ChasisNo']}}" {{ $c['ChasisNo'] == request('chasisNo') ? 'selected' : '' }}>{{$c['ChasisNo']}}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-sm-12 d-flex justify-content-end">
+                                                            <button type="submit" class="btn btn-primary me-1 mb-1">Search</button>
+                                                            <button type="reset" class="btn btn-light-secondary me-1 mb-1" id="reset">Reset</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
                 <section class="section">
                     <div class="row" id="table-bordered">
                         <div class="col-12">
@@ -116,10 +189,23 @@
     </div>
 
 
-
+    @include('layout.datepicker-script')
     @include('layout.script')
     <script>
         $(document).ready(function() {
+            flatpickr('.flatpickr-no-config', {
+                enableTime: false,
+                dateFormat: "Y-m-d",
+            })
+
+            $('.chasisNo-select').select2()
+
+            $('#reset').on('click', function() {
+                $('#stock-filter input').removeAttr('value');
+                $('#stock-filter select option:selected').removeAttr('selected');
+                $('.chasisNo-select').val(null).trigger('change');
+
+            });
 
             $('.delete-sales').click(function() {
                 var id = $(this).data('id');
@@ -157,4 +243,5 @@
         });
     </script>
 </body>
+
 </html>
