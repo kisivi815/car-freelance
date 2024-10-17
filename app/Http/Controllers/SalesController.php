@@ -226,7 +226,7 @@ class SalesController extends Controller
                 $validatedData = $request->validated();
                 $validatedData['status'] = '5';
                 $updatedData=Sales::where('id', $id)->update($validatedData);
-                LogService::insertlog($updatedData->ID,'Update','Submit of Approval '.$updatedData->ID,'sales');
+                LogService::insertlog($id,'Update','Submit of Approval '.$id,'sales');
                 return redirect()->route('view-sales')->with('message', 'Send of Approval submitted successfully!');
         } catch (ModelNotFoundException $e) {
             return redirect()->route('view-sales')->with('error', 'Record not found.');

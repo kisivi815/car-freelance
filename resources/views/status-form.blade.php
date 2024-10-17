@@ -145,6 +145,12 @@
                                                     </div>
                                                     <div class="row">
                                                         <div class="col-md-2">
+                                                            Engine No :
+                                                            </div>
+                                                            <div class="col text-left">
+                                                            {{$data->carMaster->EngineNo}}
+                                                            </div>
+                                                        <div class="col-md-2">
                                                             Price :
                                                         </div>
                                                         <div class="col text-left">
@@ -200,7 +206,7 @@
                                                             Rate :
                                                         </div>
                                                         <div class="col text-left">
-                                                            {{$data->carMaster->Rate ? $data->carMaster->Rate : 0}}
+                                                            {{$data->carMaster->Rate ? number_format($data->carMaster->Rate,2) : 0}}
                                                         </div>
                                                     </div>
                                                     <div class="row">

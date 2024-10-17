@@ -102,6 +102,7 @@
                                                     </div>
                                                     <div class="col-md-8 form-group">
                                                         <select class="form-select" name="ChasisNo" id="ChasisNo" required>
+                                                            <option value="">Select Chasis No</option>
                                                             @foreach ($data['car'] as $c)
                                                             <option value="{{ $c->ChasisNo }}"
                                                                 {{ old('ChasisNo') == $c->ChasisNo ? 'selected' : '' }}
@@ -119,7 +120,8 @@
                                                             <label>Model :</label> <span id="Model">{{isset($data['data']->CarMaster->Model)? $data['data']->CarMaster->Model : '-'}}</span><br>
                                                             <label>Product Line :</label> <span id="ProductLine">{{isset($data['data']->CarMaster->ProductLine)? $data['data']->CarMaster->ProductLine : '-'}}</span><br>
                                                             <label>Colour :</label> <span id="Colour">{{isset($data['data']->CarMaster->Colour)? $data['data']->CarMaster->Colour : '-'}}</span><br>
-                                                            <label>Price :</label> <span id="Price">{{isset($data['data']->CarMaster->Amount)? $data['data']->CarMaster->Amount : '-'}}</span>
+                                                            <label>Price :</label> <span id="Price">{{isset($data['data']->CarMaster->Amount)? $data['data']->CarMaster->Amount : '-'}}</span><br>
+                                                            <label>Engine No :</label> <span id="EngineNo">{{isset($data['data']->CarMaster->EngineNo)? $data['data']->CarMaster->EngineNo : '-'}}</span>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-12 mb-3">
@@ -214,13 +216,14 @@
     <script>
         $(document).ready(function() {
             $('.form-select').select2();
-            $('#ChasisNo').trigger('change');
+            //$('#ChasisNo').trigger('change');
             
             $('#ChasisNo').on('change', function() {
                 $('#Model').text('-');
                 $('#ProductLine').text('-');
                 $('#Colour').text('-');
                 $('#Price').text('-');
+                $('#EngineNo').text('-');
                 var selectedValue = $(this).val();
                 $.ajax({
                     url: '/car-details',
@@ -233,6 +236,7 @@
                         $('#ProductLine').text(response.ProductLine);
                         $('#Colour').text(response.Colour);
                         $('#Price').text(response.Amount);
+                        $('#EngineNo').text(response.EngineNo);
 
                     },
                     error: function(xhr, status, error) {
