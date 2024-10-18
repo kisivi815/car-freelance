@@ -50,4 +50,8 @@ class Sales extends Model
     public function discount(){
         return $this->hasOne(Discount::class, 'ID', 'DiscountType');
     }
+
+    public function accessoriesFile(){
+        return $this->hasMany(SaleAccesoriesFile::class, 'salesId', 'ID');
+    }
 }

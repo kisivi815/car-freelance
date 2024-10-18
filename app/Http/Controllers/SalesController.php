@@ -14,6 +14,7 @@ use App\Models\CarMaster;
 use App\Models\Branch;
 use App\Models\Discount;
 use App\Models\Insurance;
+use App\Models\SaleAccesoriesFile;
 use App\Models\Sales;
 use App\Services\CarMasterStatusService;
 use App\Services\LogService;
@@ -23,6 +24,7 @@ use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class SalesController extends Controller
 {
@@ -155,7 +157,7 @@ class SalesController extends Controller
         $discount = Discount::all();
 
         if ($id) {
-            $sales = Sales::where('id', $id)->first();
+            $sales = Sales::with(['accessoriesFile'])->where('id', $id)->first();
 
             if (!$sales) {
                 return redirect()->route('view-sales')->with('error', 'Record not found.');
@@ -172,12 +174,33 @@ class SalesController extends Controller
             if (!$id) {
                 $validatedData = $request->validated();
                 $newRecord = Sales::create($validatedData);
+                if ($request->hasfile('accesoriesFile')) {
+                    foreach ($request->file('accesoriesFile') as $index => $file) {
+                        $result = Storage::disk('s3')->put("sales/".$newRecord->ID."/" . $newRecord->ID . "_Accessories_".$index."_" . $file->getClientOriginalName(), file_get_contents($file));
+                        if ($result) {
+                            $image['filename'] = config('constants.image_url') . "/sales/".$newRecord->ID."/" . $newRecord->ID . "_Accessories_".$index."_" . $file->getClientOriginalName();
+                            $image['salesId'] =  $newRecord->ID;
+                            SaleAccesoriesFile::create($image);
+                        }
+                    }
+                }
                 LogService::insertlog($newRecord->ID,'Add','Create New Sales '.$newRecord->ID,'sales');
                 return redirect()->route('view-sales')->with('message', 'Submitted successfully!');
             }else{
                 $validatedData = $request->validated();
                 $sales = Sales::where('id', $id)->first();
                 $sales->update($validatedData);
+                SaleAccesoriesFile::whereIn('id',explode(',', $request->toArray()['deleteAccesoriesFile']))->delete();
+                if ($request->hasfile('accesoriesFile')) {
+                    foreach ($request->file('accesoriesFile') as $index => $file) {
+                        $result = Storage::disk('s3')->put("sales/".$id."/" . $id . "_Accessories_".$index."_" . $file->getClientOriginalName(), file_get_contents($file));
+                        if ($result) {
+                            $image['filename'] = config('constants.image_url') . "/sales/".$id."/" . $id . "_Accessories_".$index."_" . $file->getClientOriginalName();
+                            $image['salesId'] =  $id;
+                            SaleAccesoriesFile::create($image);
+                        }
+                    }
+                }
                 LogService::insertlog($sales->ID,'Update','Update Sales '.$sales->ID,'sales');
                 return redirect()->route('view-sales')->with('message', 'Updated successfully!');
             }

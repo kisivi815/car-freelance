@@ -175,13 +175,24 @@
                                                         <label>Accessories</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
-                                                        <textarea class="form-control" id="accessories" rows="3" name="Accessories"></textarea>
+                                                        <textarea class="form-control" id="accessories" rows="3" name="Accessories">{{isset($data['data']->Accessories)? $data['data']->Accessories : ''}}</textarea>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <label>Upload</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
                                                         <input type="file" class="image-preview-filepond" name="accesoriesFile[]" multiple>
+                                                        @if (isset($data['data']->accessoriesFile) && $data['data']->accessoriesFile)
+                                                            @if(count($data['data']->accessoriesFile) > 0)
+                                                                @foreach ($data['data']->accessoriesFile as $index => $file)
+                                                                <div id="accesories->{{ $file->id}}" style="display:inline-block;margin-right:10px">
+                                                                <a href="{{ $file->filename}}" target="_blank">Accessories File {{$index + 1}}</a>
+                                                                <button type="button" class="btn btn-danger btn-sm" data-id="{{ $file->id}}">Delete</button>
+                                                                </div>
+                                                                @endforeach
+                                                            @endif
+                                                        @endif
+                                                        <input type="hidden" name="deleteAccesoriesFile" id="accesoriesFile" value="">
                                                     </div>
                                                     <div class="col-md-12 mb-3">
                                                         <h4 class="card-title">GST Details</h4>
@@ -216,7 +227,27 @@
     <script>
         $(document).ready(function() {
             $('.form-select').select2();
-            //$('#ChasisNo').trigger('change');
+
+            $('.btn-danger').on('click', function () {
+                var fileId = $(this).data('id').toString(); // Get the ID as a string
+                var currentValue = $('#accesoriesFile').val(); // Get the current value
+
+                // Split existing values into an array (if any), or start with an empty array
+                var valuesArray = currentValue ? currentValue.split(',') : [];
+
+                // Check if the ID already exists in the array
+                if (valuesArray.includes(fileId)) {
+                    // If it exists, remove it
+                    valuesArray = valuesArray.filter(id => id !== fileId);
+                } else {
+                    // If it doesn't exist, add it
+                    valuesArray.push(fileId);
+                }
+
+                // Join the array back into a comma-separated string and set it as the new value
+                $('#accesoriesFile').val(valuesArray.join(','));
+                $(this).parent().remove();
+            });
             
             $('#ChasisNo').on('change', function() {
                 $('#Model').text('-');
