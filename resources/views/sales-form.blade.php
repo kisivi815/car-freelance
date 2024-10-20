@@ -28,7 +28,7 @@
                                                         <label>Mobile</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
-                                                        <input type="text" id="Mobile" class="form-control" name="Mobile" placeholder="Mobile" value="{{isset($data['data'])? $data['data']->Mobile : old('Mobile')}}" required>
+                                                        <input type="text" id="Mobile" class="form-control" name="Mobile" placeholder="Mobile" onkeypress="return isNumberKey(event)" oninput="validateInput(this);" value="{{isset($data['data'])? $data['data']->Mobile : old('Mobile')}}" required>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <label>Saluation</label>
@@ -50,13 +50,13 @@
                                                         <label>Last Name</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
-                                                        <input type="text" id="lastName" class="form-control" name="LastName" placeholder="Last Name" value="{{isset($data['data'])? $data['data']->LastName : old('LastName')}}" required>
+                                                        <input type="text" id="lastName" class="form-control" name="LastName" placeholder="Last Name" value="{{isset($data['data'])? $data['data']->LastName : old('LastName')}}">
                                                     </div>
                                                     <div class="col-md-4">
                                                         <label>Father Name</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
-                                                        <input type="text" id="fatherName" class="form-control" name="FathersName" placeholder="Father Name" value="{{isset($data['data'])? $data['data']->FathersName : old('FathersName')}}" required>
+                                                        <input type="text" id="fatherName" class="form-control" name="FathersName" placeholder="Father Name" value="{{isset($data['data'])? $data['data']->FathersName : old('FathersName')}}">
                                                     </div>
                                                     <div class="col-md-4">
                                                         <label>Email</label>
@@ -80,7 +80,7 @@
                                                         <label>GST</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
-                                                        <input type="text" id="gst" class="form-control" name="GST" placeholder="GST" value="{{isset($data['data'])? $data['data']->GST : old('GST')}}" required>
+                                                        <input type="text" id="gst" class="form-control" name="GST" placeholder="GST" value="{{isset($data['data'])? $data['data']->GST : old('GST')}}">
                                                     </div>
                                                     <div class="col-md-4">
                                                         <label>Permanent Address</label>
@@ -159,7 +159,7 @@
                                                         <label>Discount Type</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
-                                                        <select class="form-select" name="DiscountType" required>
+                                                        <select class="form-select" name="DiscountType">
                                                             <option value="">Select Discount</option>
 
                                                             @foreach ($data['discount'] as $d)
@@ -275,6 +275,48 @@
                     }
                 });
 
+
+            });
+
+            $('#submit-btn').on('click', function(e) {
+                e.preventDefault(); // Prevent the default form submission
+                var valid = true;
+                var message = '';
+                $('#transfer-stock-form').find('.red-border').removeClass("red-border");
+                $('.alert-danger').hide();
+
+                $('#transfer-stock-form').find('input[required], select[required]').each(function() {
+                    if ($(this).is(':checkbox')) {
+                        if (!$(this).is(':checked')) {
+                            valid = false;
+                        }
+                    } else if (!$(this).val()) {
+                        if ($(this).is('select')) {
+                            $(this).next().find('span > ').addClass("red-border");
+                        } else {
+                            $(this).addClass("red-border"); // Add the red-border class
+                        }
+
+                        valid = false;
+
+                    }
+
+                    message = 'Please fill in all required fields.'
+                });
+
+                if ($('#email').val() != '' && !isValidEmail($('#email').val())) {
+                    $('#email').addClass("red-border"); 
+                    valid = false;
+                    message = 'Please enter a valid email address.';
+                }
+                
+
+                if (!valid) {
+                    $('.alert-danger').show()
+                    $('#error-text').text(message);
+                } else {
+                    $('#transfer-stock-form').submit();
+                }
 
             });
         });
