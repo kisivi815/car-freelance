@@ -45,6 +45,10 @@ Route::middleware(RedirectIfAuthenticated::class)->group(function () {
 
     Route::get('/view-stock', [StockController::class, 'index'])->name('view-stock');
 
+    Route::get('/view-inventory', [StockController::class, 'inventoryStock'])->name('inventory-stock');
+
+    
+
     Route::get('/stock-details', function () {
         return view('view-stock')->with(['title' => 'View Stock']);
     })->name('view-stock-default');

@@ -13,7 +13,12 @@
         <div class="sidebar-menu">
             <ul class="menu">
                 <li class="sidebar-title">Menu</li>
-
+                <li class="sidebar-item {{ Request::routeIs('inventory-stock') ? 'active' : '' }}">
+                    <a href="{{ route('inventory-stock') }}" class='sidebar-link'>
+                        <i class=""></i>
+                        <span>Invetory Stock</span>
+                    </a>
+                </li>
                 <li class="sidebar-item {{ (Request::routeIs('view-stock') || Request::routeIs('view-stock-default')) ? 'active' : '' }}">
                     <a href="{{ route('view-stock') }}" class='sidebar-link'>
                         <i class=""></i>

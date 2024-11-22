@@ -284,4 +284,69 @@ class StockController extends Controller
             return redirect()->route('view-stock')->with('error', 'Record not found.');
         }
     }
+
+    public function inventoryStock(Request $request)
+    {
+        try {
+            $status = [
+                ['text' => 'All', 'value' => ''],
+                ['text' => 'In Transit', 'value' => 'In Transit'],
+                ['text' => 'Received - OK', 'value' => 'Received - OK'],
+                ['text' => 'Received Approved', 'value' => 'RECEIVED APPROVED'],
+                ['text' => 'Received Rejected', 'value' => 'RECEIVED REJECTED'],
+                ['text' => 'Stock T/F', 'value' => 'STOCK TF'],
+                ['text' => 'Test Drive Vehicle', 'value' => 'Test Drive Vehicle'],
+                ['text' => 'Sold', 'value' => 'Sold']
+                
+            ];
+
+            $query = CarMaster::query();
+
+            if ($request->car) {
+                $query->where('Model', 'like', '%' . $request->car . '%');
+            }
+
+            if ($request->status) {
+                if ($request->status == 'In Transit') {
+                    $query->where('PhysicalStatus','In Transit');
+                }
+
+                if ($request->status == 'Received - OK') {
+                    $query->where('PhysicalStatus','Received - OK');
+                }
+
+                if ($request->status == 'RECEIVED APPROVED') {
+                    $query->where('PhysicalStatus','RECEIVED APPROVED');
+                }
+
+                if ($request->status == 'RECEIVED REJECTED') {
+                    $query->where('PhysicalStatus','RECEIVED REJECTED');
+                }
+
+                if ($request->status == 'STOCK TF') {
+                    $query->where('PhysicalStatus','STOCK TF');
+                }
+
+                if ($request->status == 'Test Drive Vehicle') {
+                    $query->where('PhysicalStatus','Test Drive Vehicle');
+                }
+
+                if ($request->status == 'Sold') {
+                    $query->where('PhysicalStatus','Sold');
+                }
+            }
+
+            if ($request->chasisNo) {
+                $query->Where('ChasisNo', 'like', '%' . $request->chasisNo . '%');
+            }
+
+            $query->orderBy('created_at', 'desc');
+            $result = $query->paginate(10)->appends($request->all());
+
+            $data = ['status' => $status, 'result' => $result];
+            return view('view-inventory-stock')->with(['title' => 'View Stock', 'data' => $data]);
+        } catch (ModelNotFoundException $e) {
+            return redirect()->route('view-inventory-stock')->with('error', 'Record not found.');
+        }
+    }
 }
