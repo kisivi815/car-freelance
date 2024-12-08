@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\StockController;
 use App\Http\Middleware\RedirectIfAuthenticated;
 use App\Http\Controllers\CarMasterController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SalesController;
 use Illuminate\Support\Facades\Auth;
 
@@ -75,6 +76,10 @@ Route::middleware(RedirectIfAuthenticated::class)->group(function () {
     Route::get('/upload-car-stock', [CarMasterController::class, 'index'])->name('upload-car-stock');
     Route::post('/upload-car-sheets', [CarMasterController::class, 'store'])->name('upload-car-sheets');
     Route::post('/upload-car-details-sheets', [CarMasterController::class, 'storeCarDetails'])->name('upload-car-details-sheets');
+
+
+    Route::get('/report', [ReportController::class, 'index'])->name('report');
+    
 
     
 });

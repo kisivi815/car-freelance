@@ -51,6 +51,12 @@
                     </a>
                 </li>
                 @endif
+                <li class="sidebar-item {{ Request::routeIs('report') ? 'active' : '' }}">
+                    <a href="{{ route('report') }}" class='sidebar-link'>
+                        <i class=""></i>
+                        <span>Report</span>
+                    </a>
+                </li>
                 <li class="sidebar-item {{ Request::routeIs('upload-car-stock') ? 'active' : '' }}">
                     <a href="{{ route('upload-car-stock') }}" class='sidebar-link'>
                         <i class=""></i>
