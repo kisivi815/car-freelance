@@ -18,7 +18,7 @@
                                 <div class="card">
                                     <div class="card-content">
                                         <div class="card-body">
-                                            <form class="form form-horizontal" id="stock-filter" method="GET" action="{{route('report')}}">
+                                            <form class="form form-horizontal" id="stock-filter" method="GET" action="{{route('exportCsv')}}">
                                                 <div class="form-body">
                                                     <div class="row">
                                                         <div class="col-md-2">
@@ -67,94 +67,6 @@
                         </div>
                     </section>
                 </div>
-                <section class="section">
-                    <div class="row" id="table-bordered">
-                        <div class="col-12">
-                            <div class="card">
-                                <div class="card-content">
-                                    <div class="card-body">
-                                        <div class="table-responsive">
-                                            <table class="table table-bordered mb-0">
-                                                <thead>
-                                                    <tr>
-                                                        <th>ChasisNo</th>
-                                                        <th>Model</th>
-                                                        <th>ProductLine</th>
-                                                        <th>Colour</th>
-                                                        <th>PhysicalStatus</th>
-                                                        <th>EngineNo</th>
-                                                        <th>EmissionNorm</th>
-                                                        <th>ManufacturingDate</th>
-                                                        <th>TMInvoiceDate</th>
-                                                        <th>CommercialInvoiceNo</th>
-                                                        <th>HSNCode</th>
-                                                        <th>TypeOfFuel</th>
-                                                        <th>MakersName</th>
-                                                        <th>NoOfCylinders</th>
-                                                        <th>SeatingCapacity</th>
-                                                        <th>CatalyticConverter</th>
-                                                        <th>UnladenWeight</th>
-                                                        <th>FrontAxle</th>
-                                                        <th>RearAxle</th>
-                                                        <th>AnyOtherAxle</th>
-                                                        <th>TandemAxle</th>
-                                                        <th>GrossWeight</th>
-                                                        <th>TypeOfBody</th>
-                                                        <th>HorsePower</th>
-                                                        <th>Rate</th>
-                                                        <th>TaxableValue</th>
-                                                        <th>Amount</th>
-                                                        <th>active</th>
-                                                        <th>created_at</th>
-                                                        <th>updated_at</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @foreach ($data['result'] as $d)
-                                                    <tr>
-                                                        <td>{{$d->ChasisNo}}</td>
-                                                        <td>{{$d->Model}}</td>
-                                                        <td>{{$d->ProductLine}}</td>
-                                                        <td>{{$d->Colour}}</td>
-                                                        <td>{{$d->PhysicalStatus}}</td>
-                                                        <td>{{$d->EngineNo}}</td>
-                                                        <td>{{$d->EmissionNorm}}</td>
-                                                        <td>{{$d->ManufacturingDate}}</td>
-                                                        <td>{{$d->TMInvoiceDate}}</td>
-                                                        <td>{{$d->CommercialInvoiceNo}}</td>
-                                                        <td>{{$d->HSNCode}}</td>
-                                                        <td>{{$d->TypeOfFuel}}</td>
-                                                        <td>{{$d->MakersName}}</td>
-                                                        <td>{{$d->NoOfCylinders}}</td>
-                                                        <td>{{$d->SeatingCapacity}}</td>
-                                                        <td>{{$d->CatalyticConverter}}</td>
-                                                        <td>{{$d->UnladenWeight}}</td>
-                                                        <td>{{$d->FrontAxle}}</td>
-                                                        <td>{{$d->RearAxle}}</td>
-                                                        <td>{{$d->AnyOtherAxle}}</td>
-                                                        <td>{{$d->TandemAxle}}</td>
-                                                        <td>{{$d->GrossWeight}}</td>
-                                                        <td>{{$d->TypeOfBody}}</td>
-                                                        <td>{{$d->HorsePower}}</td>
-                                                        <td>{{$d->Rate}}</td>
-                                                        <td>{{$d->TaxableValue}}</td>
-                                                        <td>{{$d->Amount}}</td>
-                                                        <td>{{$d->active}}</td>
-                                                        <td>{{$d->created_at}}</td>
-                                                        <td>{{$d->updated_at}}</td>
-                                                    </tr>
-                                                    @endforeach
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                        <div class="pagination-div">
-                                            {{$data['result']->links('vendor.pagination.bootstrap-4')}}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                </section>
             </div>
         </div>
     </div>

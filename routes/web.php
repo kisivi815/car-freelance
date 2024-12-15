@@ -79,7 +79,6 @@ Route::middleware(RedirectIfAuthenticated::class)->group(function () {
 
 
     Route::get('/report', [ReportController::class, 'index'])->name('report');
-    
-
+    Route::get('/export-csv', [ReportController::class, 'exportCsv'])->name('exportCsv');
     
 });
