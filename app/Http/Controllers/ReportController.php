@@ -151,6 +151,28 @@ class ReportController extends Controller
                     'ReceiveNote',
                     'ApprovedBy',
                     'RejectedBy',
+                    'InvoiceNo',
+                    'Mobile',
+                    'Saluation',
+                    'FirstName',
+                    'LastName',
+                    'FathersName',
+                    'Email',
+                    'Aadhar',
+                    'PAN',
+                    'GST',
+                    'PermanentAddress',
+                    'TemporaryAddress',
+                    'ChasisNo',
+                    'Bank',
+                    'InsuranceName',
+                    'DiscountType',
+                    'Accessories',
+                    'TypeofGST',
+                    'InvoiceDate',
+                    'Note',
+                    'SalesStatus',
+                    'DateOfSales',
                     'created_at',
                     'updated_at'
                 ], // Header row
@@ -186,6 +208,15 @@ class ReportController extends Controller
                         $d->Amount,
                 ];
 
+                $saleStatus = null;
+                if(isset($d->Sales->status)){
+                    if($d->Sales->status == '1')
+                        $saleStatus = 'Approved';
+                    elseif ($d->Sales->status == '2')
+                        $saleStatus = 'Rejected';
+                    else
+                        $saleStatus = 'Pending';
+                }
 
                     $row = array_merge($row, [
                         $d->TrasnferStock->VehicleAmt ?? '',
@@ -196,16 +227,40 @@ class ReportController extends Controller
                         $d->TrasnferStock->Destination->name ?? '',
                         $d->TrasnferStock->DriverName ?? '',
                         $d->TrasnferStock->Note ?? '',
-                        $d->TrasnferStock->SendBy ?? '',
                         $d->TrasnferStock->UserSendBy->name ?? '',
                         $d->TrasnferStock->GatePassId ?? '',
                         $d->TrasnferStock->DateOfTransfer ?? '',
                         $d->TrasnferStock->ReceivedBy ?? '',
+                        $d->TrasnferStock->DateOfReceive ?? '',
                         $d->TrasnferStock->ReceiveNote ?? '',
-                        $d->TrasnferStock->ApprovedBy ?? '',
-                        $d->TrasnferStock->RejectedBy ?? '',
+                        $d->TrasnferStock?->UserApprovedBy->name ?? '',
+                        $d->TrasnferStock?->UserRejectedBy->name ?? '',
+                        $d?->Sales->InvoiceNo ?? '',
+                        $d?->Sales->Mobile ?? '',
+                        $d?->Sales->Saluation ?? '',
+                        $d?->Sales->FirstName ?? '',
+                        $d?->Sales->LastName ?? '',
+                        $d?->Sales->FathersName ?? '',
+                        $d?->Sales->Email ?? '',
+                        $d?->Sales->Aadhar ?? '',
+                        $d?->Sales->PAN ?? '',
+                        $d?->Sales->GST ?? '',
+                        $d?->Sales->PermanentAddress ?? '',
+                        $d?->Sales->TemporaryAddress ?? '',
+                        $d?->Sales->ChasisNo ?? '',
+                        $d?->Sales->bank->name ?? '',
+                        $d?->Sales->insurance->name ?? '',
+                        $d?->Sales->discount->name ?? '',
+                        $d?->Sales->Accessories ?? '',
+                        $d?->Sales->TypeofGST ?? '',
+                        $d?->Sales->InvoiceDate ?? '',
+                        $d?->Sales->Note ?? '',
+                        $saleStatus ?? '',
+                        $d?->Sales->DateOfSales ?? '',
                     ]);
                 
+
+
                         
                 $row = array_merge($row, [  
                         $d->created_at,
