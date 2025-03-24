@@ -139,16 +139,16 @@
                                                         <td>{{$d->Destination->name}}</td>
                                                         <td>{{ $d->ReceivedBy ? $d->ReceivedBy : '-' }}</td>
                                                         <td><a href="stock-details/{{$d->id}}">{{ $d->ReceivedBy ? 'Details' : '-' }}</td>
-                                                        <td>{{$d->CarMaster->Model}}</td>
-                                                        <td>{{$d->CarMaster->ProductLine}}</td>
-                                                        <td>{{$d->CarMaster->Colour}}</td>
+                                                        <td>{{isset($d->CarMaster->Model)?$d->CarMaster->Model:'-'}}</td>
+                                                        <td>{{isset($d->CarMaster->ProductLine)?$d->CarMaster->ProductLine:'-'}}</td>
+                                                        <td>{{isset($d->CarMaster->Colour)?$d->CarMaster->Colour:'-'}}</td>
                                                         <td>{{$d->ChasisNo}}</td>
                                                         <td>{{($d->ReceivedBy)?$d->Destination->name:$d->Source->name}}</td>
                                                         <td>{{$d->MileageSend}}</td>
                                                         <td>{{$d->MileageReceive}}</td>
-                                                        <td>{{$d->CarMaster->TMInvoiceDate}}</td>
-                                                        <td>{{$d->CarMaster->TMInvoiceDate ? floor(Carbon\Carbon::parse($d->CarMaster->TMInvoiceDate)->diffInDays()) : '-'}}</td>
-                                                        <td>{{$d->CarMaster->EmissionNorm}}</td>
+                                                        <td>{{isset($d->CarMaster->TMInvoiceDate)?$d->CarMaster->TMInvoiceDate:'-'}}</td>
+                                                        <td>{{isset($d->CarMaster->TMInvoiceDate) ? floor(Carbon\Carbon::parse($d->CarMaster->TMInvoiceDate)->diffInDays()) : '-'}}</td>
+                                                        <td>{{isset($d->CarMaster->EmissionNorm)?$d->CarMaster->EmissionNorm:'-'}}</td>
                                                         <td>
                                                             @if (!$d->DateOfReceive && in_array(Auth::user()->role_id,['1','6']))
                                                             <a href="receive-stock/{{$d->id}}?status=approve">Approve with note</a>
