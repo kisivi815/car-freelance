@@ -16,7 +16,7 @@
                         <div class="col-12">
                             <div class="card">
                                 <div class="card-header">
-                                    <h4 class="card-title">Quick Sale</h4>
+                                    <h4 class="card-title">Quick Booking</h4>
                                 </div>
                                 <div class="card-content">
                                     <div class="card-body">
@@ -189,7 +189,7 @@
                         processData: false, // Important
                         success: function(response) {
                             if (response.id) {
-                                window.location.href = '/quick-sales-gate-pass/' + response.id + '?from=transfer-stock';
+                                window.location.href = '/quick-sale';
                             } else {
                                 $('.alert-danger').show()
                                 $('#error-text').text('Submit Failed');

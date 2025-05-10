@@ -10,6 +10,9 @@ use App\Models\CarMaster;
 use App\Models\Branch;
 use App\Models\TransferStock;
 use App\Models\Image;
+use App\Models\User;
+use App\Models\UserBranch;
+use App\Models\UserRole;
 use App\Services\CarMasterStatusService;
 use App\Services\LogService;
 use Carbon\Carbon;
@@ -102,7 +105,7 @@ class StockController extends Controller
                 $errorMessage = 'Chasis No ' . $validatedData['ChasisNo'] . 'is already at ' . $lastTransferStock->Destination->name . ' branch.';
                 return response()->json(["error" => $errorMessage], '409');
             }
-
+            $validatedData['VehicleAmt'] = $car->Amount;
             $validatedData['DateOfTransfer'] = Carbon::today();
             $validatedData['SendBy'] = $user->id;
             if($validatedData['SourceBranch'] == '9'){
@@ -144,6 +147,8 @@ class StockController extends Controller
         try {
             $user = Auth::user();
             $result = TransferStock::with('CarMaster', 'Source', 'Destination')->findOrFail($request->id);
+            $userBranch = UserBranch::where('branch_id', $result->DestinationBranch)->pluck('user_id')->toArray();
+            $result->manager = User::query()->where('role_id','6')->whereIn('id',$userBranch)->first();
             if (!in_array($result->DestinationBranch, array_column($user->UserBranch->toArray(), 'branch_id'))) {
                 return redirect()->back()->withInput()->with('error', 'You have no permission to receive at this branch');
             }
@@ -344,7 +349,7 @@ class StockController extends Controller
             $result = $query->paginate(10)->appends($request->all());
 
             $data = ['status' => $status, 'result' => $result];
-            return view('view-inventory-stock')->with(['title' => 'View Stock', 'data' => $data]);
+            return view('view-inventory-stock')->with(['title' => 'Inventory Stock', 'data' => $data]);
         } catch (ModelNotFoundException $e) {
             return redirect()->route('view-inventory-stock')->with('error', 'Record not found.');
         }

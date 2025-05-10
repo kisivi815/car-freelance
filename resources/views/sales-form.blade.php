@@ -304,16 +304,44 @@
                     message = 'Please fill in all required fields.'
                 });
 
+                var aadharRegex = /^\d{16}$/;
+                var panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
+                var gstRegex = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
+
+                var aadhar = $('#aadhar').val();
+                var pan = $('#pan').val();
+                var gst = $('#gst').val();
+                console.log(aadhar)
+                if (aadhar && !aadharRegex.test(aadhar)) {
+                    message += 'Please enter a valid Aadhar number. <br>';
+                    $('#aadhar').addClass("red-border"); 
+                    valid = false;
+                }
+                
+                // Validate PAN
+                if (pan && !panRegex.test(pan)) {
+                    message += 'Please enter a valid PAN number. <br>';
+                    $('#pan').addClass("red-border"); 
+                    valid = false;
+                }
+                
+                // Validate GST
+                if (gst && !gstRegex.test(gst)) {
+                    message += 'Please enter a valid GST number. <br>';
+                    $('#gst').addClass("red-border"); 
+                    valid = false;
+                }
+
                 if ($('#email').val() != '' && !isValidEmail($('#email').val())) {
+                    message = 'Please enter a valid email address.';
                     $('#email').addClass("red-border"); 
                     valid = false;
-                    message = 'Please enter a valid email address.';
                 }
                 
 
                 if (!valid) {
                     $('.alert-danger').show()
-                    $('#error-text').text(message);
+                    $('#error-text').html(message);
                 } else {
                     $('#transfer-stock-form').submit();
                 }

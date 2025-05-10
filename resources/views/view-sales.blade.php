@@ -126,7 +126,7 @@
                                                         </td>
                                                         <td>
                                                             @if(!$d->InvoiceNo || $d->status == '0' || $d->status == '2')
-                                                            <a href="{{route('sendOfApproval', $d->ID)}}">Send of Approval</a>
+                                                            <a href="{{route('sendOfApproval', $d->ID)}}">Send for Approval</a>
                                                             @elseif ($d->status == '1')
                                                             -
                                                             @else

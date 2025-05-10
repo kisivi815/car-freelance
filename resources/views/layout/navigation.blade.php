@@ -25,10 +25,10 @@
                         <span>View Stock</span>
                     </a>
                 </li>
-                <li class="sidebar-item {{ Request::routeIs('quick-sale') ? 'active' : '' }}">
-                    <a href="{{ route('quick-sale') }}" class='sidebar-link'>
+                <li class="sidebar-item {{ Request::routeIs('quick-booking') ? 'active' : '' }}">
+                    <a href="{{ route('quick-booking') }}" class='sidebar-link'>
                         <i class=""></i>
-                        <span>Quick Sale</span>
+                        <span>Quick Booking</span>
                     </a>
                 </li>
                 <li class="sidebar-item {{ Request::routeIs('salesForm') ? 'active' : '' }}">

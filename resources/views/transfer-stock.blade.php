@@ -58,14 +58,9 @@
                                                             <label>Model :</label> <span id="Model">-</span><br>
                                                             <label>Product Line :</label> <span id="ProductLine">-</span><br>
                                                             <label>Colour :</label> <span id="Colour">-</span><br>
-                                                            <label>HSN Code :</label> <span id="HSN">-</span>
+                                                            <label>HSN Code :</label> <span id="HSN">-</span><br>
+                                                            <label>Amount :</label> <span id="Amount">-</span>
                                                         </div>
-                                                    </div>
-                                                    <div class="col-md-4">
-                                                        <label>Vehicle Amt</label>
-                                                    </div>
-                                                    <div class="col-md-8 form-group">
-                                                        <input type="number" id="VehicleAmt" class="form-control" name="VehicleAmt" placeholder="Vehicle Amt" value="" required>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <label>Vehicle No</label>
@@ -153,6 +148,7 @@
                 $('#ProductLine').text('-');
                 $('#Colour').text('-');
                 $('#HSN').text('-');
+                $('#Amount').text('-');
                 var selectedValue = $(this).val();
                 $.ajax({
                     url: '/car-details',
@@ -165,6 +161,7 @@
                         $('#ProductLine').text(response.ProductLine);
                         $('#Colour').text(response.Colour);
                         $('#HSN').text(response.HSNCode);
+                        $('#Amount').text(response.Amount);
 
                     },
                     error: function(xhr, status, error) {
@@ -195,13 +192,6 @@
                 $('.alert-danger').hide();
                 var destinationBranchValue = $('select[name="DestinationBranch"]').val();
                 var sourceBranchValue = $('select[name="SourceBranch"]').val();
-
-                var regex = /^\d+(\.\d{1,2})?$/;
-                if(!regex.test($('#VehicleAmt').val())){
-                    $('#VehicleAmt').addClass("red-border");
-                    valid = false;
-                    message = 'Please enter valid vehicle amount';
-                }
 
                 $('#transfer-stock-form').find('input[required], select[required]').each(function() {
                     if ($(this).is(':checkbox')) {

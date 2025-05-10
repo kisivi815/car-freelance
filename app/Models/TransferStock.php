@@ -73,6 +73,6 @@ class TransferStock extends Model
     }
 
     public function UserRejectedBy(){
-        return $this->hasOne(User::class,'id','RejectBy');
+        return $this->hasOne(User::class,'id','RejectedBy');
     }
 }

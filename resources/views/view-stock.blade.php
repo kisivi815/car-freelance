@@ -123,7 +123,7 @@
                                                         <th>Age</th>
                                                         <th>Emission Norm</th>
                                                         <th>Approve</th>
-                                                        <th>Reject</th>
+                                                        <th>Approved with Defect</th>
                                                         <th>Date Of Received</th>
                                                         <th>Delete</th>
                                                     </tr>

@@ -27,7 +27,7 @@ Route::get('/logout', function () {
 
 
 Route::middleware(RedirectIfAuthenticated::class)->group(function () {
-    Route::get('/quick-sale',[SalesController::class,'show'])->name('quick-sale');
+    Route::get('/quick-booking',[SalesController::class,'show'])->name('quick-booking');
     Route::post('/submit-quick-sales', [SalesController::class, 'store'])->name('submit-quick-sales');
     Route::get('/quick-sales-gate-pass/{id}', [SalesController::class, 'getQuickSalesGatePass'])->name('quick-sales-gate-pass');
     Route::get('/generate-quick-sales-gate-pass-pdf/{id}', [SalesController::class, 'generateQuickSalesGatePassPDF'])->name('print-quick-sales-gate-pass-pdf');

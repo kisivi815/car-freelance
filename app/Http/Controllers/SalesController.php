@@ -93,10 +93,10 @@ class SalesController extends Controller
 
     public function show(Request $request)
     {
-        $car = CarMaster::where('PhysicalStatus', 'RECEIVED APPROVED')->get();
+        $car = CarMaster::whereIn('PhysicalStatus', ['RECEIVED APPROVED','RECEIVED REJECTED'])->get();
         $branch = Branch::all();
         $data = ['car' => $car, 'branch' => $branch];
-        return view('quick-sale')->with(['title' => 'Quick Sale', 'data' => $data]);
+        return view('quick-booking')->with(['title' => 'Quick Booking', 'data' => $data]);
     }
 
     public function store(QuickSalesRequest $request)
@@ -110,13 +110,14 @@ class SalesController extends Controller
             $validatedData['SalesId'] = $salesId;
             $validatedData['TMInvoiceNo'] = CarMaster::where('ChasisNo', $request->input('ChasisNo'))->first()->CommercialInvoiceNo;
             $newRecord = QuickSales::create($validatedData);
-            LogService::insertlog($newRecord->id,'Add','Quick Sales '.$newRecord->id,'quick_sales');
+            CarMaster::where('ChasisNo', $request->input('ChasisNo'))->update(['PhysicalStatus' => 'QUICK BOOKED']);
+            LogService::insertlog($newRecord->id,'Add','Quick Booking '.$newRecord->id,'quick_sales');
             return response()->json([
                 'id' => $newRecord->id
             ]);
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            return redirect()->route('quick-sale')->with('error', 'Error occurred while submitting!');
+            return redirect()->route('quick-booking')->with('error', 'Error occurred while submitting!');
         }
     }
 

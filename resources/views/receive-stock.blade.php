@@ -98,7 +98,7 @@
                                                         <label for="horizontal">Received By</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
-                                                        <input type="text" id="ReceivedBy" class="form-control" placeholder="Received By" name="ReceivedBy" value="{{$data->ReceivedBy}}" required>
+                                                        <input type="text" id="ReceivedBy" class="form-control" placeholder="Received By" name="ReceivedBy" value="{{$data->manager ? $data->manager->id : $data->ReceivedBy}}" required>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <label for="first-name-horizontal">Mileage(R)</label>
@@ -110,7 +110,7 @@
                                                         <label for="horizontal">Add Note</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
-                                                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="Note"></textarea>
+                                                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="Note" {{(request()->query('status') === 'reject') ? 'required' : ''}}></textarea>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <label for="horizontal">Upload Pics</label>
@@ -155,12 +155,17 @@
                 $('.alert-danger').hide();
 
 
-                $('#receive-stock-form').find('input[required], select[required]').each(function() {
+                $('#receive-stock-form').find('input[required], select[required], textarea[required]').each(function() {
                     if ($(this).is(':checkbox')) {
                         if (!$(this).is(':checked')) {
                             valid = false;
                         }
-                    } else if (!$(this).val()) {
+                    }else if ($(this).is('textarea')) {
+                        if (!$(this).val().trim()) {
+                            valid = false;
+                            $(this).addClass("red-border");
+                        }
+                    }else if (!$(this).val()) {
                         if ($(this).is('select')) {
                             $(this).next().find('span > ').addClass("red-border");
                         } else {

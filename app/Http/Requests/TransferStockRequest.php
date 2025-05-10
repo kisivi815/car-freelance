@@ -21,7 +21,6 @@ class TransferStockRequest extends FormRequest
             'DestinationBranch' => 'required|string|max:100',
             'DriverName' => 'required|string|max:100',
             'Note' => 'nullable|string|max:1000',
-            'VehicleAmt' =>'required',
             'VehicleNo' =>'required'
         ];
     }
