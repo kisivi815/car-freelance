@@ -216,7 +216,7 @@
                                                             Discount :
                                                             </div>
                                                             <div class="col text-left">
-                                                            {{$rateDetails['Discount']}} ({{$data->discount->value}}%)
+                                                            {{$rateDetails['Discount']}} ({{$data->Discount}}%)
                                                             </div>
                                                         </div>
                                                         <div class="row">

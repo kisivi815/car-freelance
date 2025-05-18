@@ -36,7 +36,7 @@ class SubmitSalesRequest extends FormRequest
             'ChasisNo' => 'nullable|string|max:50',
             'Bank' => 'nullable|string|max:50',
             'InsuranceName' => 'nullable|string|max:50',
-            'DiscountType' => 'nullable|string|max:50',
+            'Discount' => 'nullable|string|max:50',
             'Accessories' => 'nullable|string|max:50',
             'TypeofGST' => 'nullable|string|max:50',
         ];

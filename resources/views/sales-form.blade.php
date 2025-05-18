@@ -156,17 +156,10 @@
                                                         <h4 class="card-title">Discount Details</h4>
                                                     </div>
                                                     <div class="col-md-4">
-                                                        <label>Discount Type</label>
+                                                        <label>Discount</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
-                                                        <select class="form-select" name="DiscountType">
-                                                            <option value="">Select Discount</option>
-
-                                                            @foreach ($data['discount'] as $d)
-                                                            <option value="{{$d->ID}}" {{((isset($data['data']) && $data['data']->DiscountType == $d->ID) || old('DiscountType') == $d->ID ) ?'selected' : '' }}>{{$d->value}}%</option>
-                                                            @endforeach
-                                                        </select>
-
+                                                        <input type="number" id="discount" class="form-control" name="Discount" placeholder="Discount" value="{{isset($data['data'])? $data['data']->Discount : old('Discount','0')}}">
                                                     </div>
                                                     <div class="col-md-12 mb-3">
                                                         <h4 class="card-title">Accessories Details</h4>

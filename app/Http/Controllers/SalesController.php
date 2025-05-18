@@ -93,7 +93,7 @@ class SalesController extends Controller
 
     public function show(Request $request)
     {
-        $car = CarMaster::whereIn('PhysicalStatus', ['RECEIVED APPROVED','RECEIVED REJECTED'])->get();
+        $car = CarMaster::whereNotIn('PhysicalStatus', ['SOLD','QUICK BOOKED'])->get();
         $branch = Branch::all();
         $data = ['car' => $car, 'branch' => $branch];
         return view('quick-booking')->with(['title' => 'Quick Booking', 'data' => $data]);
@@ -169,11 +169,12 @@ class SalesController extends Controller
         return view('sales-form')->with(['title' => 'Sales', 'data' => $data]);
     }
 
-    public function submitSalesForm(SubmitSalesRequest $request, string $id = null)
+    public function submitSalesForm(SubmitSalesRequest $request, string $id)
     {
         try {
             if (!$id) {
                 $validatedData = $request->validated();
+                CarMaster::where('ChasisNo', $validatedData['ChasisNo'])->update(['PhysicalStatus' => 'PENDING SOLD']);
                 $newRecord = Sales::create($validatedData);
                 if ($request->hasfile('accesoriesFile')) {
                     foreach ($request->file('accesoriesFile') as $index => $file) {
@@ -189,6 +190,7 @@ class SalesController extends Controller
                 return redirect()->route('view-sales')->with('message', 'Submitted successfully!');
             }else{
                 $validatedData = $request->validated();
+                CarMaster::where('ChasisNo', $validatedData['ChasisNo'])->update(['PhysicalStatus' => 'PENDING SOLD']);
                 $sales = Sales::where('id', $id)->first();
                 $sales->update($validatedData);
                 SaleAccesoriesFile::whereIn('id',explode(',', $request->toArray()['deleteAccesoriesFile']))->delete();
@@ -210,14 +212,14 @@ class SalesController extends Controller
         }
     }
 
-    public function sendOfApproval(Request $request, string $id = null){
+    public function sendOfApproval(Request $request, string $id){
         try{
         $cgst = $sgst = $igst = $rate = $discount = $amount = $total = $cess = 0;
             if($id) {
                 $sales = Sales::where('id', $id)->first();
                 
                 $rate = $sales->carMaster->Rate ? $sales->carMaster->Rate : 0;
-                $discountvalue = $sales->discount->value ? $sales->discount->value : 0;
+                $discountvalue = $sales->Discount ? $sales->Discount : 0;
                 if($rate != 0){
                     $discount = $rate * $discountvalue/100;
                     $amount = $rate - $discount;
@@ -234,6 +236,7 @@ class SalesController extends Controller
                     $cess = $rate * 1/100;
                     $total = $total + $cess;
                 }
+                
                 $rateDetails = ['Amount' => number_format($amount,2), 'Discount' => number_format($discount,2), 'Total' => number_format($total,2), 'CGST' => number_format($cgst,2), 'SGST' => number_format($sgst,2), 'IGST' => number_format($igst,2), 'CESS' => number_format($cess,2)];
 
                 return view('send-of-approval-form')->with(['title' => 'Send of Approval', 'data' => $sales, 'rateDetails'=> $rateDetails]);

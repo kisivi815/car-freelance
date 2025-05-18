@@ -301,7 +301,7 @@ class StockController extends Controller
                 ['text' => 'Received Rejected', 'value' => 'RECEIVED REJECTED'],
                 ['text' => 'Stock T/F', 'value' => 'STOCK TF'],
                 ['text' => 'Test Drive Vehicle', 'value' => 'Test Drive Vehicle'],
-                ['text' => 'Sold', 'value' => 'Sold']
+                ['text' => 'Pending Sales', 'value' => 'PENDING SALES'],
                 
             ];
 
@@ -336,8 +336,8 @@ class StockController extends Controller
                     $query->where('PhysicalStatus','Test Drive Vehicle');
                 }
 
-                if ($request->status == 'Sold') {
-                    $query->where('PhysicalStatus','Sold');
+                if ($request->status == 'PENDING SALES') {
+                    $query->where('PhysicalStatus','PENDING SALES');
                 }
             }
 
@@ -346,6 +346,7 @@ class StockController extends Controller
             }
 
             $query->orderBy('created_at', 'desc');
+            $query->where('PhysicalStatus', '!=' ,'Sold');
             $result = $query->paginate(10)->appends($request->all());
 
             $data = ['status' => $status, 'result' => $result];
