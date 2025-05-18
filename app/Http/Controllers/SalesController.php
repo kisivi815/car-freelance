@@ -336,4 +336,46 @@ class SalesController extends Controller
         }
     }
 
+    public function salesCertificate(){
+        // Sample data (replace with your database query)
+        $invoice = [
+            'id' => 1,
+            'customer_name' => 'John Doe',
+            'items' => [
+                ['name' => 'Product A', 'quantity' => 2, 'price' => 29.99],
+                ['name' => 'Product B', 'quantity' => 1, 'price' => 49.99],
+            ],
+        ];
+
+        // Load the Blade view and pass data
+        $pdf = Pdf::loadView('pdf.sales-certificate', ['invoice' => $invoice]);
+
+        // Optional: Set PDF options
+        $pdf->setOption(['dpi' => 150, 'defaultFont' => 'sans-serif']);
+
+        // Download the PDF
+        return $pdf->stream('invoice_' . 1 . '.pdf');
+    }
+
+    public function taxInvoice(){
+        // Sample data (replace with your database query)
+        $invoice = [
+            'id' => 1,
+            'customer_name' => 'John Doe',
+            'items' => [
+                ['name' => 'Product A', 'quantity' => 2, 'price' => 29.99],
+                ['name' => 'Product B', 'quantity' => 1, 'price' => 49.99],
+            ],
+        ];
+
+        // Load the Blade view and pass data
+        $pdf = Pdf::loadView('pdf.tax-invoice', ['invoice' => $invoice]);
+
+        // Optional: Set PDF options
+        $pdf->setOption(['dpi' => 150, 'defaultFont' => 'sans-serif']);
+
+        // Download the PDF
+        return $pdf->stream('invoice_' . 1 . '.pdf');
+    }
+
 }
