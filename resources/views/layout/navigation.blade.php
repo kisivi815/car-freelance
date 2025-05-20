@@ -19,6 +19,14 @@
                         <span>Invetory Stock</span>
                     </a>
                 </li>
+                @if (in_array(Auth::user()->role_id,['1']))
+                <li class="sidebar-item {{ Request::routeIs('transfer-stock') ? 'active' : '' }}">
+                    <a href="{{ route('transfer-stock') }}" class='sidebar-link'>
+                        <i class=""></i>
+                        <span>Transfer Stock</span>
+                    </a>
+                </li>
+                @endif
                 <li class="sidebar-item {{ (Request::routeIs('view-stock') || Request::routeIs('view-stock-default')) ? 'active' : '' }}">
                     <a href="{{ route('view-stock') }}" class='sidebar-link'>
                         <i class=""></i>
@@ -29,6 +37,12 @@
                     <a href="{{ route('quick-booking') }}" class='sidebar-link'>
                         <i class=""></i>
                         <span>Quick Booking</span>
+                    </a>
+                </li>
+                <li class="sidebar-item {{ Request::routeIs('quickSalesIndex') ? 'active' : '' }}">
+                    <a href="{{ route('quickSalesIndex') }}" class='sidebar-link'>
+                        <i class=""></i>
+                        <span>View Quick Booking</span>
                     </a>
                 </li>
                 <li class="sidebar-item {{ Request::routeIs('salesForm') ? 'active' : '' }}">
@@ -43,14 +57,6 @@
                         <span>View Sales</span>
                     </a>
                 </li>
-                @if (in_array(Auth::user()->role_id,['1']))
-                <li class="sidebar-item {{ Request::routeIs('transfer-stock') ? 'active' : '' }}">
-                    <a href="{{ route('transfer-stock') }}" class='sidebar-link'>
-                        <i class=""></i>
-                        <span>Transfer Stock</span>
-                    </a>
-                </li>
-                @endif
                 <li class="sidebar-item {{ Request::routeIs('report') ? 'active' : '' }}">
                     <a href="{{ route('report') }}" class='sidebar-link'>
                         <i class=""></i>

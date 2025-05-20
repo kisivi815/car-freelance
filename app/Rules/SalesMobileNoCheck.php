@@ -8,6 +8,10 @@ class SalesMobileNoCheck implements Rule
 {
     public function passes($attribute, $value)
     {
+        if(request()->route('id')){
+            return true;
+        }
+            
         return !QuickSales::where('ChasisNo', request()->input('ChasisNo'))->where('CustomerMobileNo', $value)->exists();
     }
 

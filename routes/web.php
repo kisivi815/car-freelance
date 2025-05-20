@@ -27,8 +27,8 @@ Route::get('/logout', function () {
 
 
 Route::middleware(RedirectIfAuthenticated::class)->group(function () {
-    Route::get('/quick-booking',[SalesController::class,'show'])->name('quick-booking');
-    Route::post('/submit-quick-sales', [SalesController::class, 'store'])->name('submit-quick-sales');
+    Route::get('/quick-booking/{id?}',[SalesController::class,'show'])->name('quick-booking');
+    Route::post('/submit-quick-sales/{id?}', [SalesController::class, 'store'])->name('submit-quick-sales');
     Route::get('/quick-sales-gate-pass/{id}', [SalesController::class, 'getQuickSalesGatePass'])->name('quick-sales-gate-pass');
     Route::get('/generate-quick-sales-gate-pass-pdf/{id}', [SalesController::class, 'generateQuickSalesGatePassPDF'])->name('print-quick-sales-gate-pass-pdf');
     
@@ -42,7 +42,7 @@ Route::middleware(RedirectIfAuthenticated::class)->group(function () {
     Route::post('/submit-status-form/{id?}',[SalesController::class,'submitSatusForm'])->name('submitSatusForm');
     Route::get('/salesCertificate',[SalesController::class,'salesCertificate'])->name('salesCertificate');
     Route::get('/tax-invoice',[SalesController::class,'taxInvoice'])->name('taxInvoice');
-
+    Route::get('/view-quick-booking',[SalesController::class,'quickSalesIndex'])->name('quickSalesIndex');
     
     
     

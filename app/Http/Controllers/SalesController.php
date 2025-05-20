@@ -24,6 +24,7 @@ use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 
 class SalesController extends Controller
@@ -91,30 +92,70 @@ class SalesController extends Controller
         }
     }
 
-    public function show(Request $request)
+    public function quickSalesIndex(Request $request){
+        $car = CarMaster::whereIn('PhysicalStatus', ['QUICK BOOKED'])->get();
+        $branch = Branch::all();
+        $data = ['car' => $car, 'branch' => $branch];
+
+        $query = QuickSales::query();
+        if($request->input('branch')){
+            $query->where('Branch', $request->input('branch'));
+        }
+        if($request->input('car')){
+            $query->where('ChasisNo', $request->input('car'));
+        }
+        if($request->input('name')){
+            $query->where('CustomerName','like', '%'. $request->input('name'). '%');
+        }
+        $query->orderBy('created_at', 'desc');
+        $result = $query->paginate(10)->appends($request->all());
+        $data['result'] = $result;
+        return view('view-quick-booking')->with(['title'=>'View Quick Booking', 'data' => $data]);
+    }
+
+    public function show(Request $request, string $id = null)
     {
         $car = CarMaster::whereNotIn('PhysicalStatus', ['SOLD','QUICK BOOKED'])->get();
         $branch = Branch::all();
         $data = ['car' => $car, 'branch' => $branch];
+        if($id){
+            $query = QuickSales::query();
+            $query->where('id', $id);
+            $result = $query->first();
+            $data['result'] = $result;
+        }
         return view('quick-booking')->with(['title' => 'Quick Booking', 'data' => $data]);
     }
 
-    public function store(QuickSalesRequest $request)
+    public function store(QuickSalesRequest $request, string $id = null)
     {
         try {
-            $user = Auth::user();
-            $validatedData = $request->validated();
-            $branch = Branch::where('id', $request->input('Branch'))->first();
-            $count = QuickSales::where('Branch', $request->input('Branch'))->count();
-            $salesId = strtoupper(substr($branch->name, 0, 3)) . $count + 1;
-            $validatedData['SalesId'] = $salesId;
-            $validatedData['TMInvoiceNo'] = CarMaster::where('ChasisNo', $request->input('ChasisNo'))->first()->CommercialInvoiceNo;
-            $newRecord = QuickSales::create($validatedData);
-            CarMaster::where('ChasisNo', $request->input('ChasisNo'))->update(['PhysicalStatus' => 'QUICK BOOKED']);
-            LogService::insertlog($newRecord->id,'Add','Quick Booking '.$newRecord->id,'quick_sales');
-            return response()->json([
-                'id' => $newRecord->id
-            ]);
+            if (!$id) {
+                $user = Auth::user();
+                $validatedData = $request->validated();
+                $branch = Branch::where('id', $request->input('Branch'))->first();
+                $count = QuickSales::where('Branch', $request->input('Branch'))->count();
+                $salesId = strtoupper(substr($branch->name, 0, 3)) . $count + 1;
+                $validatedData['SalesId'] = $salesId;
+                $validatedData['TMInvoiceNo'] = CarMaster::where('ChasisNo', $request->input('ChasisNo'))->first()->CommercialInvoiceNo;
+                $newRecord = QuickSales::create($validatedData);
+                CarMaster::where('ChasisNo', $request->input('ChasisNo'))->update(['PhysicalStatus' => 'QUICK BOOKED']);
+                LogService::insertlog($newRecord->id,'Add','Quick Booking '.$newRecord->id,'quick_sales');
+                Session::put('message', $request->input('ChasisNo') .' has been booked for quick sales. - '.$salesId);
+                return response()->json([
+                    'id' => $newRecord->id
+                ]);
+            }else{
+                $user = Auth::user();
+                $validatedData = $request->validated();
+                $data = QuickSales::where('id', $id)->first();
+                $data->update($validatedData);
+                LogService::insertlog($id,'Update','Quick Booking '.$id,'quick_sales');
+                Session::put('message', $request->input('ChasisNo') .' has been Updated. - '.$data->SalesId);
+                return response()->json([
+                    'id' => $id
+                ]);
+            }
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return redirect()->route('quick-booking')->with('error', 'Error occurred while submitting!');
@@ -169,7 +210,7 @@ class SalesController extends Controller
         return view('sales-form')->with(['title' => 'Sales', 'data' => $data]);
     }
 
-    public function submitSalesForm(SubmitSalesRequest $request, string $id)
+    public function submitSalesForm(SubmitSalesRequest $request, string $id = null)
     {
         try {
             if (!$id) {
