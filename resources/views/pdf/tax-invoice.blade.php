@@ -1,3 +1,68 @@
+@php
+    function numberToWords($number) {
+        $units = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten',
+                'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'];
+        $tens = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
+
+        // Split integer and decimal parts
+        $integerPart = floor($number);
+        $decimalPart = round(($number - $integerPart) * 100); // Assuming two decimal places
+
+        // Convert integer part
+        $words = '';
+        if ($integerPart == 0 && $decimalPart == 0) {
+            return 'zero';
+        }
+
+        if ($integerPart > 0) {
+            // Handle thousands
+            if ($integerPart >= 1000) {
+                $thousands = floor($integerPart / 1000);
+                $words .= $units[$thousands] . ' thousand ';
+                $integerPart %= 1000;
+            }
+
+            // Handle hundreds
+            if ($integerPart >= 100) {
+                $hundreds = floor($integerPart / 100);
+                $words .= $units[$hundreds] . ' hundred ';
+                $integerPart %= 100;
+            }
+
+            // Handle tens and units
+            if ($integerPart > 0) {
+                if ($integerPart < 20) {
+                    $words .= $units[$integerPart];
+                } else {
+                    $words .= $tens[floor($integerPart / 10)];
+                    $remainder = $integerPart % 10;
+                    if ($remainder > 0) {
+                        $words .= '-' . $units[$remainder];
+                    }
+                }
+            }
+        }
+
+        // Handle decimal part
+        if ($decimalPart > 0) {
+            $words = trim($words);
+            $words .= ' and ';
+            if ($decimalPart < 20) {
+                $words .= $units[$decimalPart];
+            } else {
+                $words .= $tens[floor($decimalPart / 10)];
+                $remainder = $decimalPart % 10;
+                if ($remainder > 0) {
+                    $words .= '-' . $units[$remainder];
+                }
+            }
+            $words .= ' hundredths'; // Adjust for other precisions if needed
+        }
+
+        return trim($words);
+    }
+@endphp
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -51,7 +116,7 @@
                     Invoice No:
                 </td>
                 <td colspan="6" class="text-align-center">
-                    JPM-2526-0001
+                    {{$invoice->InvoiceNo}}
                 </td>
                 <td colspan="2">
                     Transport Mode:
@@ -65,13 +130,13 @@
                     Invoice Date:
                 </td>
                 <td colspan="6" class="text-align-center">
-                    2021-06-15
+                    {{date('Y-m-d', strtotime($invoice->InvoiceDate))}}
                 </td>
                 <td colspan="2">
                     Vehicle number:
                 </td>
                 <td colspan="6" class="text-align-center">
-                    NA
+                    {{$invoice->transferStock->VehicleNo}}
                 </td>
             </tr>
             <tr>
@@ -102,7 +167,7 @@
                     &nbsp;
                 </td>
                 <td colspan="3" class="text-align-center">
-                    DISTT:- SOLAN
+                    DISTT:- {{$invoice->transferStock->DestinationBranch}}
                 </td>
                 <td class="text-align-center">
                     Code
@@ -125,7 +190,7 @@
                     Chasis Number:-
                 </td>
                 <td colspan="6" class="text-align-center">
-                    MAT627503SAB15696
+                    {{$invoice->ChasisNo}}
                 </td>
             </tr>
             <tr>
@@ -133,13 +198,13 @@
                     Name:
                 </td>
                 <td colspan="7"class="text-align-center">
-                    MR. AMAR LAMA S/O MR. MAN LAMA
+                    {{$invoice->Saluation}}. {{$invoice->FirstName}} {{$invoice->LastName}} S/O {{$invoice->FathersName}}
                 </td>
                 <td  colspan="2">
                     Engine Number:-
                 </td>
                 <td colspan="6" class="text-align-center">
-                    REVTRN21BUXK20478
+                    {{$invoice->carMaster->EngineNo}}
                 </td>
             </tr>
             <tr>
@@ -147,7 +212,7 @@
                     Address:
                 </td>
                 <td colspan="6" rowspan="5" class="text-align-center">
-                    UDAY VIHAR, WARD NO. 1, PO: BAROG,
+                    {{$invoice->PermanentAddress}}
                 </td>
                 <td>
                     Model:-
@@ -156,7 +221,7 @@
                     &nbsp;
                 </td>
                 <td colspan="6" class="text-align-center">
-                    TATA NEXON SMART+ S PMT BS6 PH2
+                   {{$invoice->carMaster->Model}} {{$invoice->carMaster->ProductLine}}
                 </td>
             </tr>
             <tr>
@@ -167,7 +232,7 @@
                     &nbsp;
                 </td>
                 <td colspan="6" class="text-align-center">
-                    PRISTIN_WHITE
+                    {{$invoice->carMaster->Colour}}
                 </td>
             </tr>
             <tr>
@@ -175,15 +240,15 @@
                     Emission Norm:
                 </td>
                 <td colspan="6" class="text-align-center">
-                    BS-VI
+                    {{$invoice->carMaster->EmissionNorm}}
                 </td>
             </tr>
             <tr>
                 <td colspan="2">
-                    Type of Fue:-
+                    Type of Fuel:-
                 </td>
                 <td colspan="6" class="text-align-center">
-                    PETROL
+                    {{$invoice->carMaster->TypeOfFuel}}
                 </td>
             </tr>
             <tr>
@@ -191,7 +256,7 @@
                     Hypo:-
                 </td>
                 <td colspan="6" class="text-align-center">
-                    AU SMALL FINANCE BANK LIMITED
+                    {{$invoice->Bank}}
                 </td>
             </tr>
             <tr>
@@ -199,7 +264,7 @@
                     PAN:
                 </td>
                 <td colspan="6" class="text-align-center">
-                    BHYPL6906J
+                    {{$invoice->PAN}}
                 </td>
                 <td colspan="8" rowspan="3">
                    &nbsp;
@@ -210,7 +275,7 @@
                     GSTIN:
                 </td>
                 <td colspan="6" class="text-align-center">
-                    &nbsp;
+                    {{$invoice->GST}}
                 </td>
             </tr>
             <tr>
@@ -257,31 +322,31 @@
             </thead>
             <tr>
                 <td class="text-align-center">1</td>
-                <td style="font-size:13px">TATA NEXON SMART+ S PMT BS6 PH2</td>
-                <td class="text-align-center">8703.22.99</td>
+                <td style="font-size:13px">{{$invoice->carMaster->Model}} {{$invoice->carMaster->ProductLine}}</td>
+                <td class="text-align-center">{{$invoice->HSNCode}}</td>
                 <td class="text-align-center">No.</td>
                 <td class="text-align-center">1</td>
-                <td class="text-align-center">713171</td>
-                <td class="text-align-center">713171</td>
+                <td class="text-align-center">{{$invoice->carMaster->Rate}}</td>
+                <td class="text-align-center">{{$invoice->carMaster->Amount}}</td>
                 <td class="text-align-center"></td>
-                <td class="text-align-center">713171</td>
+                <td class="text-align-center">{{$invoice->Discount}}</td>
+                <td class="text-align-center">{{$invoice->carMaster->TaxableValue}}</td>
+                <td class="text-align-center">{{$rateDetails['CGST']}}</td>
                 <td class="text-align-center">14</td>
-                <td class="text-align-center">99844</td>
+                <td class="text-align-center">{{$rateDetails['SGST']}}</td>
                 <td class="text-align-center">14</td>
-                <td class="text-align-center">99844</td>
-                <td class="text-align-center">1</td>
-                <td class="text-align-center">7132</td>
-                <td class="text-align-center">919990</td>
+                <td class="text-align-center">{{$rateDetails['IGST']}}</td>
+                <td class="text-align-center">{{$rateDetails['Total']}}</td>
             </tr>
             <tr>
                 <td colspan="9" class="text-align-center">Total</td>
                 <td class="text-align-center"></td>
-                <td class="text-align-center">99844</td>
+                <td class="text-align-center">{{$rateDetails['CGST']}}</td>
                 <td class="text-align-center"></td>
-                <td class="text-align-center">99844</td>
+                <td class="text-align-center">{{$rateDetails['SGST']}}</td>
                 <td class="text-align-center"></td>
-                <td class="text-align-center">7132</td>
-                <td class="text-align-center">919990</td>
+                <td class="text-align-center">{{$rateDetails['IGST']}}</td>
+                <td class="text-align-center">{{$rateDetails['Total']}}</td>
             </tr>
             <tr>
                 <td colspan="9">
@@ -291,18 +356,18 @@
                     Total Amount before Tax
                 </td>
                 <td>
-                    713171
+                    {{$rateDetails['Amount']}}
                 </td>
             </tr>
             <tr>
                 <td colspan="9" rowspan="4" class="text-align-center">
-                    NINE LAKH NINTEEN THOUSAND NINE HUNDRED NINTY ONLY
+                    {{numberToWords($rateDetails['Total'])}}
                 </td>
                 <td colspan="6" class="text-align-center">
                     Add: CGST
                 </td>
                 <td class="text-align-center">
-                    99844
+                   {{$rateDetails['CGST']}}
                 </td>
             </tr>
             <tr>
@@ -310,7 +375,7 @@
                     Add: SGST
                 </td>
                 <td class="text-align-center">
-                    99844
+                    {{$rateDetails['SGST']}}
                 </td>
             </tr>
             <tr>
@@ -318,7 +383,7 @@
                     ADD: Cess
                 </td>
                 <td class="text-align-center">
-                    7132
+                    {{$rateDetails['IGST']}}
                 </td>
             </tr>
             <tr>
@@ -326,7 +391,7 @@
                     Total Tax Amount
                 </td>
                 <td class="text-align-center">
-                    206819
+                    {{$rateDetails['CGST'] + $rateDetails['SGST'] + $rateDetails['IGST']}}
                 </td>
             </tr>
             <tr>
@@ -340,7 +405,7 @@
                     Total Amount after Tax:
                 </td>
                 <td class="text-align-center">
-                    919990
+                    {{$rateDetails['Total']}}
                 </td>
             </tr>
             <tr>
@@ -368,7 +433,7 @@
                     TOTAL
                 </td>
                 <td class="text-align-center">
-                    919990
+                    {{$rateDetails['Total']}}
                 </td>
             </tr>
             <tr>

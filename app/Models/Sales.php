@@ -54,4 +54,8 @@ class Sales extends Model
     public function accessoriesFile(){
         return $this->hasMany(SaleAccesoriesFile::class, 'salesId', 'ID');
     }
+
+    public function transferStock(){
+        return $this->hasOne(TransferStock::class, 'ChasisNo', 'ChasisNo')->orderBy('ID', 'DESC');
+    }
 }

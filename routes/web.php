@@ -41,7 +41,7 @@ Route::middleware(RedirectIfAuthenticated::class)->group(function () {
     Route::get('/status-form/{id?}',[SalesController::class,'statusForm'])->name('statusForm');
     Route::post('/submit-status-form/{id?}',[SalesController::class,'submitSatusForm'])->name('submitSatusForm');
     Route::get('/salesCertificate',[SalesController::class,'salesCertificate'])->name('salesCertificate');
-    Route::get('/tax-invoice',[SalesController::class,'taxInvoice'])->name('taxInvoice');
+    Route::get('/tax-invoice/{id?}',[SalesController::class,'taxInvoice'])->name('taxInvoice');
     Route::get('/view-quick-booking',[SalesController::class,'quickSalesIndex'])->name('quickSalesIndex');
     
     

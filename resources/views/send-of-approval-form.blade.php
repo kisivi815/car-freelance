@@ -1,3 +1,69 @@
+@php
+    function numberToWords($number) {
+        $units = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten',
+                'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'];
+        $tens = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
+
+        // Split integer and decimal parts
+        $integerPart = floor($number);
+        $decimalPart = round(($number - $integerPart) * 100); // Assuming two decimal places
+
+        // Convert integer part
+        $words = '';
+        if ($integerPart == 0 && $decimalPart == 0) {
+            return 'zero';
+        }
+
+        if ($integerPart > 0) {
+            // Handle thousands
+            if ($integerPart >= 1000) {
+                $thousands = floor($integerPart / 1000);
+                $words .= $units[$thousands] . ' thousand ';
+                $integerPart %= 1000;
+            }
+
+            // Handle hundreds
+            if ($integerPart >= 100) {
+                $hundreds = floor($integerPart / 100);
+                $words .= $units[$hundreds] . ' hundred ';
+                $integerPart %= 100;
+            }
+
+            // Handle tens and units
+            if ($integerPart > 0) {
+                if ($integerPart < 20) {
+                    $words .= $units[$integerPart];
+                } else {
+                    $words .= $tens[floor($integerPart / 10)];
+                    $remainder = $integerPart % 10;
+                    if ($remainder > 0) {
+                        $words .= '-' . $units[$remainder];
+                    }
+                }
+            }
+        }
+
+        // Handle decimal part
+        if ($decimalPart > 0) {
+            $words = trim($words);
+            $words .= ' and ';
+            if ($decimalPart < 20) {
+                $words .= $units[$decimalPart];
+            } else {
+                $words .= $tens[floor($decimalPart / 10)];
+                $remainder = $decimalPart % 10;
+                if ($remainder > 0) {
+                    $words .= '-' . $units[$remainder];
+                }
+            }
+            $words .= ' hundredths'; // Adjust for other precisions if needed
+        }
+
+        return trim($words);
+    }
+@endphp
+
+
 <!DOCTYPE html>
 <html lang="en">
 

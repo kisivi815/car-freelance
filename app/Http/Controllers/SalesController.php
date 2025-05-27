@@ -309,7 +309,7 @@ class SalesController extends Controller
                         $sales = Sales::where('id', $id)->first();
                         
                         $rate = $sales->carMaster->Rate ? $sales->carMaster->Rate : 0;
-                        $discountvalue = $sales->discount->value ? $sales->discount->value : 0;
+                        $discountvalue = $sales->discount ? $sales->discount : 0;
                         if($rate != 0){
                             $discount = $rate * $discountvalue/100;
                             $amount = $rate - $discount;
@@ -398,25 +398,42 @@ class SalesController extends Controller
         return $pdf->stream('invoice_' . 1 . '.pdf');
     }
 
-    public function taxInvoice(){
+    public function taxInvoice($id = null){
         // Sample data (replace with your database query)
-        $invoice = [
-            'id' => 1,
-            'customer_name' => 'John Doe',
-            'items' => [
-                ['name' => 'Product A', 'quantity' => 2, 'price' => 29.99],
-                ['name' => 'Product B', 'quantity' => 1, 'price' => 49.99],
-            ],
-        ];
+        $cgst = $sgst = $igst = $rate = $discount = $amount = $total = $cess = 0;
+        $query = Sales::query();
+        $query->with(['carMaster','transferStock']);
+        $query->where('id', $id);
+        $invoice = $query->first();
+
+        $rate = $invoice->carMaster->Rate ? $invoice->carMaster->Rate : 0;
+        $discountvalue = $invoice->discount ? $invoice->discount : 0;
+        if($rate != 0){
+            $discount = $rate * $discountvalue/100;
+            $amount = $rate - $discount;
+
+            if($invoice->TypeofGST == '1'){
+                $cgst = $rate * 14/100;
+                $sgst = $rate * 14/100;
+                $total = $rate + $cgst + $sgst;
+            }else{
+                $igst = $rate * 28/100;
+                $total = $rate + $igst;
+            }
+
+            $cess = $rate * 1/100;
+            $total = $total + $cess;
+        }
+        $rateDetails = ['Amount' => number_format($amount,2), 'Discount' => number_format($discount,2), 'Total' => number_format($total,2), 'CGST' => number_format($cgst,2), 'SGST' => number_format($sgst,2), 'IGST' => number_format($igst,2), 'CESS' => number_format($cess,2)];
 
         // Load the Blade view and pass data
-        $pdf = Pdf::loadView('pdf.tax-invoice', ['invoice' => $invoice]);
+        $pdf = Pdf::loadView('pdf.tax-invoice', ['invoice' => $invoice,'rateDetails' => $rateDetails]);
 
         // Optional: Set PDF options
         $pdf->setOption(['dpi' => 150, 'defaultFont' => 'sans-serif']);
 
         // Download the PDF
-        return $pdf->stream('invoice_' . 1 . '.pdf');
+        return $pdf->stream('invoice_' . $id . '_'.date('Y-m-d').'.pdf');
     }
 
 }
