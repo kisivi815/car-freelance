@@ -377,16 +377,12 @@ class SalesController extends Controller
         }
     }
 
-    public function salesCertificate(){
+    public function salesCertificate($id = null){
         // Sample data (replace with your database query)
-        $invoice = [
-            'id' => 1,
-            'customer_name' => 'John Doe',
-            'items' => [
-                ['name' => 'Product A', 'quantity' => 2, 'price' => 29.99],
-                ['name' => 'Product B', 'quantity' => 1, 'price' => 49.99],
-            ],
-        ];
+        $query = Sales::query();
+        $query->with(['carMaster','transferStock']);
+        $query->where('id', $id);
+        $invoice = $query->first();
 
         // Load the Blade view and pass data
         $pdf = Pdf::loadView('pdf.sales-certificate', ['invoice' => $invoice]);
