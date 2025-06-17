@@ -206,17 +206,21 @@
                                                             Rate :
                                                         </div>
                                                         <div class="col text-left">
-                                                            {{$data->carMaster->Rate ? number_format($data->carMaster->Rate,2) : 0}}
+                                                            {{$rateDetails['Rate']}}
                                                         </div>
                                                     </div>
                                                     <div class="row">
-                                                        <div class="col-md-2">
+                                                            <div class="col-md-2">
                                                             Discount :
+                                                            </div>
+                                                            <div class="col text-left">
+                                                            @if ($rateDetails['Discount'] > 0)
+                                                                {{ $rateDetails['Discount'] }} ({{ $data->Discount }}%)
+                                                            @else
+                                                                -
+                                                            @endif
+                                                            </div>
                                                         </div>
-                                                        <div class="col text-left">
-                                                            {{$rateDetails['Discount']}} ({{$data->discount->value}}%)
-                                                        </div>
-                                                    </div>
                                                     <div class="row">
                                                         <div class="col-md-2">
                                                             Amount :

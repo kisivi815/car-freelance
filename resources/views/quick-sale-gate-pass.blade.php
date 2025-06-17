@@ -31,6 +31,12 @@
                                                         <input type="text" id="first-name-horizontal" class="form-control" value="{{$data->SalesId}}"  disabled>
                                                     </div>
                                                     <div class="col-md-4">
+                                                        <label for="horizontal">Customer Name</label>
+                                                    </div>
+                                                    <div class="col-md-8 form-group">
+                                                        <input type="text" id="first-name-horizontal" class="form-control" value="{{$data->CustomerName}}" disabled>
+                                                    </div>
+                                                    <div class="col-md-4">
                                                         <label for="first-name-horizontal">TM Invoice No</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
@@ -84,12 +90,7 @@
                                                     <div class="col-md-8 form-group">
                                                         <input type="text" id="first-name-horizontal" class="form-control" value="{{$data->CustomerMobileNo}}" disabled>
                                                     </div>
-                                                    <div class="col-md-4">
-                                                        <label for="horizontal">Customer Name</label>
-                                                    </div>
-                                                    <div class="col-md-8 form-group">
-                                                        <input type="text" id="first-name-horizontal" class="form-control" value="{{$data->CustomerName}}" disabled>
-                                                    </div>
+                                                    
                                                 </div>
                                             </div>
                                         </form>
