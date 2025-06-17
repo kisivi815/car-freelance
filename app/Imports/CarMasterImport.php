@@ -58,12 +58,32 @@ class CarMasterImport implements OnEachRow, WithHeadingRow, WithChunkReading
      * @return string|null
      */
     private function dateFormat($date)
-    {
-        if ($date) {
-            return Date::excelToDateTimeObject($date)->format('Y-m-d');
-        }
+{
+    // Return null if date is empty or null
+    if (empty($date)) {
         return null;
     }
+
+    try {
+        // Check if the input is numeric (Excel serial date)
+        if (is_numeric($date)) {
+            return Date::excelToDateTimeObject($date)->format('Y-m-d');
+        }
+
+        // Try parsing as d/m/Y
+        $carbonDate = Carbon::createFromFormat('d/m/Y', $date);
+        if ($carbonDate && $carbonDate->format('d/m/Y') === $date) {
+            return $carbonDate->format('Y-m-d');
+        }
+
+        // Return null if the date doesn't match d/m/Y format
+        return null;
+    } catch (\Exception $e) {
+        // Log the error for debugging (optional)
+        \Log::error("Date format error for input '$date': " . $e->getMessage());
+        return null;
+    }
+}
 
     public function getCounts()
     {

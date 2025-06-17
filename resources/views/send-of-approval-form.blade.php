@@ -274,7 +274,7 @@
                                                             Rate :
                                                             </div>
                                                             <div class="col text-left">
-                                                            {{$data->carMaster->Rate ? number_format($data->carMaster->Rate, 2) : 0}}
+                                                            {{$rateDetails['Rate']}}
                                                             </div>
                                                         </div>
                                                         <div class="row">
@@ -282,7 +282,11 @@
                                                             Discount :
                                                             </div>
                                                             <div class="col text-left">
-                                                            {{$rateDetails['Discount']}} ({{$data->Discount}}%)
+                                                            @if ($rateDetails['Discount'] > 0)
+                                                                {{ $rateDetails['Discount'] }} ({{ $data->Discount }}%)
+                                                            @else
+                                                                -
+                                                            @endif
                                                             </div>
                                                         </div>
                                                         <div class="row">
