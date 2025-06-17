@@ -16,6 +16,7 @@ use App\Models\Discount;
 use App\Models\Insurance;
 use App\Models\SaleAccesoriesFile;
 use App\Models\Sales;
+use App\Models\Taxes;
 use App\Services\CarMasterStatusService;
 use App\Services\LogService;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -254,39 +255,23 @@ class SalesController extends Controller
     }
 
     public function sendOfApproval(Request $request, string $id){
-        try{
+        /* try{ */
         $cgst = $sgst = $igst = $rate = $discount = $amount = $total = $cess = 0;
             if($id) {
                 $sales = Sales::where('id', $id)->first();
                 
-                $rate = $sales->carMaster->Rate ? $sales->carMaster->Rate : 0;
-                $discountvalue = $sales->Discount ? $sales->Discount : 0;
-                if($rate != 0){
-                    $discount = $rate * $discountvalue/100;
-                    $amount = $rate - $discount;
-     
-                    if($sales->TypeofGST == '1'){
-                        $cgst = $rate * 14/100;
-                        $sgst = $rate * 14/100;
-                        $total = $rate + $cgst + $sgst;
-                    }else{
-                        $igst = $rate * 28/100;
-                        $total = $rate + $igst;
-                    }
-    
-                    $cess = $rate * 1/100;
-                    $total = $total + $cess;
-                }
+                $calculate = $this->calculateTotal($sales->carmaster);
                 
-                $rateDetails = ['Amount' => number_format($amount,2), 'Discount' => number_format($discount,2), 'Total' => number_format($total,2), 'CGST' => number_format($cgst,2), 'SGST' => number_format($sgst,2), 'IGST' => number_format($igst,2), 'CESS' => number_format($cess,2)];
+                $rateDetails = ['Rate' => number_format($calculate['rate']) ,'Amount' => number_format($calculate['taxableValue'],2), 'Discount' => number_format($calculate['discount'],2), 'Total' => number_format($calculate['total'],2), 'CGST' => number_format($calculate['cgst'],2), 'SGST' => number_format($calculate['sgst'],2), 'IGST' => number_format($igst,2), 'CESS' => number_format($calculate['cess'],2)];
 
                 return view('send-of-approval-form')->with(['title' => 'Send of Approval', 'data' => $sales, 'rateDetails'=> $rateDetails]);
             }else{
                 return redirect()->route('view-sales')->with('error', 'Record not found.');
             }
-        }catch(Exception $e){
+       /*  }catch(Exception $e){
+            Log::error($e->getMessage());
             return redirect()->route('view-sales')->with('error', 'Record not found.');
-        }
+        } */
     }
 
     public function submitSendOfApproval(SubmitSendOfApprovalRequest $request, $id = null){
@@ -430,6 +415,27 @@ class SalesController extends Controller
 
         // Download the PDF
         return $pdf->stream('invoice_' . $id . '_'.date('Y-m-d').'.pdf');
+    }
+
+    public static function calculateTotal($carmaster){
+        $total = 0;
+        $cgst = $sgst = $igst = $cess = 0;
+        if($carmaster->Model && $carmaster->TypeOfFuel){
+           $taxes = Taxes::where(DB::raw('LOWER(car_model)'), 'LIKE', '%' . strtolower($carmaster->Model) . '%')
+                    ->where(DB::raw('LOWER(type_of_fuel)'), 'LIKE', '%' . strtolower($carmaster->TypeOfFuel) . '%')
+                    ->first();
+           if($taxes){
+                $rate = $carmaster->Amount * 100 / $taxes->rate;
+                $discount = $carmaster->Discount  * 100 / $taxes->rate;
+                $taxableValue = $rate - $discount;
+                $cgst = $taxableValue * $taxes->cgst;
+                $sgst = $taxableValue * $taxes->sgst;
+                $cess = $taxableValue * $taxes->cess;
+                $total = $taxableValue + $cgst + $sgst + $cess;
+                return ['rate' => $rate, 'discount' => $discount, 'taxableValue' => $taxableValue, 'cgst' => $cgst,'sgst' => $sgst, 'cess' => $cess, 'total' => $total];
+           }
+           
+        }
     }
 
 }
