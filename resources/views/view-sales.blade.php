@@ -147,7 +147,7 @@
                                                             <select onchange="redirectToPage(this)">
                                                                 <option value="">Select an option</option>
                                                                 <option value="{{ route('salesCertificate', ['id' => $d->ID]) }}">Sales Certificates</option>
-                                                                <option value="{{ route('quick-sales-gate-pass', ['id' => $d->ID]) }}">Gate Pass</option>
+                                                                <option value="{{ route('print-quick-sales-gate-pass-pdf', ['id' => $d->ID]) }}">Gate Pass</option>
                                                                 <option value="{{ route('taxInvoice', ['id' => $d->ID]) }}">Tax Invoice</option>
                                                             </select>
                                                             @else

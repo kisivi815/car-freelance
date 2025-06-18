@@ -166,12 +166,7 @@ class SalesController extends Controller
     public function getQuickSalesGatePass(Request $request, string $id)
     {
         try {
-            $message = '';
-            $quickSales = QuickSales::with(['CarMaster'])->findOrFail($id);
-            if (isset($request->input()['from']) == 'quick-sales') {
-                $message = 'On ' . Carbon::today()->format('d-m-Y') . ', ' . $quickSales->ChasisNo . ' cars were sold from ' . $quickSales->SalesBranch->name;
-                session(['message' => $message]);
-            }
+            $quickSales = Sales::with(['carMaster'])->findOrFail($id);
             return view('quick-sale-gate-pass')->with(['title' => 'Quick Sales Gate Pass', 'data' => $quickSales]);
         } catch (ModelNotFoundException $e) {
             return redirect()->route('view-sales')->with('error', 'Record not found.');
@@ -182,7 +177,7 @@ class SalesController extends Controller
     {
         try {
             $message = '';
-            $quickSales = QuickSales::with(['CarMaster'])->findOrFail($id);
+            $quickSales = Sales::with(['CarMaster'])->findOrFail($id);
             $pdf = Pdf::loadView('pdf.quick-sales-gate-pass', ['title' => 'Gate Pass', 'data' => $quickSales]);
 
             return $pdf->stream('TF' . $id . '.pdf');

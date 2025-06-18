@@ -60,16 +60,20 @@
             <img src="{{ public_path('image/logo.jpeg') }}" alt="image" style="max-width: 50%; height: auto;">
         </div>
         <div class="header">
-            <h1>Quick Gate Pass</h1>
+            <h1>Gate Pass</h1>
         </div>
         <table class="content">
             <tr>
                 <td>Sale ID</td>
-                <td>{{$data->SalesId}}</td>
+                <td>{{$data->ID}}</td>
             </tr>
             <tr>
-                <td>TM Invoice No</td>
-                <td>{{$data->TMInvoiceNo}}</td>
+                <td>Customer Name</td>
+                <td>{{$data->FirstName .' '. $data->LastName}}</td>
+            </tr>
+            <tr>
+                <td>Address</td>
+                <td>{{$data->PermanentAddress}}</td>
             </tr>
             <tr>
                 <td>ChasisNo</td>
@@ -88,24 +92,28 @@
                 <td>{{$data->CarMaster->Colour}}</td>
             </tr>
             <tr>
-                <td>Date of Booking</td>
-                <td>{{date('Y-m-d',strtotime($data->DateOfBooking))}}</td>
+                <td>HSN Code</td>
+                <td>{{$data->CarMaster->HSNCode}}</td>
             </tr>
             <tr>
-                <td>Sales Person Name</td>
-                <td>{{$data->SalesPersonName}}</td>
+                <td>Date of Sales</td>
+                <td>{{date('Y-m-d',strtotime($data->DateOfSales))}}</td>
             </tr>
             <tr>
-                <td>Branch of Sales</td>
-                <td>{{$data->SalesBranch->name}}</td>
+                <td>Value</td>
+                <td>{{$data->CarMaster->Amount}}</td>
             </tr>
             <tr>
-                <td>Customer ID</td>
-                <td>{{$data->CustomerMobileNo}}</td>
+                <td>Seating Capacity</td>
+                <td>{{$data->CarMaster->SeatingCapacity}}</td>
             </tr>
             <tr>
-                <td>Customer Name</td>
-                <td>{{$data->CustomerName}}</td>
+                <td>Cubic Capacity</td>
+                <td>{{$data->CarMaster->CatalyticConverter}}</td>
+            </tr>
+            <tr>
+                <td>Manufacturing Date</td>
+                <td>{{date('Y-m-d',strtotime($data->CarMaster->ManufacturingDate))}}</td>
             </tr>
         </table>
         <div class="footer">

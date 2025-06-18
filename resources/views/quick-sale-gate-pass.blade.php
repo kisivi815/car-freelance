@@ -79,12 +79,6 @@
                                                         <input type="text" id="first-name-horizontal" class="form-control" value="{{$data->SalesPersonName}}"  disabled>
                                                     </div>
                                                     <div class="col-md-4">
-                                                        <label for="horizontal">Branch of Sales</label>
-                                                    </div>
-                                                    <div class="col-md-8 form-group">
-                                                        <input type="text" id="first-name-horizontal" class="form-control" value="{{$data->SalesBranch->name}}"  disabled>
-                                                    </div>
-                                                    <div class="col-md-4">
                                                         <label for="horizontal">Customer ID</label>
                                                     </div>
                                                     <div class="col-md-8 form-group">
