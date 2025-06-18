@@ -142,7 +142,18 @@
                                                             Pending
                                                             @endif
                                                         </td>
-                                                        <td>-</td>
+                                                        <td>
+                                                            @if($d->status == '1')
+                                                            <select onchange="redirectToPage(this)">
+                                                                <option value="">Select an option</option>
+                                                                <option value="{{ route('salesCertificate', ['id' => $d->ID]) }}">Sales Certificates</option>
+                                                                <option value="{{ route('quick-sales-gate-pass', ['id' => $d->ID]) }}">Gate Pass</option>
+                                                                <option value="{{ route('taxInvoice', ['id' => $d->ID]) }}">Tax Invoice</option>
+                                                            </select>
+                                                            @else
+                                                            -
+                                                            @endif
+                                                        </td>
                                                         <td><a href="#" class="delete-sales" data-id="{{ $d->ID }}" data-bs-toggle="modal" data-bs-target="#inlineForm">Delete</a></td>
                                                     </tr>
                                                     @endforeach
@@ -241,6 +252,13 @@
                 }
             });
         });
+
+        function redirectToPage(select) {
+            if (select.value) {
+                window.open(select.value, '_blank');
+                select.value = '';
+            }
+        }
     </script>
 </body>
 
