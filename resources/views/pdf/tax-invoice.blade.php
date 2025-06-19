@@ -1,65 +1,87 @@
 @php
     function numberToWords($number) {
-        $units = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten',
-                'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'];
+        // Input validation
+        if (!is_numeric($number)) {
+            return 'invalid input';
+        }
+
+        // Handle negative numbers
+        $isNegative = $number < 0;
+        $number = abs($number);
+
+        // Define arrays for units, tens, and scales
+        $units = [
+            '', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten',
+            'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'
+        ];
         $tens = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
+        $scales = ['', 'thousand', 'million', 'billion'];
 
         // Split integer and decimal parts
-        $integerPart = floor($number);
-        $decimalPart = round(($number - $integerPart) * 100); // Assuming two decimal places
+        $integerPart = (int)$number;
+        $decimalPart = round(($number - $integerPart) * 100); // Two decimal places for cents
 
-        // Convert integer part
+        // Initialize words
         $words = '';
+
+        // Handle zero case
         if ($integerPart == 0 && $decimalPart == 0) {
             return 'zero';
         }
 
+        // Convert integer part
         if ($integerPart > 0) {
-            // Handle thousands
-            if ($integerPart >= 1000) {
-                $thousands = floor($integerPart / 1000);
-                $words .= $units[$thousands] . ' thousand ';
-                $integerPart %= 1000;
-            }
-
-            // Handle hundreds
-            if ($integerPart >= 100) {
-                $hundreds = floor($integerPart / 100);
-                $words .= $units[$hundreds] . ' hundred ';
-                $integerPart %= 100;
-            }
-
-            // Handle tens and units
-            if ($integerPart > 0) {
-                if ($integerPart < 20) {
-                    $words .= $units[$integerPart];
-                } else {
-                    $words .= $tens[floor($integerPart / 10)];
-                    $remainder = $integerPart % 10;
-                    if ($remainder > 0) {
-                        $words .= '-' . $units[$remainder];
-                    }
+            $scaleIndex = 0;
+            while ($integerPart > 0) {
+                $chunk = $integerPart % 1000;
+                if ($chunk > 0) {
+                    $chunkWords = convertChunk($chunk, $units, $tens);
+                    $words = $chunkWords . ' ' . $scales[$scaleIndex] . ($words ? ' ' : '') . $words;
                 }
+                $integerPart = (int)($integerPart / 1000);
+                $scaleIndex++;
             }
         }
 
-        // Handle decimal part
+        // Handle decimal part (cents)
         if ($decimalPart > 0) {
             $words = trim($words);
-            $words .= ' and ';
-            if ($decimalPart < 20) {
-                $words .= $units[$decimalPart];
-            } else {
-                $words .= $tens[floor($decimalPart / 10)];
-                $remainder = $decimalPart % 10;
-                if ($remainder > 0) {
-                    $words .= '-' . $units[$remainder];
-                }
-            }
-            $words .= ' hundredths'; // Adjust for other precisions if needed
+            $words .= ($words ? ' and ' : '') . convertChunk($decimalPart, $units, $tens) . ' cents';
+        }
+
+        // Add negative prefix if applicable
+        if ($isNegative) {
+            $words = 'negative ' . $words;
         }
 
         return trim($words);
+    }
+
+    function convertChunk($number, $units, $tens) {
+        $words = '';
+
+        // Handle hundreds
+        if ($number >= 100) {
+            $hundreds = (int)($number / 100);
+            $words .= $units[$hundreds] . ' hundred';
+            $number %= 100;
+            $words .= ($number > 0 ? ' ' : '');
+        }
+
+        // Handle tens and units
+        if ($number >= 20) {
+            $tensDigit = (int)($number / 10);
+            $words .= $tens[$tensDigit];
+            $number %= 10;
+            $words .= ($number > 0 ? '-' : '');
+        }
+
+        // Handle units (0-19)
+        if ($number > 0) {
+            $words .= $units[$number];
+        }
+
+        return $words;
     }
 @endphp
 
@@ -323,19 +345,19 @@
             <tr>
                 <td class="text-align-center">1</td>
                 <td style="font-size:13px">{{$invoice->carMaster->Model}} {{$invoice->carMaster->ProductLine}}</td>
-                <td class="text-align-center">{{$invoice->HSNCode}}</td>
+                <td class="text-align-center">{{$invoice->carMaster->HSNCode}}</td>
                 <td class="text-align-center">No.</td>
                 <td class="text-align-center">1</td>
-                <td class="text-align-center">{{$invoice->carMaster->Rate}}</td>
-                <td class="text-align-center">{{$invoice->carMaster->Amount}}</td>
-                <td class="text-align-center"></td>
-                <td class="text-align-center">{{$invoice->Discount}}</td>
-                <td class="text-align-center">{{$invoice->carMaster->TaxableValue}}</td>
+                <td class="text-align-center">{{$rateDetails['Rate']}}</td>
+                <td class="text-align-center">{{$rateDetails['Rate']}}</td>
+                <td class="text-align-center">{{$rateDetails['Discount'] ?? 0}}</td>
+                <td class="text-align-center">{{$rateDetails['Rate']}}</td>
+                <td class="text-align-center">{{$rateDetails['Taxes_CGST']}}</td>
                 <td class="text-align-center">{{$rateDetails['CGST']}}</td>
-                <td class="text-align-center">14</td>
+                <td class="text-align-center">{{$rateDetails['Taxes_SGST']}}</td>
                 <td class="text-align-center">{{$rateDetails['SGST']}}</td>
-                <td class="text-align-center">14</td>
-                <td class="text-align-center">{{$rateDetails['IGST']}}</td>
+                <td class="text-align-center">{{$rateDetails['Taxes_CESS']}}</td>
+                <td class="text-align-center">{{$rateDetails['CESS']}}</td>
                 <td class="text-align-center">{{$rateDetails['Total']}}</td>
             </tr>
             <tr>
@@ -345,7 +367,7 @@
                 <td class="text-align-center"></td>
                 <td class="text-align-center">{{$rateDetails['SGST']}}</td>
                 <td class="text-align-center"></td>
-                <td class="text-align-center">{{$rateDetails['IGST']}}</td>
+                <td class="text-align-center">{{$rateDetails['CESS']}}</td>
                 <td class="text-align-center">{{$rateDetails['Total']}}</td>
             </tr>
             <tr>
@@ -391,7 +413,7 @@
                     Total Tax Amount
                 </td>
                 <td class="text-align-center">
-                    {{$rateDetails['CGST'] + $rateDetails['SGST'] + $rateDetails['IGST']}}
+                    {{$rateDetails['CGST'] + $rateDetails['SGST'] + $rateDetails['CESS']}}
                 </td>
             </tr>
             <tr>

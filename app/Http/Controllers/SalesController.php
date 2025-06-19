@@ -314,7 +314,7 @@ class SalesController extends Controller
                             $total = $calculate['total'];
                         }
 
-                        $rateDetails = ['Rate' => number_format($rate) ,
+                        $rateDetails = ['Rate' => number_format($rate,2) ,
                                         'Amount' => number_format($amount,2), 
                                         'Discount' => number_format($discount,2), 
                                         'Total' => number_format($total,2), 
@@ -397,25 +397,30 @@ class SalesController extends Controller
         $query->where('id', $id);
         $invoice = $query->first();
 
-        $rate = $invoice->carMaster->Rate ? $invoice->carMaster->Rate : 0;
-        $discountvalue = $invoice->discount ? $invoice->discount : 0;
-        if($rate != 0){
-            $discount = $rate * $discountvalue/100;
-            $amount = $rate - $discount;
+       $calculate = $this->calculateTotal($invoice->carmaster);
+                        if($calculate){
+                            $rate = $calculate['rate'];
+                            $discount = $calculate['discount'];
+                            $amount = $calculate['taxableValue'];
+                            $cgst = $calculate['cgst'];
+                            $sgst = $calculate['sgst'];
+                            $cess = $calculate['cess'];
+                            $total = $calculate['total'];
+                        }
 
-            if($invoice->TypeofGST == '1'){
-                $cgst = $rate * 14/100;
-                $sgst = $rate * 14/100;
-                $total = $rate + $cgst + $sgst;
-            }else{
-                $igst = $rate * 28/100;
-                $total = $rate + $igst;
-            }
-
-            $cess = $rate * 1/100;
-            $total = $total + $cess;
-        }
-        $rateDetails = ['Amount' => number_format($amount,2), 'Discount' => number_format($discount,2), 'Total' => number_format($total,2), 'CGST' => number_format($cgst,2), 'SGST' => number_format($sgst,2), 'IGST' => number_format($igst,2), 'CESS' => number_format($cess,2)];
+                        $rateDetails = [
+                            'Rate' => sprintf("%.2f", $rate),
+                            'Amount' => sprintf("%.2f", $amount),
+                            'Discount' => sprintf("%.2f", $discount),
+                            'Total' => sprintf("%.2f", $total),
+                            'CGST' => sprintf("%.2f", $cgst),
+                            'SGST' => sprintf("%.2f", $sgst),
+                            'IGST' => sprintf("%.2f", $sgst),
+                            'CESS' => sprintf("%.2f", $cess),
+                            'Taxes_CGST' => $calculate['taxes_cgst'] * 100,
+                            'Taxes_SGST' => $calculate['taxes_sgst'] * 100,
+                            'Taxes_CESS' => $calculate['taxes_cess'] * 100,
+                        ];
 
         // Load the Blade view and pass data
         $pdf = Pdf::loadView('pdf.tax-invoice', ['invoice' => $invoice,'rateDetails' => $rateDetails]);
@@ -449,7 +454,18 @@ class SalesController extends Controller
         $sgst = $taxableValue * $taxes->sgst;
         $cess = $taxableValue * $taxes->cess;
         $total = $taxableValue + $cgst + $sgst + $cess;
-        return ['rate' => $rate, 'discount' => $discount, 'taxableValue' => $taxableValue, 'cgst' => $cgst,'sgst' => $sgst, 'cess' => $cess, 'total' => $total];
+        return ['rate' => $rate, 
+                'discount' => $discount, 
+                'taxableValue' => $taxableValue, 
+                'cgst' => $cgst,
+                'sgst' => $sgst, 
+                'cess' => $cess, 
+                'total' => $total,
+                'taxes_cgst' => $taxes->cgst,
+                'taxes_sgst' => $taxes->sgst,
+                'taxes_cess' => $taxes->cess,
+                'taxes_rate' => $taxes->rate,
+                ];
         
     }
 
