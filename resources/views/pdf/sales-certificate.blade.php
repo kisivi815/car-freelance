@@ -83,12 +83,12 @@
                         <tr>
                             <td>2)</td>
                             <td>Maker's Name</td>
-                            <td class="value">{{$invoice->MakerName}}</td>
+                            <td class="value">{{$invoice->carMaster->MakersName}}</td>
                         </tr>
                         <tr>
                             <td>3)</td>
                             <td>Chassis Number</td>
-                            <td class="value">{{$invoice->ChassisNo}}</td>
+                            <td class="value">{{$invoice->ChasisNo}}</td>
                         </tr>
                         <tr>
                             <td>4)</td>
